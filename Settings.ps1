@@ -36,7 +36,7 @@ $Root.Text = "TWUAutomation Settings"
 $Root.StartPosition = "CenterScreen"
 $Root.FormBorderStyle = 'FixedDialog'
 $Root.MaximizeBox = $false
-$Root.Width = 1840
+$Root.Width = 1030
 $Root.Height = 800
 $Root.Font = New-Object System.Drawing.Font("Consolas",10)
 $Root.Icon = New-Object System.Drawing.Icon(Join-Path $PSScriptRoot "Icon.ico")
@@ -45,7 +45,7 @@ $Root.Icon = New-Object System.Drawing.Icon(Join-Path $PSScriptRoot "Icon.ico")
 #======================================#
 $ConsoleBox = New-Object Windows.Forms.RichTextBox
 $ConsoleBox.Location = New-Object Drawing.Point(400,30)
-$ConsoleBox.Size = New-Object Drawing.Size(475,350)
+$ConsoleBox.Size = New-Object Drawing.Size(600,350)
 $ConsoleBox.ReadOnly = $true
 $ConsoleBox.Multiline = $true
 $ConsoleBox.ScrollBars = 'Vertical'
@@ -246,7 +246,7 @@ $TextBoxWingetWU.Multiline = $true
 $TextBoxWingetWU.WordWrap = $false
 $TextBoxWingetWU.ScrollBars = 'Vertical'
 $TextBoxWingetWU.ReadOnly = $true
-$TextBoxWingetWU.Width = 870
+$TextBoxWingetWU.Width = 980
 $TextBoxWingetWU.Height = 210
 $TextBoxWingetWU.Location = New-Object Drawing.Point(20,400)
 $TextBoxWingetWU.Font = New-Object System.Drawing.Font("Consolas",10)
@@ -370,7 +370,8 @@ $allLines = Get-Content -Path $transcriptPath;
 $verboseLines = $allLines | Where-Object { $_ -like 'AUSF*HRLICH:*' };
 $updateResults = $verboseLines -join "`n";
 Remove-Item -Path $transcriptPath -Force -ErrorAction SilentlyContinue;
-Write-Host $updateResults
+Write-UiLog $updateResults
+
 
 
 
