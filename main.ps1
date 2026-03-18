@@ -1,5 +1,5 @@
 ﻿if (-not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
-    Start-Process powershell.exe -Verb RunAs -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`""
+    Start-Process powershell.exe -Verb RunAs -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" 
     exit
 }
 if ($PSVersionTable.PSVersion.Major -lt 7) {
@@ -8,7 +8,7 @@ if ($PSVersionTable.PSVersion.Major -lt 7) {
     } else {
         winget upgrade --id Microsoft.PowerShell --source winget --silent --accept-package-agreements --accept-source-agreements --scope machine
     }
-    Start-Process pwsh -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`""
+    Start-Process pwsh -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" 
     exit
 }
 #======================================#
@@ -60,7 +60,6 @@ function SystemWindow-Home(){
    $Root.Icon = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "assets\Icon.ico")))
    $SystemWindowsControlsCanvas = New-Object System.Windows.Controls.Canvas
    
-
    $Background = New-Object System.Windows.Controls.Image
    $Background.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "assets\Background.png")))
    $Background.Width = $Width
@@ -87,47 +86,6 @@ function SystemWindow-Home(){
       [System.Windows.Window]::GetWindow($args[0]).DragMove()
    })
    $SystemWindowsControlsCanvas.Children.Add($DragBarImage) | Out-Null
-
-   #$HomeButton = New-Object System.Windows.Controls.Image
-   #$HomeButton.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "assets\BarActive.png")))
-   #$HomeButton.Width = 30
-   #$HomeButton.Height = 30
-   #[System.Windows.Controls.Canvas]::SetLeft($HomeButton, 840)
-   #[System.Windows.Controls.Canvas]::SetTop($HomeButton, 10)
-   #$HomeButtonIcon = New-Object System.Windows.Controls.Image
-   #$HomeButtonIcon.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "assets\Home.png")))
-   #$HomeButtonIcon.Width = 18
-   #$HomeButtonIcon.Height = 18
-   #[System.Windows.Controls.Canvas]::SetLeft($HomeButtonIcon, 840)
-   #[System.Windows.Controls.Canvas]::SetTop($HomeButtonIcon, 10)
-   #$HomeButton.Add_MouseEnter({
-   #   $this.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "assets\BarActiveHover.png")))
-   #})
-   #$HomeButton.Add_MouseLeave({
-   #   $this.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "assets\BarActive.png")))
-   #})
-   #$HomeButton.Add_MouseLeftButtonDown({ 
-   # <#Do this if a terminating exception happens#>
-   #})
-   #$SystemWindowsControlsCanvas.Children.Add($HomeButton) | Out-Null
-   #$SystemWindowsControlsCanvas.Children.Add($HomeButtonIcon) | Out-Null
-
-   #$SettingsButton = New-Object System.Windows.Controls.Image
-   #$SettingsButton.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "assets\settings.png")))
-   #$SettingsButton.Width = 30
-   #$SettingsButton.Height = 30
-   #[System.Windows.Controls.Canvas]::SetLeft($SettingsButton, 840)
-   #[System.Windows.Controls.Canvas]::SetTop($SettingsButton, 10)
-   #$SettingsButton.Add_MouseEnter({
-   #   $this.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "assets\settingshover.png")))
-   #})
-   #$SettingsButton.Add_MouseLeave({
-   #   $this.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "assets\settings.png")))
-   #})
-   #$SettingsButton.Add_MouseLeftButtonDown({ 
-   # <#Do this if a terminating exception happens#>
-   #})
-   #$SystemWindowsControlsCanvas.Children.Add($SettingsButton) | Out-Null
 
    $CloseButton = @{
       Button = New-Object System.Windows.Controls.Image
@@ -161,31 +119,163 @@ function SystemWindow-Home(){
       $this.Tag.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "assets\Bar.png")))
       $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "assets\Close.png")))
    })
-   $CloseButton.Button.Add_MouseLeftButtonDown({ [System.Windows.Window]::GetWindow($args[0]).Close() })
-   $CloseButton.Icon.Add_MouseLeftButtonDown({  [System.Windows.Window]::GetWindow($args[0]).Close() })
+   $CloseButton.Button.Add_MouseLeftButtonDown({
+      $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "assets\ClosePressed.png")))
+      $this.CaptureMouse() | Out-Null
+   })
+   $CloseButton.Button.Add_MouseLeftButtonUp({
+      $this.ReleaseMouseCapture()
+      if ($this.IsMouseOver) {
+         [System.Windows.Window]::GetWindow($this).Close()
+      } else {
+         $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "assets\Close.png")))
+    }
+   })
+   $CloseButton.Icon.Add_MouseLeftButtonDown({
+      $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "assets\ClosePressed.png")))
+      $this.CaptureMouse() | Out-Null
+   })
+   $CloseButton.Icon.Add_MouseLeftButtonUp({
+      $this.ReleaseMouseCapture()
+      if ($this.IsMouseOver) {
+         [System.Windows.Window]::GetWindow($this).Close()
+      } else {
+         $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "assets\Close.png")))
+    }
+   })
    $SystemWindowsControlsCanvas.Children.Add($CloseButton.Button) | Out-Null
    $SystemWindowsControlsCanvas.Children.Add($CloseButton.Icon)   | Out-Null
-  
+
+   $SettingsButton = @{
+      Button = New-Object System.Windows.Controls.Image
+      Icon   = New-Object System.Windows.Controls.Image
+   }
+   $SettingsButton.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "assets\Bar.png")))
+   $SettingsButton.Button.Width = 30
+   $SettingsButton.Button.Height = 30
+   [System.Windows.Controls.Canvas]::SetLeft($SettingsButton.Button, 820)
+   [System.Windows.Controls.Canvas]::SetTop($SettingsButton.Button, 10)
+   $SettingsButton.Icon.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "assets\Settings.png")))
+   $SettingsButton.Icon.Width = 18
+   $SettingsButton.Icon.Height = 18
+   [System.Windows.Controls.Canvas]::SetLeft($SettingsButton.Icon, 826)
+   [System.Windows.Controls.Canvas]::SetTop($SettingsButton.Icon, 16)
+   $SettingsButton.Button.Tag = $SettingsButton
+   $SettingsButton.Icon.Tag   = $SettingsButton
+   $SettingsButton.Button.Add_MouseEnter({
+      $this.Tag.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "assets\BarHover.png")))
+      $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "assets\SettingsHover.png")))
+   })
+   $SettingsButton.Button.Add_MouseLeave({
+      $this.Tag.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "assets\Bar.png")))
+      $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "assets\Settings.png")))
+   })
+   $SettingsButton.Icon.Add_MouseEnter({
+      $this.Tag.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "assets\BarHover.png")))
+      $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "assets\SettingsHover.png")))
+   })
+   $SettingsButton.Icon.Add_MouseLeave({
+      $this.Tag.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "assets\Bar.png")))
+      $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "assets\Settings.png")))
+   })
+   $SystemWindowsControlsCanvas.Children.Add($SettingsButton.Button) | Out-Null
+   $SystemWindowsControlsCanvas.Children.Add($SettingsButton.Icon)   | Out-Null
+
+   $HomeButton = @{
+      Button = New-Object System.Windows.Controls.Image
+      Icon   = New-Object System.Windows.Controls.Image
+   }
+   $HomeButton.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "assets\BarActive.png")))
+   $HomeButton.Button.Width = 30
+   $HomeButton.Button.Height = 30
+   [System.Windows.Controls.Canvas]::SetLeft($HomeButton.Button, 780)
+   [System.Windows.Controls.Canvas]::SetTop($HomeButton.Button, 10)
+   $HomeButton.Icon.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "assets\Home.png")))
+   $HomeButton.Icon.Width = 14
+   $HomeButton.Icon.Height = 14
+   [System.Windows.Controls.Canvas]::SetLeft($HomeButton.Icon, 788)
+   [System.Windows.Controls.Canvas]::SetTop($HomeButton.Icon, 18)
+   $HomeButton.Button.Tag = $HomeButton
+   $HomeButton.Icon.Tag   = $HomeButton
+   $HomeButton.Button.Add_MouseEnter({
+      $this.Tag.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "assets\BarActiveHover.png")))
+      $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "assets\HomeHover.png")))
+   })
+   $HomeButton.Button.Add_MouseLeave({
+      $this.Tag.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "assets\BarActive.png")))
+      $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "assets\Home.png")))
+   })
+   $HomeButton.Icon.Add_MouseEnter({
+      $this.Tag.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "assets\BarActiveHover.png")))
+      $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "assets\HomeHover.png")))
+   })
+   $HomeButton.Icon.Add_MouseLeave({
+      $this.Tag.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "assets\BarActive.png")))
+      $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "assets\Home.png")))
+   })
+   $HomeButton.Button.Add_MouseLeftButtonDown({
+      $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "assets\HomePressed.png")))
+      $this.CaptureMouse() | Out-Null
+   })
+   $HomeButton.Button.Add_MouseLeftButtonUp({
+      $this.ReleaseMouseCapture()
+      if ($this.IsMouseOver) {
+         $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "assets\Home.png")))
+      } else {
+         $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "assets\Home.png")))
+    }
+   })
+   $HomeButton.Icon.Add_MouseLeftButtonDown({
+      $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "assets\HomePressed.png")))
+      $this.CaptureMouse() | Out-Null
+   })
+   $HomeButton.Icon.Add_MouseLeftButtonUp({
+      $this.ReleaseMouseCapture()
+      if ($this.IsMouseOver) {
+         $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "assets\Home.png")))
+      } else {
+         $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "assets\Home.png")))
+    }
+   })
+   $SystemWindowsControlsCanvas.Children.Add($HomeButton.Button) | Out-Null
+   $SystemWindowsControlsCanvas.Children.Add($HomeButton.Icon)   | Out-Null
+
+   $BigButton = @{
+      Button = New-Object System.Windows.Controls.Image
+      Icon   = New-Object System.Windows.Controls.Image
+   }
+   $BigButton.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "assets\BigButton.png")))
+   $BigButton.Button.Width = 110
+   $BigButton.Button.Height = 310
+   [System.Windows.Controls.Canvas]::SetLeft($BigButton.Button, 780)
+   [System.Windows.Controls.Canvas]::SetTop($BigButton.Button, 50)
+   $BigButton.Icon.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "assets\AutomationCheckBlack.png")))
+   $BigButton.Icon.Width = 128
+   $BigButton.Icon.Height = 64
+   [System.Windows.Controls.Canvas]::SetLeft($BigButton.Icon, 766)
+   [System.Windows.Controls.Canvas]::SetTop($BigButton.Icon, 70)
+   $SystemWindowsControlsCanvas.Children.Add($BigButton.Button) | Out-Null
+   $SystemWindowsControlsCanvas.Children.Add($BigButton.Icon)   | Out-Null
 
    $SystemWindowsControlsRichTextBoxImage0 = New-Object System.Windows.Controls.Image
    $SystemWindowsControlsRichTextBoxImage0.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "assets\ConsoleBox.png")))
-   $SystemWindowsControlsRichTextBoxImage0.Width = 730
-   $SystemWindowsControlsRichTextBoxImage0.Height = 300
+   $SystemWindowsControlsRichTextBoxImage0.Width = 760
+   $SystemWindowsControlsRichTextBoxImage0.Height = 310
    [System.Windows.Controls.Canvas]::SetLeft($SystemWindowsControlsRichTextBoxImage0, 10)
-   [System.Windows.Controls.Canvas]::SetTop($SystemWindowsControlsRichTextBoxImage0, 60)
+   [System.Windows.Controls.Canvas]::SetTop($SystemWindowsControlsRichTextBoxImage0, 50)
    $SystemWindowsControlsCanvas.Children.Add($SystemWindowsControlsRichTextBoxImage0) | Out-Null
 
    $SystemWindowsControlsRichTextBox0 = New-Object System.Windows.Controls.RichTextBox
    $SystemWindowsControlsRichTextBox0.FontFamily = New-Object System.Windows.Media.FontFamily("Consolas")
    $SystemWindowsControlsRichTextBox0.FontSize = 10
-   $SystemWindowsControlsRichTextBox0.Width = 730
-   $SystemWindowsControlsRichTextBox0.Height = 300
+   $SystemWindowsControlsRichTextBox0.Width = 760
+   $SystemWindowsControlsRichTextBox0.Height = 310
    $SystemWindowsControlsRichTextBox0.BorderThickness = 0
    $SystemWindowsControlsRichTextBox0.Document.PagePadding = [System.Windows.Thickness]::new(0)
    $SystemWindowsControlsRichTextBox0.Background = [System.Windows.Media.Brushes]::Transparent
    $SystemWindowsControlsRichTextBox0.Foreground = [System.Windows.Media.Brushes]::White
    [System.Windows.Controls.Canvas]::SetLeft($SystemWindowsControlsRichTextBox0, 15)
-   [System.Windows.Controls.Canvas]::SetTop($SystemWindowsControlsRichTextBox0, 70)
+   [System.Windows.Controls.Canvas]::SetTop($SystemWindowsControlsRichTextBox0, 60)
    $SystemWindowsControlsCanvas.Children.Add($SystemWindowsControlsRichTextBox0) | Out-Null
 
    $SystemWindowsControlsRichTextBoxImage1 = New-Object System.Windows.Controls.Image
@@ -206,7 +296,7 @@ function SystemWindow-Home(){
    $SystemWindowsControlsRichTextBox1.Background = [System.Windows.Media.Brushes]::Transparent
    $SystemWindowsControlsRichTextBox1.Foreground = [System.Windows.Media.Brushes]::White
    [System.Windows.Controls.Canvas]::SetLeft($SystemWindowsControlsRichTextBox1, 15)
-   [System.Windows.Controls.Canvas]::SetTop($SystemWindowsControlsRichTextBox1, 390)
+   [System.Windows.Controls.Canvas]::SetTop($SystemWindowsControlsRichTextBox1, 380)
    $SystemWindowsControlsCanvas.Children.Add($SystemWindowsControlsRichTextBox1) | Out-Null
 
    $SystemWindowsControlsRichTextBoxImage2 = New-Object System.Windows.Controls.Image
@@ -227,13 +317,8 @@ function SystemWindow-Home(){
    $SystemWindowsControlsRichTextBox2.Background = [System.Windows.Media.Brushes]::Transparent
    $SystemWindowsControlsRichTextBox2.Foreground = [System.Windows.Media.Brushes]::White
    [System.Windows.Controls.Canvas]::SetLeft($SystemWindowsControlsRichTextBox2, 435)
-   [System.Windows.Controls.Canvas]::SetTop($SystemWindowsControlsRichTextBox2, 390)
+   [System.Windows.Controls.Canvas]::SetTop($SystemWindowsControlsRichTextBox2, 380)
    $SystemWindowsControlsCanvas.Children.Add($SystemWindowsControlsRichTextBox2) | Out-Null
-
-
-
-
-   
 
    $Root.Content = $SystemWindowsControlsCanvas
    return $Root, $SystemWindowsControlsRichTextBox0, $SystemWindowsControlsRichTextBox1, $SystemWindowsControlsRichTextBox2
@@ -269,7 +354,7 @@ function RichTextBox-Write([System.Windows.Controls.RichTextBox]$SystemWindowsCo
 }
 function Winget-Get() {
     try {
-        $lines = "Y" | winget list --upgrade-available
+        $lines = "Y" | winget list --upgrade-available --include-unknown
         $lines = $lines -replace 'Verf├╝gbar','verfügbar' -replace 'ÔÇ…','…' -replace '├ñ','ä' -replace '├Ñ','Ä' -replace '├╝','ü' -replace '├┐','Ö' -replace '├╢','ß' -replace 'ÔÇª','…' -replace '├ü','ü' -replace '├Ä','ä' -replace '├Ö','ö' -replace '├Ü','Ü'
         $AppList = @()
         $StringBuilder = New-Object System.Text.StringBuilder
@@ -325,14 +410,36 @@ function WindowsUpdate-Get() {
       <#Do this if a terminating exception happens#>
    }
 }
+function SettingsFileCheck($PSScriptRoot) {
+   $SettingsFilePath = Join-Path $PSScriptRoot "settings"
+   if (Test-Path $SettingsFilePath) {
+      return 1
+   } else {
+      $default = @"
+Network =
+LogEmail =
+"@
+      New-Item -Path $SettingsFilePath -ItemType File -Force | Out-Null
+      Set-Content -Path $SettingsFilePath -Value $default -Encoding utf8BOM
+      return $SettingsFilePath
+   }
+}
+function AutologonExeCheck($PSScriptRoot) {
+   $AutologonExePath = Join-Path $PSScriptRoot "AutoLogon.exe"
+   if (Test-Path $AutologonExePath) {
+      return 1
+   } else {
+      return $AutologonExePath
+   }
+}
 
 
 
-
-   
-
-
+#======================================#
+# MAIN
+#======================================#
 $SystemWindowsWindow = StartUpLogo-Show
+Start-Sleep -Seconds 2
 SystemWindow-Close $SystemWindowsWindow
 
 $SystemWindowsWindow, $SystemWindowsControlsRichTextBox0, $SystemWindowsControlsRichTextBox1, $SystemWindowsControlsRichTextBox2 = SystemWindow-Home
@@ -342,53 +449,90 @@ RichTextBox-Write $SystemWindowsControlsRichTextBox0 "> SYSTEM               | S
 SystemWindow-Refresh
 RichTextBox-Write $SystemWindowsControlsRichTextBox0 ""
 SystemWindow-Refresh
-RichTextBox-Write $SystemWindowsControlsRichTextBox0 "‎  MODULE               | TASK       | RESULT                                                                             "
+RichTextBox-Write $SystemWindowsControlsRichTextBox0 "‎  MODULE               | TASK           | RESULT                                                                               "
 SystemWindow-Refresh
-RichTextBox-Write $SystemWindowsControlsRichTextBox0 "_________________________________________________________________________________________________________________________________"
+RichTextBox-Write $SystemWindowsControlsRichTextBox0 "_______________________________________________________________________________________________________________________________________"
 SystemWindow-Refresh
 RichTextBox-Write $SystemWindowsControlsRichTextBox0 ""
 SystemWindow-Refresh
+RichTextBox-Write $SystemWindowsControlsRichTextBox0 "> SYSTEM               | SettingsFile   | -" -Color ([System.Windows.Media.Brushes]::Cyan)
+SystemWindow-Refresh
+try {
+   $SettingsFileCheckReturn = SettingsFileCheck $PSScriptRoot
+   if ($SettingsFileCheckReturn -eq 1) {
+      RichTextBox-Write $SystemWindowsControlsRichTextBox0 "> SYSTEM               | SettingsFile   | ✔" -RemoveLast -Color ([System.Windows.Media.Brushes]::LightGreen)
+      SystemWindow-Refresh
+   } else {
+      RichTextBox-Write $SystemWindowsControlsRichTextBox0 "> SYSTEM               | SettingsFile   | ✖" -RemoveLast -Color ([System.Windows.Media.Brushes]::Red)
+      SystemWindow-Refresh
+      RichTextBox-Write $SystemWindowsControlsRichTextBox0 "> SYSTEM could not find SettingsFile at $SettingsFileCheckReturn" -Color ([System.Windows.Media.Brushes]::Red)
+      SystemWindow-Refresh
+      RichTextBox-Write $SystemWindowsControlsRichTextBox0 "> SYSTEM created a new EMPTY SettingsFile" -Color ([System.Windows.Media.Brushes]::LightGreen)
+      SystemWindow-Refresh
+      RichTextBox-Write $SystemWindowsControlsRichTextBox0 ""
+      SystemWindow-Refresh
+   }
+   
+}
+catch {
+   RichTextBox-Write $SystemWindowsControlsRichTextBox0 "> SYSTEM               | SettingsFile   | ERROR" -RemoveLast -Color ([System.Windows.Media.Brushes]::Red)
+   SystemWindow-Refresh
+}
 
-RichTextBox-Write $SystemWindowsControlsRichTextBox0 "> MODULE WindowsUpdate | preScan    | -" -Color ([System.Windows.Media.Brushes]::Cyan)
+RichTextBox-Write $SystemWindowsControlsRichTextBox0 "> SYSTEM               | AutologonExe   | -" -Color ([System.Windows.Media.Brushes]::Cyan)
+SystemWindow-Refresh
+try {
+   $AutologonExeCheckReturn = AutologonExeCheck $PSScriptRoot
+   if ($AutologonExeCheckReturn -eq 1) {
+      RichTextBox-Write $SystemWindowsControlsRichTextBox0 "> SYSTEM               | AutologonExe   | ✔" -RemoveLast -Color ([System.Windows.Media.Brushes]::LightGreen)
+      SystemWindow-Refresh
+   } else {
+      RichTextBox-Write $SystemWindowsControlsRichTextBox0 "" -RemoveLast
+      SystemWindow-Refresh
+      RichTextBox-Write $SystemWindowsControlsRichTextBox0 ""
+      SystemWindow-Refresh
+      RichTextBox-Write $SystemWindowsControlsRichTextBox0 "> SYSTEM               | AutologonExe   | ✖" -RemoveLast -Color ([System.Windows.Media.Brushes]::Red)
+      SystemWindow-Refresh
+      RichTextBox-Write $SystemWindowsControlsRichTextBox0 "> SYSTEM could not find AutologonExe at $AutologonExeCheckReturn" -Color ([System.Windows.Media.Brushes]::Red)
+      SystemWindow-Refresh
+      RichTextBox-Write $SystemWindowsControlsRichTextBox0 "> SYSTEM Download at - https://learn.microsoft.com/en-us/sysinternals/downloads/autologon" -Color ([System.Windows.Media.Brushes]::Red)
+      SystemWindow-Refresh
+      RichTextBox-Write $SystemWindowsControlsRichTextBox0 ""
+      SystemWindow-Refresh
+   }
+   
+}
+catch {
+   RichTextBox-Write $SystemWindowsControlsRichTextBox0 "> SYSTEM               | AutologonExe   | ERROR" -RemoveLast -Color ([System.Windows.Media.Brushes]::Red)
+   SystemWindow-Refresh
+}
+                                                                    
+RichTextBox-Write $SystemWindowsControlsRichTextBox0 "> MODULE WindowsUpdate | preScan        | -" -Color ([System.Windows.Media.Brushes]::Cyan)
 SystemWindow-Refresh
 try {
    $WindowsUpdateOutput = WindowsUpdate-Get
    RichTextBox-Write $SystemWindowsControlsRichTextBox1 $WindowsUpdateOutput -Clear
    SystemWindow-Refresh
-   RichTextBox-Write $SystemWindowsControlsRichTextBox0 "> MODULE WindowsUpdate | preScan    | ✔" -RemoveLast -Color ([System.Windows.Media.Brushes]::LightGreen)
+   RichTextBox-Write $SystemWindowsControlsRichTextBox0 "> MODULE WindowsUpdate | preScan        | ✔" -RemoveLast -Color ([System.Windows.Media.Brushes]::LightGreen)
    SystemWindow-Refresh
 }
 catch {
-   RichTextBox-Write $SystemWindowsControlsRichTextBox0 "> MODULE WindowsUpdate | preScan    | ✖" -RemoveLast -Color ([System.Windows.Media.Brushes]::Red)
+   RichTextBox-Write $SystemWindowsControlsRichTextBox0 "> MODULE WindowsUpdate | preScan        | ERROR" -RemoveLast -Color ([System.Windows.Media.Brushes]::Red)
    SystemWindow-Refresh
 }
-RichTextBox-Write $SystemWindowsControlsRichTextBox0 "> MODULE Winget        | preScan    | -" -Color ([System.Windows.Media.Brushes]::Cyan)
+RichTextBox-Write $SystemWindowsControlsRichTextBox0 "> MODULE Winget        | preScan        | -" -Color ([System.Windows.Media.Brushes]::Cyan)
 SystemWindow-Refresh
 try {
    $WingetOutput, $AppList = Winget-Get
    RichTextBox-Write $SystemWindowsControlsRichTextBox2 $WingetOutput -Clear
    SystemWindow-Refresh
-   RichTextBox-Write $SystemWindowsControlsRichTextBox0 "> MODULE Winget        | preScan    | ✔" -RemoveLast -Color ([System.Windows.Media.Brushes]::LightGreen)
+   RichTextBox-Write $SystemWindowsControlsRichTextBox0 "> MODULE Winget        | preScan        | ✔" -RemoveLast -Color ([System.Windows.Media.Brushes]::LightGreen)
    SystemWindow-Refresh
 }
 catch {
-   RichTextBox-Write $SystemWindowsControlsRichTextBox0 "> MODULE Winget        | preScan    | ✖" -RemoveLast -Color ([System.Windows.Media.Brushes]::Red)
+   RichTextBox-Write $SystemWindowsControlsRichTextBox0 "> MODULE Winget        | preScan        | ERROR" -RemoveLast -Color ([System.Windows.Media.Brushes]::Red)
    SystemWindow-Refresh
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
