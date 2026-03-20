@@ -1,15 +1,11 @@
 ﻿if (-not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
-    Start-Process powershell.exe -Verb RunAs -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" 
-    exit
+   Start-Process powershell.exe -Verb RunAs -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`""
+   exit
 }
 if ($PSVersionTable.PSVersion.Major -lt 7) {
-    if (!(Get-Command pwsh -ErrorAction SilentlyContinue)) {
-        winget install --id Microsoft.PowerShell --source winget --silent --accept-package-agreements --accept-source-agreements --scope machine
-    } else {
-        winget upgrade --id Microsoft.PowerShell --source winget --silent --accept-package-agreements --accept-source-agreements --scope machine
-    }
-    Start-Process pwsh -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" 
-    exit
+   winget install --id Microsoft.PowerShell --uninstall-previous --accept-package-agreements --accept-source-agreements --silent
+   Start-Process pwsh -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`""
+   exit
 }
 #======================================#
 # Add Types
@@ -19,7 +15,7 @@ Add-Type -AssemblyName System.Drawing
 Add-Type -AssemblyName PresentationFramework
 Add-Type -AssemblyName PresentationCore
 #======================================#
-# Functions
+# UI Functions
 #======================================#
 function StartUpLogo-Show(){
    $Width = 282
@@ -240,22 +236,83 @@ function SystemWindow-Home(){
    $SystemWindowsControlsCanvas.Children.Add($HomeButton.Button) | Out-Null
    $SystemWindowsControlsCanvas.Children.Add($HomeButton.Icon)   | Out-Null
 
-   $BigButton = @{
+   $InteractField = @{
       Button = New-Object System.Windows.Controls.Image
       Icon   = New-Object System.Windows.Controls.Image
    }
-   $BigButton.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "assets\BigButton.png")))
-   $BigButton.Button.Width = 110
-   $BigButton.Button.Height = 310
-   [System.Windows.Controls.Canvas]::SetLeft($BigButton.Button, 780)
-   [System.Windows.Controls.Canvas]::SetTop($BigButton.Button, 50)
-   $BigButton.Icon.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "assets\AutomationCheckBlack.png")))
-   $BigButton.Icon.Width = 128
-   $BigButton.Icon.Height = 64
-   [System.Windows.Controls.Canvas]::SetLeft($BigButton.Icon, 766)
-   [System.Windows.Controls.Canvas]::SetTop($BigButton.Icon, 70)
-   $SystemWindowsControlsCanvas.Children.Add($BigButton.Button) | Out-Null
-   $SystemWindowsControlsCanvas.Children.Add($BigButton.Icon)   | Out-Null
+   $InteractField.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "assets\InteractField.png")))
+   $InteractField.Button.Width = 110
+   $InteractField.Button.Height = 310
+   [System.Windows.Controls.Canvas]::SetLeft($InteractField.Button, 780)
+   [System.Windows.Controls.Canvas]::SetTop($InteractField.Button, 50)
+   $InteractField.Icon.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "assets\AutomationCheckBlack.png")))
+   $InteractField.Icon.Width = 128
+   $InteractField.Icon.Height = 64
+   [System.Windows.Controls.Canvas]::SetLeft($InteractField.Icon, 766)
+   [System.Windows.Controls.Canvas]::SetTop($InteractField.Icon, 70)
+   $SystemWindowsControlsCanvas.Children.Add($InteractField.Button) | Out-Null
+   $SystemWindowsControlsCanvas.Children.Add($InteractField.Icon)   | Out-Null
+
+   $UpdateNowButton = @{
+      Button = New-Object System.Windows.Controls.Image
+      Icon   = New-Object System.Windows.Controls.Image
+   }
+   $UpdateNowButton.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "assets\UpdateNowButtonText.png")))
+   $UpdateNowButton.Button.Width = 46
+   $UpdateNowButton.Button.Height = 58
+   [System.Windows.Controls.Canvas]::SetLeft($UpdateNowButton.Button, 815)
+   [System.Windows.Controls.Canvas]::SetTop($UpdateNowButton.Button, 283)
+   $UpdateNowButton.Icon.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "assets\UpdateNowButton.png")))
+   $UpdateNowButton.Icon.Width = 38
+   $UpdateNowButton.Icon.Height = 28
+   [System.Windows.Controls.Canvas]::SetLeft($UpdateNowButton.Icon, 820)
+   [System.Windows.Controls.Canvas]::SetTop($UpdateNowButton.Icon, 300)
+   $UpdateNowButton.Button.Tag = $UpdateNowButton
+   $UpdateNowButton.Icon.Tag   = $UpdateNowButton
+   $UpdateNowButton.Icon.Add_MouseEnter({
+      $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "assets\UpdateNowButtonHover.png")))
+      $this.Tag.Button.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "assets\UpdateNowButtonTextHover.png")))
+   })
+   $UpdateNowButton.Icon.Add_MouseLeave({
+      $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "assets\UpdateNowButton.png")))
+      $this.Tag.Button.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "assets\UpdateNowButtonText.png")))
+   })
+   $UpdateNowButton.Icon.Add_MouseLeftButtonDown({
+      $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "assets\UpdateNowButtonPressed.png")))
+      $this.Tag.Button.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "assets\UpdateNowButtonTextHover.png")))
+      $this.CaptureMouse() | Out-Null
+   })
+   $UpdateNowButton.Icon.Add_MouseLeftButtonUp({
+      $this.ReleaseMouseCapture()
+      if ($this.IsMouseOver) {
+         UpdateRun $AppList
+         RichTextBox-Write $SystemWindowsControlsRichTextBox0 "> MODULE Winget        | ReScan         | -" -Color ([System.Windows.Media.Brushes]::Cyan)
+         SystemWindow-Refresh
+         try {
+            $WingetOutput, $AppList = Winget-Get
+            if ($null -eq $AppList -or $AppList.Count -eq 0) {
+               RichTextBox-Write $SystemWindowsControlsRichTextBox2 "No Updates for Apps available" -Clear -Color ([System.Windows.Media.Brushes]::LightGreen)
+               SystemWindow-Refresh
+            } else {
+               RichTextBox-Write $SystemWindowsControlsRichTextBox2 $WingetOutput -Clear
+               SystemWindow-Refresh
+            }
+            RichTextBox-Write $SystemWindowsControlsRichTextBox0 "> MODULE Winget        | ReScan         | ✔" -RemoveLast -Color ([System.Windows.Media.Brushes]::LightGreen)
+            SystemWindow-Refresh
+         }
+         catch {
+            RichTextBox-Write $SystemWindowsControlsRichTextBox0 "> MODULE Winget        | ReScan         | ERROR" -RemoveLast -Color ([System.Windows.Media.Brushes]::Red)
+            SystemWindow-Refresh
+         }
+         $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "assets\UpdateNowButton.png")))
+         $this.Tag.Button.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "assets\UpdateNowButtonText.png")))     
+      } else {
+         $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "assets\UpdateNowButton.png")))
+         $this.Tag.Button.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "assets\UpdateNowButtonText.png")))
+    }
+   })
+   $SystemWindowsControlsCanvas.Children.Add($UpdateNowButton.Button) | Out-Null
+   $SystemWindowsControlsCanvas.Children.Add($UpdateNowButton.Icon)   | Out-Null
 
    $SystemWindowsControlsRichTextBoxImage0 = New-Object System.Windows.Controls.Image
    $SystemWindowsControlsRichTextBoxImage0.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "assets\ConsoleBox.png")))
@@ -352,87 +409,9 @@ function RichTextBox-Write([System.Windows.Controls.RichTextBox]$SystemWindowsCo
     $Paragraph.Margin = [System.Windows.Thickness]::new(0)
     $SystemWindowsControlsRichTextBox.Document.Blocks.Add($Paragraph)
 }
-function Winget-Get() {
-    try {
-        $lines = "Y" | winget list --upgrade-available --include-unknown
-        $lines = $lines -replace 'Verf├╝gbar','verfügbar' -replace 'ÔÇ…','…' -replace '├ñ','ä' -replace '├Ñ','Ä' -replace '├╝','ü' -replace '├┐','Ö' -replace '├╢','ß' -replace 'ÔÇª','…' -replace '├ü','ü' -replace '├Ä','ä' -replace '├Ö','ö' -replace '├Ü','Ü'
-        $AppList = @()
-        $StringBuilder = New-Object System.Text.StringBuilder
-        $OutputStart = $false
-        foreach ($line in $lines) {
-            if (-not $OutputStart -and $line -like 'Name*') { $OutputStart = $true }
-            if ($OutputStart) { $StringBuilder.AppendLine($line) | Out-Null }
-            if ($line -match '^(.+?)\s+([A-Za-z][\w.-]+\.[A-Za-z][\w.-]+)\s+[\d]') {
-                $AppList += @{
-                    name = $matches[1].Trim()
-                    id   = $matches[2].Trim()
-                }
-            }
-        }
-        return $StringBuilder.ToString().Trim(), $AppList
-    } catch {
-        <#Do this if a terminating exception happens#>
-    }
-}
-
-function WindowsUpdate-Get() {
-   try {
-      Import-Module PSWindowsUpdate;
-      $services = @('wuauserv', 'bits', 'cryptsvc')
-      foreach ($serviceName in $services) {
-         $serviceRunning = $false;
-         while ($serviceRunning -eq $false) {
-            $service = Get-Service -Name $serviceName;
-            if ($null -eq $service) {
-                  break;
-            }
-            if ($service.Status -ne 'Running') {
-                  Start-Service $serviceName;
-            } else {
-                  $serviceRunning = $true;
-                  break;
-            }
-         }
-      }
-      $StringBuilder = New-Object System.Text.StringBuilder
-      while ($true) {
-         $verbose = Get-WindowsUpdate -Verbose 4>&1
-         if ($?) {
-            foreach ($line in $verbose) {
-                  $trimmedLine = $line.Message -replace 'Please wait\.\.\.', ''
-                  $StringBuilder.AppendLine($trimmedLine) | Out-Null
-            }
-            break
-         }
-      }
-      return $StringBuilder.ToString()
-   } catch {
-      <#Do this if a terminating exception happens#>
-   }
-}
-function SettingsFileCheck($PSScriptRoot) {
-   $SettingsFilePath = Join-Path $PSScriptRoot "settings"
-   if (Test-Path $SettingsFilePath) {
-      return 1
-   } else {
-      $default = @"
-Network =
-LogEmail =
-"@
-      New-Item -Path $SettingsFilePath -ItemType File -Force | Out-Null
-      Set-Content -Path $SettingsFilePath -Value $default -Encoding utf8BOM
-      return $SettingsFilePath
-   }
-}
-function AutologonExeCheck($PSScriptRoot) {
-   $AutologonExePath = Join-Path $PSScriptRoot "AutoLogon.exe"
-   if (Test-Path $AutologonExePath) {
-      return 1
-   } else {
-      return $AutologonExePath
-   }
-}
-
+#======================================#
+# SYSTEM Functions
+#======================================#
 function CheckForUpdates($MyInvocation) {
    $CurrentVersion = "1.0.0"
    $InstallDir = Split-Path -Parent $MyInvocation.MyCommand.Path
@@ -474,20 +453,181 @@ Start-Process powershell -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File
                exit
             } else {
                Write-Warning "No .zip asset found in latest release."
+               return $CurrentVersion
             }
          } else {
             Write-Host "CoreForge is up to date ($CurrentVersion)" -ForegroundColor Green
+            return $CurrentVersion
          }
    } catch {
       Write-Warning "Update check failed: $_"
+      return $CurrentVersion
    }
 }
+function SettingsFileCheck($PSScriptRoot) {
+   try {
+      $SettingsFilePath = Join-Path $PSScriptRoot "settings"
+      if (Test-Path $SettingsFilePath) {
+         return 1
+      } else {
+         $default = @"
+Network =
+LogEmail =
+"@
+         New-Item -Path $SettingsFilePath -ItemType File -Force | Out-Null
+         Set-Content -Path $SettingsFilePath -Value $default -Encoding utf8BOM
+         return $SettingsFilePath
+      }
+   } catch {
+      <#Do this if a terminating exception happens#>
+   }
+}
+function AutologonExeCheck($PSScriptRoot) {
+   try {
+      $AutologonExePath = Join-Path $PSScriptRoot "AutoLogon.exe"
+      if (Test-Path $AutologonExePath) {
+         return 1
+      } else {
+         return $AutologonExePath
+      }
+   }
+   catch {
+      <#Do this if a terminating exception happens#>
+   }
+}
+function WindowsUpdate-Get() {
+   try {
+      if (-not (Get-Module -ListAvailable -Name PSWindowsUpdate)) {
+         Remove-Module PSWindowsUpdate -Force -ErrorAction SilentlyContinue
+         Install-Module PSWindowsUpdate -Force -Scope AllUsers -ErrorAction SilentlyContinue
+      }
+      Import-Module PSWindowsUpdate;
+      $services = @('wuauserv', 'bits', 'cryptsvc')
+      foreach ($serviceName in $services) {
+         $serviceRunning = $false;
+         while ($serviceRunning -eq $false) {
+            $service = Get-Service -Name $serviceName;
+            if ($null -eq $service) {
+                  break;
+            }
+            if ($service.Status -ne 'Running') {
+                  Start-Service $serviceName;
+            } else {
+                  $serviceRunning = $true;
+                  break;
+            }
+         }
+      }
+      
+      $Updates = Get-WindowsUpdate
+      if ($Updates.Count -eq 0) {
+         return 0
+      } else {
+         $StringBuilder = New-Object System.Text.StringBuilder
+         while ($true) {
+            $verbose = Get-WindowsUpdate -Verbose 4>&1
+            foreach ($line in $verbose) {
+               $trimmedLine = $line.Message -replace 'Please wait\.\.\.', ''
+               $StringBuilder.AppendLine($trimmedLine) | Out-Null
+            }
+            break
+         }
+      }
+         return $StringBuilder.ToString()
+   } catch {
+      <#Do this if a terminating exception happens#>
+   }
+}
+function Winget-Get() {
+   try {
+      $MaxChars = 80
+      $Lines = "Y" | winget list --upgrade-available --include-unknown
+      $Lines = $Lines -replace 'Verf├╝gbar','verfügbar' -replace 'ÔÇ…','…' -replace '├ñ','ä' -replace '├Ñ','Ä' -replace '├╝','ü' -replace '├┐','Ö' -replace '├╢','ß' -replace 'ÔÇª','…' -replace '├ü','ü' -replace '├Ä','ä' -replace '├Ö','ö' -replace '├Ü','Ü'
+      $AppList = @()
+      $StringBuilder = New-Object System.Text.StringBuilder
+      $OutputStart = $false
+      foreach ($Line in $Lines) {
+         if (-not $OutputStart -and $Line -like 'Name*') { $OutputStart = $true }
+         if ($OutputStart) {
+            $TrimmedLine = if ($Line.Length -gt $MaxChars) { $Line.Substring(0, $MaxChars) } else { $Line }
+            $StringBuilder.AppendLine($TrimmedLine) | Out-Null
+         }
+         if ($Line -match '^(.+?)\s+([A-Za-z][\w.-]+\.[A-Za-z][\w.-]+)\s+[\d]') {
+            $AppList += @{
+            name = $matches[1].Trim()
+            id   = $matches[2].Trim()
+            }
+         }
+      }
+      return $StringBuilder.ToString().Trim(), $AppList
+   } catch {
+      <#Do this if a terminating exception happens#>
+   }
+}
+function UpdateRun($AppList) {
+   try {
+      if (-not (Get-Module -ListAvailable -Name PSWindowsUpdate)) {
+         Remove-Module PSWindowsUpdate -Force -ErrorAction SilentlyContinue
+         Install-Module PSWindowsUpdate -Force -Scope AllUsers -ErrorAction SilentlyContinue
+      }
+      Import-Module PSWindowsUpdate;
+      $services = @('wuauserv', 'bits', 'cryptsvc')
+      foreach ($serviceName in $services) {
+         $serviceRunning = $false;
+         while ($serviceRunning -eq $false) {
+            $service = Get-Service -Name $serviceName;
+            if ($null -eq $service) {
+                  break;
+            }
+            if ($service.Status -ne 'Running') {
+                  Start-Service $serviceName;
+            } else {
+                  $serviceRunning = $true;
+                  break;
+            }
+         }
+      }
+      Get-WindowsUpdate -AcceptAll -Install -Verbose -IgnoreReboot 4>&1 | ForEach-Object {
+      $line = if ($_.Message) { 
+         $_.Message 
+      } elseif ($_ -is [System.Management.Automation.VerboseRecord]) {
+         $_.Message
+      } elseif ($_.GetType().Name -eq '__ComObject') {
+         $null
+      } else { 
+         "$_" 
+      }
+      if ($line) {
+         $trimmedLine = $line -replace 'Please wait\.\.\.', ''
+         RichTextBox-Write $SystemWindowsControlsRichTextBox0 "$trimmedLine" -RemoveLast -Color ([System.Windows.Media.Brushes]::Cyan)
+         SystemWindow-Refresh
+      }
+      }
+      foreach ($App in $AppList) {
+         $AppName = $App.name
+         $AppID = $App.id
+         Write-Host $AppList
+         RichTextBox-Write $SystemWindowsControlsRichTextBox0 "> MODULE Winget        | Installation   | $AppName | -" -Color ([System.Windows.Media.Brushes]::Cyan)
+         SystemWindow-Refresh
+         winget install --id $AppID --uninstall-previous --accept-package-agreements --accept-source-agreements | ForEach-Object {
+            RichTextBox-Write $SystemWindowsControlsRichTextBox0 "> $_" -RemoveLast -Color ([System.Windows.Media.Brushes]::Cyan)
+            SystemWindow-Refresh
+         }
+         RichTextBox-Write $SystemWindowsControlsRichTextBox0 "> MODULE Winget        | Installation   | ✔ - $AppName" -RemoveLast -Color ([System.Windows.Media.Brushes]::LightGreen)  
+         SystemWindow-Refresh
+      }  
+   }
+   catch {
+      <#Do this if a terminating exception happens#>
+   }
+}
+
 
 
 #======================================#
 # MAIN
 #======================================#
-CheckForUpdates $MyInvocation
+$CurrentVersion = CheckForUpdates $MyInvocation
 $SystemWindowsWindow = StartUpLogo-Show
 Start-Sleep -Seconds 2
 SystemWindow-Close $SystemWindowsWindow
@@ -495,7 +635,7 @@ SystemWindow-Close $SystemWindowsWindow
 $SystemWindowsWindow, $SystemWindowsControlsRichTextBox0, $SystemWindowsControlsRichTextBox1, $SystemWindowsControlsRichTextBox2 = SystemWindow-Home
 SystemWindow-Show $SystemWindowsWindow
 
-RichTextBox-Write $SystemWindowsControlsRichTextBox0 "> SYSTEM               | StartUp" -Clear -Color ([System.Windows.Media.Brushes]::Cyan)
+RichTextBox-Write $SystemWindowsControlsRichTextBox0 "> SYSTEM $CurrentVersion         | StartUp" -Clear -Color ([System.Windows.Media.Brushes]::Cyan)
 SystemWindow-Refresh
 RichTextBox-Write $SystemWindowsControlsRichTextBox0 ""
 SystemWindow-Refresh
@@ -561,8 +701,13 @@ RichTextBox-Write $SystemWindowsControlsRichTextBox0 "> MODULE WindowsUpdate | p
 SystemWindow-Refresh
 try {
    $WindowsUpdateOutput = WindowsUpdate-Get
-   RichTextBox-Write $SystemWindowsControlsRichTextBox1 $WindowsUpdateOutput -Clear
-   SystemWindow-Refresh
+   if ($WindowsUpdateOutput -eq 0) {
+      RichTextBox-Write $SystemWindowsControlsRichTextBox1 "No Windows Updates available" -Clear -Color ([System.Windows.Media.Brushes]::LightGreen)
+      SystemWindow-Refresh
+   } else {
+      RichTextBox-Write $SystemWindowsControlsRichTextBox1 $WindowsUpdateOutput -Clear
+      SystemWindow-Refresh
+   }
    RichTextBox-Write $SystemWindowsControlsRichTextBox0 "> MODULE WindowsUpdate | preScan        | ✔" -RemoveLast -Color ([System.Windows.Media.Brushes]::LightGreen)
    SystemWindow-Refresh
 }
@@ -574,8 +719,13 @@ RichTextBox-Write $SystemWindowsControlsRichTextBox0 "> MODULE Winget        | p
 SystemWindow-Refresh
 try {
    $WingetOutput, $AppList = Winget-Get
-   RichTextBox-Write $SystemWindowsControlsRichTextBox2 $WingetOutput -Clear
-   SystemWindow-Refresh
+   if ($null -eq $AppList -or $AppList.Count -eq 0) {
+      RichTextBox-Write $SystemWindowsControlsRichTextBox2 "No Updates for Apps available" -Clear -Color ([System.Windows.Media.Brushes]::LightGreen)
+      SystemWindow-Refresh
+   } else {
+      RichTextBox-Write $SystemWindowsControlsRichTextBox2 $WingetOutput -Clear
+      SystemWindow-Refresh
+   }
    RichTextBox-Write $SystemWindowsControlsRichTextBox0 "> MODULE Winget        | preScan        | ✔" -RemoveLast -Color ([System.Windows.Media.Brushes]::LightGreen)
    SystemWindow-Refresh
 }
