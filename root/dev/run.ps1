@@ -1,0 +1,1 @@
+Start-Process PowerShell.exe root\main.ps1
