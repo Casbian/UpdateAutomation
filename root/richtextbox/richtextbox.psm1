@@ -1,1 +1,1 @@
-. "$PSScriptRoot\richtextbox.ps1"
+﻿. "$PSScriptRoot\richtextbox.ps1"

@@ -1,3 +1,3 @@
-function Window(){
+﻿function Window(){
    [System.Windows.Forms.Application]::DoEvents()
 }

@@ -1,4 +1,4 @@
-function ListWindowsUpdate() {
+﻿function ListWindowsUpdate() {
    try {
       if (-not (Get-Module -ListAvailable -Name PSWindowsUpdate)) {
          Remove-Module PSWindowsUpdate -Force -ErrorAction SilentlyContinue
@@ -21,25 +21,21 @@ function ListWindowsUpdate() {
             }
          }
       }
-      
-      $Updates = Get-WindowsUpdate -IgnoreReboot
-      if ($Updates | Where-Object { $_.RebootRequired -eq $true }) {
+      $Output = Get-WindowsUpdate -IgnoreReboot
+      if ($Output | Where-Object { $_.RebootRequired -eq $true }) {
          return 1
       }
-      if ($Updates.Count -eq 0) {
+      if ($Output.Count -eq 0) {
          return 0
       } else {
          $StringBuilder = New-Object System.Text.StringBuilder
-         while ($true) {
-            $verbose = Get-WindowsUpdate -Verbose -IgnoreReboot 4>&1
-            foreach ($line in $verbose) {
-               $trimmedLine = $line.Message -replace 'Please wait\.\.\.', ''
-               $StringBuilder.AppendLine($trimmedLine) | Out-Null
-            }
-            break
+         $Output = Get-WindowsUpdate -Verbose -IgnoreReboot 4>&1
+         foreach ($Line in $Output) {
+            $TrimmedLine = $Line.Message -replace 'Please wait\.\.\.', ''
+            $StringBuilder.AppendLine($TrimmedLine) | Out-Null
          }
       }
-         return $StringBuilder.ToString()
+      return $StringBuilder.ToString()
    } catch {
       <#Do this if a terminating exception happens#>
    }

@@ -1,4 +1,4 @@
-function ListWinget() {
+﻿function ListWinget() {
    try {
       $MaxChars = 80
       $Lines = "Y" | winget list --upgrade-available --include-unknown

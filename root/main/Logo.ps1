@@ -1,23 +1,43 @@
-function Logo(){
-   $Width = 282
-   $Height = 282
-   $Root = New-Object System.Windows.Window
-   $Root.WindowStyle = "None"
-   $Root.AllowsTransparency = $true
-   $Root.Background = "Transparent"
-   $Root.ResizeMode = "NoResize"
-   $Root.Topmost = $true
-   $Root.Width = $Width
-   $Root.Height = $Height
+﻿function Logo(){
+   $SystemWindowsWindow = New-Object System.Windows.Window
+   $SystemWindowsWindow.WindowStyle = "None"
+   $SystemWindowsWindow.AllowsTransparency = $true
+   $SystemWindowsWindow.Background = "Transparent"
+   $SystemWindowsWindow.ResizeMode = "NoResize"
+   $SystemWindowsWindow.Topmost = $true
+   $SystemWindowsWindow.Width = 300
+   $SystemWindowsWindow.Height = 300
    $ScreenParameter = [System.Windows.SystemParameters]
-   $Root.Left = ($ScreenParameter::PrimaryScreenWidth - $Width) / 2
-   $Root.Top = ($ScreenParameter::PrimaryScreenHeight * 0.45) - ($Height / 2)
+   $SystemWindowsWindow.Left = ($ScreenParameter::PrimaryScreenWidth - 300) / 2
+   $SystemWindowsWindow.Top = ($ScreenParameter::PrimaryScreenHeight * 0.45) - (300 / 2)
+
+   $SystemWindowsControlsCanvas = New-Object System.Windows.Controls.Canvas
+   
    $Logo = New-Object System.Windows.Controls.Image
    $Logo.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\LogoBig.png")))
-   $Logo.Width = $Width
-   $Logo.Height = $Height
-   $Root.Content = $Logo
-   $Root.Show()
-   Start-Sleep -Seconds 2
-   $Root.Close()
+   $Logo.Width = 282
+   $Logo.Height = 282
+
+   $LoadingBar = New-Object System.Windows.Controls.Image
+   $LoadingBar.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\LoadingBar1.png")))
+   $LoadingBar.Width = 292
+   $LoadingBar.Height = 30
+   $LoadingBarFrames = @("LoadingBar2","LoadingBar3","LoadingBar4","LoadingBar5","LoadingBar6","LoadingBar7","LoadingBar8","LoadingBar9")
+
+   [System.Windows.Controls.Canvas]::SetTop($LoadingBar, 270)
+
+   $SystemWindowsControlsCanvas.Children.Add($Logo) | Out-Null
+   $SystemWindowsControlsCanvas.Children.Add($LoadingBar) | Out-Null
+   $SystemWindowsWindow.Content = $SystemWindowsControlsCanvas
+
+   $SystemWindowsWindow.Show()
+   return $SystemWindowsWindow, $LoadingBar, $LoadingBarFrames
+}
+function LogoContinueOneFrame($SystemWindowsWindow, $LoadingBar, $LoadingBarFrames, $Counter) {
+   $LoadingBar.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\$($LoadingBarFrames[$Counter]).png")))
+   Window
+   if ($Counter -eq 7) {
+      $Counter = 0
+      $SystemWindowsWindow.Close()
+   }
 }

@@ -1,4 +1,4 @@
-function ListWingetApps {
+﻿function ListWingetApps {
    try {
       $MaxChars = 80
       $Lines = "Y" | winget list --upgrade-available --include-unknown

@@ -1,4 +1,4 @@
-function FileCheckAutologon($PSScriptRoot) {
+﻿function FileCheckAutologon($PSScriptRoot) {
    try {
       $AutologonExePath = Join-Path $PSScriptRoot "file\files\AutoLogon.exe"
       if (Test-Path $AutologonExePath) {

@@ -1,2 +1,2 @@
-. "$PSScriptRoot\threadpool.ps1"
+﻿. "$PSScriptRoot\threadpool.ps1"
 . "$PSScriptRoot\thread.ps1"

@@ -1,1 +1,1 @@
-. "$PSScriptRoot\update.ps1"
+﻿. "$PSScriptRoot\update.ps1"

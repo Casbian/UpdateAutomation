@@ -1,4 +1,4 @@
-function RichTextBox([System.Windows.Controls.RichTextBox]$SystemWindowsControlsRichTextBox, [string]$Text, [switch]$Clear, [switch]$RemoveLast, [System.Windows.Media.Brush]$Color = [System.Windows.Media.Brushes]::White) {
+﻿function RichTextBox([System.Windows.Controls.RichTextBox]$SystemWindowsControlsRichTextBox, [string]$Text, [switch]$Clear, [switch]$RemoveLast, [System.Windows.Media.Brush]$Color = [System.Windows.Media.Brushes]::White) {
     if ($Clear) { $SystemWindowsControlsRichTextBox.Document.Blocks.Clear() }
     if ($RemoveLast -and $SystemWindowsControlsRichTextBox.Document.Blocks.Count -gt 0) {
         $SystemWindowsControlsRichTextBox.Document.Blocks.Remove($SystemWindowsControlsRichTextBox.Document.Blocks.LastBlock)

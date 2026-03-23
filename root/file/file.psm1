@@ -1,1 +1,1 @@
-. "$PSScriptRoot\file.ps1"
+﻿. "$PSScriptRoot\file.ps1"
