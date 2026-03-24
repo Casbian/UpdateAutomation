@@ -1,5 +1,5 @@
 ﻿function Update($MyInvocation) {
-   $CurrentVersion = "1.0.0"
+   $CurrentVersion = "1.0.1"
    $InstallDir = Split-Path -Parent $MyInvocation.MyCommand.Path
    $ScriptPath = $MyInvocation.MyCommand.Path
    try {
