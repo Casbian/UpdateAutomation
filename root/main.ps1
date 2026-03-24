@@ -3,13 +3,13 @@
 #======================================#
 if (-not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
    try {
-      Start-Process pwsh -Verb RunAs -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`""
+      Start-Process pwsh -Verb RunAs -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" -WindowStyle Hidden
       exit
    } catch {
       if ($_.Exception.Message -match 'cancel') {
             exit
       }
-      Start-Process powershell.exe -Verb RunAs -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`""
+      Start-Process powershell.exe -Verb RunAs -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" -WindowStyle Hidden
       exit
    }
    exit
@@ -180,7 +180,6 @@ if ($RebootFlag -eq $true) {
 }
 
 HomeUpdateButton $SystemWindowsControlsCanvas $AppList
-
 
 $SystemWindowsWindow.Hide()
 $SystemWindowsWindow.ShowDialog()
