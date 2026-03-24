@@ -1,4 +1,4 @@
-function UpdateRunWindowsUpdate($AppList) {
+﻿function UpdateRunWindowsUpdate() {
     try {
         if (-not (Get-Module -ListAvailable -Name PSWindowsUpdate)) {
             Remove-Module PSWindowsUpdate -Force -ErrorAction SilentlyContinue
@@ -29,27 +29,27 @@ function UpdateRunWindowsUpdate($AppList) {
         }
         return $StringBuilder.ToString().Trim()
     } catch {
-        #<DO Nothing>#
+        <#SOON#>
     }
 }
 function UpdateRunWinget($AppList) {
     try {
-        RichTextBox $SystemWindowsControlsRichTextBox0 ""
-        Window
+        $StringBuilder = New-Object System.Text.StringBuilder
         foreach ($App in $AppList) {
-            $AppName = $App.name
             $AppID = $App.id
-            RichTextBox-Write $SystemWindowsControlsRichTextBox0 "> MODULE Winget        | Installation   | $AppName | -" -Color ([System.Windows.Media.Brushes]::Cyan)
-            SystemWindow-Refresh
-            winget install --id $AppID --uninstall-previous --accept-package-agreements --accept-source-agreements --force | ForEach-Object {
-                RichTextBox-Write $SystemWindowsControlsRichTextBox0 "> $_" -RemoveLast -Color ([System.Windows.Media.Brushes]::Cyan)
-                SystemWindow-Refresh
+            $Output = winget install --id $AppID --uninstall-previous --accept-package-agreements --accept-source-agreements --force 2>&1
+            foreach ($Line in $Output) {
+                $LineString = $Line.ToString().Trim()
+                if ($LineString -match '^[-\\|/]$') { continue }
+                if ($LineString -match 'ÔûÆ|Ôûê|Ôûæ|^\s*[\d.]+ [KMGT]?B') { continue }
+                $LineString = $LineString -replace 'Verf├╝gbar','verfügbar' -replace 'ÔÇ…','…' -replace '├ñ','ä' -replace '├Ñ','Ä' -replace '├╝','ü' -replace '├┐','Ö' -replace '├╢','ß' -replace 'ÔÇª','…' -replace '├ü','ü' -replace '├Ä','ä' -replace '├Ö','ö' -replace '├Ü','Ü'
+                if ($LineString -ne '') {
+                    $StringBuilder.AppendLine($LineString) | Out-Null
+                }
             }
-            RichTextBox-Write $SystemWindowsControlsRichTextBox0 "> MODULE Winget        | Installation   | ✔ - $AppName" -Color ([System.Windows.Media.Brushes]::Cyan)  
-            SystemWindow-Refresh
         }
-    }
-    catch {
-        ##
+        return $StringBuilder.ToString().Trim()
+    } catch {
+        <#SOON#>
     }
 }

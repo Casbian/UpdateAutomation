@@ -5,18 +5,18 @@
          Install-Module PSWindowsUpdate -Force -Scope AllUsers -ErrorAction SilentlyContinue
       }
       Import-Module PSWindowsUpdate;
-      $services = @('wuauserv', 'bits', 'cryptsvc')
-      foreach ($serviceName in $services) {
-         $serviceRunning = $false;
-         while ($serviceRunning -eq $false) {
-            $service = Get-Service -Name $serviceName;
-            if ($null -eq $service) {
+      $Services = @('wuauserv', 'bits', 'cryptsvc')
+      foreach ($ServiceName in $Services) {
+         $ServiceRunning = $false;
+         while ($ServiceRunning -eq $false) {
+            $Service = Get-Service -Name $ServiceName;
+            if ($null -eq $Service) {
                   break;
             }
-            if ($service.Status -ne 'Running') {
-                  Start-Service $serviceName;
+            if ($Service.Status -ne 'Running') {
+                  Start-Service $ServiceName;
             } else {
-                  $serviceRunning = $true;
+                  $ServiceRunning = $true;
                   break;
             }
          }
@@ -37,6 +37,6 @@
       }
       return $StringBuilder.ToString()
    } catch {
-      <#Do this if a terminating exception happens#>
+      <#SOON#>
    }
 }

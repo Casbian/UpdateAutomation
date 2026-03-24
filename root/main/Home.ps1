@@ -12,12 +12,10 @@
    $SystemWindowsWindow.Top = ($ScreenParameter::PrimaryScreenHeight * 0.45) - (500 / 2)
    $SystemWindowsWindow.Icon = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\Icon.ico")))
 
-
    $Background = New-Object System.Windows.Controls.Image
    $Background.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\Background.png")))
    $Background.Width = 900
    $Background.Height = 500
-   
 
    $DragBarImage = New-Object System.Windows.Controls.Image
    $DragBarImage.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\DragBar.png")))
@@ -27,12 +25,10 @@
       [System.Windows.Window]::GetWindow($args[0]).DragMove()
    })
 
-
    $Logo = New-Object System.Windows.Controls.Image
    $Logo.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\LogoSmallWhite.png")))
    $Logo.Width = 44
    $Logo.Height = 44
-
 
    $SystemWindowsControlsRichTextBoxImage0 = New-Object System.Windows.Controls.Image
    $SystemWindowsControlsRichTextBoxImage0.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\ConsoleBox.png")))
@@ -43,13 +39,12 @@
    $SystemWindowsControlsRichTextBox0.FontFamily = New-Object System.Windows.Media.FontFamily("Consolas")
    $SystemWindowsControlsRichTextBox0.FontSize = 10
    $SystemWindowsControlsRichTextBox0.Width = 760
-   $SystemWindowsControlsRichTextBox0.Height = 310
+   $SystemWindowsControlsRichTextBox0.Height = 290
    $SystemWindowsControlsRichTextBox0.BorderThickness = 0
    $SystemWindowsControlsRichTextBox0.Document.PagePadding = [System.Windows.Thickness]::new(0)
    $SystemWindowsControlsRichTextBox0.Background = [System.Windows.Media.Brushes]::Transparent
    $SystemWindowsControlsRichTextBox0.Foreground = [System.Windows.Media.Brushes]::White
   
-
    $SystemWindowsControlsRichTextBoxImage1 = New-Object System.Windows.Controls.Image
    $SystemWindowsControlsRichTextBoxImage1.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\WindowsUpdateBox.png")))
    $SystemWindowsControlsRichTextBoxImage1.Width = 410
@@ -59,12 +54,11 @@
    $SystemWindowsControlsRichTextBox1.FontFamily = New-Object System.Windows.Media.FontFamily("Consolas")
    $SystemWindowsControlsRichTextBox1.FontSize = 10
    $SystemWindowsControlsRichTextBox1.Width = 410
-   $SystemWindowsControlsRichTextBox1.Height = 120
+   $SystemWindowsControlsRichTextBox1.Height = 100
    $SystemWindowsControlsRichTextBox1.BorderThickness = 0
    $SystemWindowsControlsRichTextBox1.Document.PagePadding = [System.Windows.Thickness]::new(0)
    $SystemWindowsControlsRichTextBox1.Background = [System.Windows.Media.Brushes]::Transparent
    $SystemWindowsControlsRichTextBox1.Foreground = [System.Windows.Media.Brushes]::White
-
 
    $SystemWindowsControlsRichTextBoxImage2 = New-Object System.Windows.Controls.Image
    $SystemWindowsControlsRichTextBoxImage2.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\AppUpdateBox.png")))
@@ -75,12 +69,11 @@
    $SystemWindowsControlsRichTextBox2.FontFamily = New-Object System.Windows.Media.FontFamily("Consolas")
    $SystemWindowsControlsRichTextBox2.FontSize = 10
    $SystemWindowsControlsRichTextBox2.Width = 460
-   $SystemWindowsControlsRichTextBox2.Height = 120
+   $SystemWindowsControlsRichTextBox2.Height = 100
    $SystemWindowsControlsRichTextBox2.BorderThickness = 0
    $SystemWindowsControlsRichTextBox2.Document.PagePadding = [System.Windows.Thickness]::new(0)
    $SystemWindowsControlsRichTextBox2.Background = [System.Windows.Media.Brushes]::Transparent
    $SystemWindowsControlsRichTextBox2.Foreground = [System.Windows.Media.Brushes]::White
-
 
    $HomeButton = @{
       Button = New-Object System.Windows.Controls.Image
@@ -136,7 +129,6 @@
     }
    })
 
-
    $SignCheckAutomation = @{
       Box = New-Object System.Windows.Controls.Image
       Text   = New-Object System.Windows.Controls.Image
@@ -147,7 +139,6 @@
    $SignCheckAutomation.Text.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\SignCheckAutomationText.png")))
    $SignCheckAutomation.Text.Width = 94
    $SignCheckAutomation.Text.Height = 18
-
 
    $SettingsButton = @{
       Button = New-Object System.Windows.Controls.Image
@@ -177,7 +168,6 @@
       $this.Tag.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\Bar.png")))
       $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\Settings.png")))
    })
-
 
    $CloseButton = @{
       Button = New-Object System.Windows.Controls.Image
@@ -232,7 +222,6 @@
     }
    })
    
-
    [System.Windows.Controls.Canvas]::SetLeft($Background, 0)
    [System.Windows.Controls.Canvas]::SetTop($Background, 0)
    [System.Windows.Controls.Canvas]::SetLeft($DragBarImage, 0)
@@ -268,7 +257,6 @@
    [System.Windows.Controls.Canvas]::SetLeft($CloseButton.Icon, 864)
    [System.Windows.Controls.Canvas]::SetTop($CloseButton.Icon, 14)
 
-   
    $SystemWindowsControlsCanvas = New-Object System.Windows.Controls.Canvas
    $SystemWindowsControlsCanvas.Children.Add($Background) | Out-Null
    $SystemWindowsControlsCanvas.Children.Add($DragBarImage) | Out-Null
@@ -289,11 +277,10 @@
    $SystemWindowsControlsCanvas.Children.Add($CloseButton.Icon) | Out-Null
    $SystemWindowsWindow.Content = $SystemWindowsControlsCanvas
 
-
    $SystemWindowsWindow.Show()
    return $SystemWindowsWindow, $SystemWindowsControlsCanvas, $SystemWindowsControlsRichTextBox0, $SystemWindowsControlsRichTextBox1, $SystemWindowsControlsRichTextBox2
 }
-function HomeUpdateButton($SystemWindowsWindow, $SystemWindowsControlsCanvas) {
+function HomeUpdateButton($SystemWindowsControlsCanvas, $AppList) {
    $UpdateNowButton = @{
       Button = New-Object System.Windows.Controls.Image
       Icon = New-Object System.Windows.Controls.Image
@@ -396,7 +383,6 @@ function HomeUpdateButton($SystemWindowsWindow, $SystemWindowsControlsCanvas) {
     }
    })
 
-
    [System.Windows.Controls.Canvas]::SetLeft($UpdateNowButton.Button, 780)
    [System.Windows.Controls.Canvas]::SetTop($UpdateNowButton.Button, 90)
    [System.Windows.Controls.Canvas]::SetLeft($UpdateNowButton.Icon, 790)
@@ -404,11 +390,9 @@ function HomeUpdateButton($SystemWindowsWindow, $SystemWindowsControlsCanvas) {
    [System.Windows.Controls.Canvas]::SetLeft($UpdateNowButton.Text, 820)
    [System.Windows.Controls.Canvas]::SetTop($UpdateNowButton.Text, 96)
 
-
    $SystemWindowsControlsCanvas.Children.Add($UpdateNowButton.Button) | Out-Null
    $SystemWindowsControlsCanvas.Children.Add($UpdateNowButton.Icon) | Out-Null
    $SystemWindowsControlsCanvas.Children.Add($UpdateNowButton.Text) | Out-Null
-   $SystemWindowsWindow.Content = $SystemWindowsControlsCanvas
 }
 function StartUpdateRun($AppList) {
    RichTextBox $SystemWindowsControlsRichTextBox0 ""  | Out-Null
@@ -419,32 +403,41 @@ function StartUpdateRun($AppList) {
    RichTextBox $SystemWindowsControlsRichTextBox0 ""  | Out-Null
    Window  | Out-Null
 
+   $Result = Thread {
+      param($Function, $Parameter)
+      $FunctionBlock = [scriptblock]::Create($Function)
+      & $FunctionBlock $Parameter
+   } -ThreadPool $ThreadPool -Function ${function:UpdateRunWindowsUpdate} -TaskName "Windows Updates"
+   
+   RichTextBox $SystemWindowsControlsRichTextBox0 "> SYSTEM               | Windows Update | ✓" -RemoveLast -Color ([System.Windows.Media.Brushes]::LightGreen) | Out-Null
+   Window | Out-Null
+   $Lines = $Result -split "`r?`n"
+   foreach ($Line in $Lines) {
+      if (-not [string]::IsNullOrWhiteSpace($Line)) {
+         RichTextBox $SystemWindowsControlsRichTextBox0 "> $($Line.Trim())" -Color ([System.Windows.Media.Brushes]::Cyan) | Out-Null
+         Window | Out-Null
+      }
+   }
+
+   RichTextBox $SystemWindowsControlsRichTextBox0 ""  | Out-Null
+   Window | Out-Null
 
    $Result = Thread {
       param($Function, $Parameter)
       $FunctionBlock = [scriptblock]::Create($Function)
       & $FunctionBlock $Parameter
-   } -ThreadPool $ThreadPool -Function ${function:UpdateRunWindowsUpdate} -Parameter $AppList -TaskName "UpdateRun"
-   RichTextBox $SystemWindowsControlsRichTextBox0 "> SYSTEM               | Windows Update | ✓" -RemoveLast -Color ([System.Windows.Media.Brushes]::LightGreen) | Out-Null
-   Window | Out-Null
+   } -ThreadPool $ThreadPool -Function ${function:UpdateRunWinget} -Parameter $AppList -TaskName "App Updates"
 
+   RichTextBox $SystemWindowsControlsRichTextBox0 "> SYSTEM               | App Update     | ✓" -RemoveLast -Color ([System.Windows.Media.Brushes]::LightGreen) | Out-Null
+   Window | Out-Null
    $Lines = $Result -split "`r?`n"
    foreach ($Line in $Lines) {
-      RichTextBox $SystemWindowsControlsRichTextBox0 "> $Line" -Color ([System.Windows.Media.Brushes]::Cyan) | Out-Null
-      Window | Out-Null
+      if (-not [string]::IsNullOrWhiteSpace($Line)) {
+         RichTextBox $SystemWindowsControlsRichTextBox0 "> $($Line.Trim())" -Color ([System.Windows.Media.Brushes]::Cyan) | Out-Null
+         Window | Out-Null
+      }
    }
 
-
-   Pause
-
-
-
-
-
-
-
-   
-   
    RichTextBox $SystemWindowsControlsRichTextBox0 "" | Out-Null
    Window | Out-Null
    try {
@@ -466,12 +459,10 @@ function StartUpdateRun($AppList) {
       }
       RichTextBox $SystemWindowsControlsRichTextBox0 "> MODULE WindowsUpdate | ReScan         | ✓" -RemoveLast -Color ([System.Windows.Media.Brushes]::LightGreen) | Out-Null
       Window | Out-Null
-   }
-   catch {
+   } catch {
       RichTextBox $SystemWindowsControlsRichTextBox0 "> MODULE WindowsUpdate | ReScan         | ERROR" -RemoveLast -Color ([System.Windows.Media.Brushes]::Red) | Out-Null
       Window | Out-Null
    }
-
 
    RichTextBox $SystemWindowsControlsRichTextBox0 "" | Out-Null
    Window | Out-Null
@@ -495,8 +486,7 @@ function StartUpdateRun($AppList) {
       }
       RichTextBox $SystemWindowsControlsRichTextBox0 "> MODULE Winget        | ReScan         | ✓" -RemoveLast -Color ([System.Windows.Media.Brushes]::LightGreen) | Out-Null
       Window | Out-Null
-   }
-   catch {
+   } catch {
       RichTextBox $SystemWindowsControlsRichTextBox0 "> MODULE Winget        | ReScan         | ERROR" -RemoveLast -Color ([System.Windows.Media.Brushes]::Red) | Out-Null
       Window | Out-Null
    }

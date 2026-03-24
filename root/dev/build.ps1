@@ -3,5 +3,5 @@
        -description "Update Automation Suite" `
        -copyright "© 2026 Kai Erich-Reineke" `
        -version "1.0.0" `
-       -icon "$PSScriptRoot\..\..\assets\LogoBig.ico" `
+       -icon "$PSScriptRoot\..\assets\LogoBig.ico" `
        -noConsole

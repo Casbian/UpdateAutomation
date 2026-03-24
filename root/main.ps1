@@ -5,8 +5,7 @@ if (-not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdent
    try {
       Start-Process pwsh -Verb RunAs -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`""
       exit
-   }
-   catch {
+   } catch {
       if ($_.Exception.Message -match 'cancel') {
             exit
       }
@@ -42,11 +41,9 @@ Add-Type -AssemblyName PresentationCore
 #======================================#
 # MAIN
 #======================================#
-
 $CurrentVersion = Update $MyInvocation
 
 $SystemWindowsWindow, $LoadingBar, $LoadingBarFrames = Logo
-
 LogoContinueOneFrame $SystemWindowsWindow $LoadingBar $LoadingBarFrames 0
 LogoContinueOneFrame $SystemWindowsWindow $LoadingBar $LoadingBarFrames 1
 LogoContinueOneFrame $SystemWindowsWindow $LoadingBar $LoadingBarFrames 2
@@ -56,13 +53,9 @@ LogoContinueOneFrame $SystemWindowsWindow $LoadingBar $LoadingBarFrames 5
 LogoContinueOneFrame $SystemWindowsWindow $LoadingBar $LoadingBarFrames 6
 LogoContinueOneFrame $SystemWindowsWindow $LoadingBar $LoadingBarFrames 7
 
-
-
 $ThreadPool = ThreadPool
 
 $SystemWindowsWindow, $SystemWindowsControlsCanvas, $SystemWindowsControlsRichTextBox0, $SystemWindowsControlsRichTextBox1, $SystemWindowsControlsRichTextBox2 = Home
-
-
 
 RichTextBox $SystemWindowsControlsRichTextBox0 "> SYSTEM $CurrentVersion         | StartUp" -Clear -Color ([System.Windows.Media.Brushes]::Cyan) | Out-Null
 RichTextBox $SystemWindowsControlsRichTextBox0 "" | Out-Null
@@ -71,7 +64,6 @@ RichTextBox $SystemWindowsControlsRichTextBox0 "________________________________
 RichTextBox $SystemWindowsControlsRichTextBox0 "" | Out-Null
 RichTextBox $SystemWindowsControlsRichTextBox0 "" | Out-Null
 Window | Out-Null
-
 
 try {
    $Result = Thread {
@@ -89,12 +81,10 @@ try {
       RichTextBox $SystemWindowsControlsRichTextBox0 "" | Out-Null
       Window | Out-Null
    } 
-}
-catch {
+} catch {
    RichTextBox $SystemWindowsControlsRichTextBox0 "> SYSTEM               | SettingsFile   | ERROR" -RemoveLast -Color ([System.Windows.Media.Brushes]::Red) | Out-Null
    Window | Out-Null
 }
-
 
 RichTextBox $SystemWindowsControlsRichTextBox0 "" | Out-Null
 Window | Out-Null
@@ -116,13 +106,11 @@ try {
       RichTextBox $SystemWindowsControlsRichTextBox0 "" | Out-Null
       Window | Out-Null
    }
-}
-catch {
+} catch {
    RichTextBox $SystemWindowsControlsRichTextBox0 "> SYSTEM               | AutologonExe   | ERROR" -RemoveLast -Color ([System.Windows.Media.Brushes]::Red) | Out-Null
    Window | Out-Null
 }
-   
-
+  
 RichTextBox $SystemWindowsControlsRichTextBox0 "" | Out-Null
 Window | Out-Null
 try {
@@ -150,7 +138,6 @@ catch {
    Window | Out-Null
 }
 
-
 RichTextBox $SystemWindowsControlsRichTextBox0 "" | Out-Null
 Window | Out-Null
 try {
@@ -164,7 +151,8 @@ try {
       $FunctionBlock = [scriptblock]::Create($Function)
       & $FunctionBlock $Parameter
    } -ThreadPool $ThreadPool -Function ${function:ListWingetApps} -TaskName "PreScan"
-   if ($null -eq $Result2 -or $Result2.Count -eq 0) {
+   $AppList = $Result2
+   if ($null -eq $AppList -or $AppList.Count -eq 0) {
       RichTextBox $SystemWindowsControlsRichTextBox2 "No Updates for Apps available" -Clear -Color ([System.Windows.Media.Brushes]::LightGreen) | Out-Null
       Window | Out-Null
    } else {
@@ -191,9 +179,7 @@ if ($RebootFlag -eq $true) {
    }
 }
 
-
-
-HomeUpdateButton $SystemWindowsWindow $SystemWindowsControlsCanvas
+HomeUpdateButton $SystemWindowsControlsCanvas $AppList
 
 
 $SystemWindowsWindow.Hide()
