@@ -30,7 +30,7 @@ Start-Process powershell -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File
 "@
                $UpdateScriptPath = "$env:TEMP\CoreForge_apply_update.ps1"
                $UpdateScript | Out-File -FilePath $UpdateScriptPath -Encoding utf8BOM
-               Start-Process powershell.exe -Verb RunAs -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$UpdateScriptPath`"" 
+               Start-Process powershell.exe -Verb RunAs -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$UpdateScriptPath`"" -WindowStyle Hidden
                exit
             } else {
                return $CurrentVersion
