@@ -1,11 +1,11 @@
 ﻿function Update($MyInvocation) {
-   $CurrentVersion = "1.0.1"
-   $InstallDir = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Path)
-   $ScriptPath = $MyInvocation.MyCommand.Path
    try {
+      $LocalVersion = "1.0.1"
+      $InstallDir = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Path)
+      $ScriptPath = $MyInvocation.MyCommand.Path
       $Release = Invoke-RestMethod "https://api.github.com/repos/Casbian/CoreForge/releases/latest"
-      $LatestVersion = $Release.tag_name.TrimStart("v")
-      if ([version]$LatestVersion -gt [version]$CurrentVersion) {
+      $OnlineVersion = $Release.tag_name.TrimStart("v")
+      if ([version]$OnlineVersion -gt [version]$LocalVersion) {
          $ZipUrl = $Release.zipball_url
             if ($ZipUrl) {
                $TempZip = "$env:TEMP\CoreForge_update.zip"
@@ -26,20 +26,20 @@ if (`$Source) {
 }
 Remove-Item "$TempZip" -Force -ErrorAction SilentlyContinue
 Remove-Item "$TempExtract" -Recurse -Force -ErrorAction SilentlyContinue
-Start-Process powershell -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$ScriptPath`""
+Start-Process powershell -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$ScriptPath`"" -WindowStyle Hidden
 "@
                $UpdateScriptPath = "$env:TEMP\CoreForge_apply_update.ps1"
                $UpdateScript | Out-File -FilePath $UpdateScriptPath -Encoding utf8BOM
                Start-Process powershell.exe -Verb RunAs -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$UpdateScriptPath`"" -WindowStyle Hidden
                exit
             } else {
-               return $CurrentVersion
+               return $LocalVersion
             }
          } else {
-            return $CurrentVersion
+            return $LocalVersion
          }
    } catch {
       Write-Error "Update check failed: $_"
-      return $CurrentVersion
+      return $LocalVersion
    }
 }
