@@ -79,55 +79,14 @@
       Button = New-Object System.Windows.Controls.Image
       Icon   = New-Object System.Windows.Controls.Image
    }
-   $HomeButton.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\BarActive.png")))
+   $HomeButton.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\BarActiveHover.png")))
    $HomeButton.Button.Width = 30
    $HomeButton.Button.Height = 30
-   $HomeButton.Icon.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\HomeActive.png")))
+   $HomeButton.Icon.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\HomePressed.png")))
    $HomeButton.Icon.Width = 14
    $HomeButton.Icon.Height = 14
    $HomeButton.Button.Tag = $HomeButton
    $HomeButton.Icon.Tag   = $HomeButton
-   $HomeButton.Button.Add_MouseEnter({
-      $this.Tag.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\BarActiveHover.png")))
-      $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\HomeHover.png")))
-   })
-   $HomeButton.Button.Add_MouseLeave({
-      $this.Tag.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\BarActive.png")))
-      $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\HomeActive.png")))
-   })
-   $HomeButton.Icon.Add_MouseEnter({
-      $this.Tag.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\BarActiveHover.png")))
-      $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\HomeHover.png")))
-   })
-   $HomeButton.Icon.Add_MouseLeave({
-      $this.Tag.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\BarActive.png")))
-      $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\HomeActive.png")))
-   })
-   $HomeButton.Button.Add_MouseLeftButtonDown({
-      $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\HomePressed.png")))
-      $this.CaptureMouse() | Out-Null
-   })
-   $HomeButton.Button.Add_MouseLeftButtonUp({
-      $this.ReleaseMouseCapture()
-      if ($this.IsMouseOver) {
-         $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\HomeActive.png")))
-      } else {
-         $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\HomeActive.png")))
-    }
-   })
-   $HomeButton.Icon.Add_MouseLeftButtonDown({
-      $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\HomePressed.png")))
-      $this.CaptureMouse() | Out-Null
-   })
-   $HomeButton.Icon.Add_MouseLeftButtonUp({
-      $this.ReleaseMouseCapture()
-      if ($this.IsMouseOver) {
-         $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\HomeActive.png")))
-         $this.Tag.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\BarActive.png")))
-      } else {
-         $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\HomeActive.png")))
-    }
-   })
 
    $SignCheckAutomation = @{
       Box = New-Object System.Windows.Controls.Image
