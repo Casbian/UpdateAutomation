@@ -1,11 +1,11 @@
-﻿function Home(){
+﻿function System(){
    $SystemWindowsWindow = New-Object System.Windows.Window
    $SystemWindowsWindow.WindowStyle = "None"
    $SystemWindowsWindow.AllowsTransparency = $true
    $SystemWindowsWindow.Background = "Transparent"
    $SystemWindowsWindow.ResizeMode = "NoResize"
    $SystemWindowsWindow.Topmost = $false
-   $SystemWindowsWindow.Width = 900
+   $SystemWindowsWindow.Width = 1350
    $SystemWindowsWindow.Height = 500
    $ScreenParameter = [System.Windows.SystemParameters]
    $SystemWindowsWindow.Left = ($ScreenParameter::PrimaryScreenWidth - 900) / 2
@@ -102,6 +102,7 @@
    $SettingsButton = @{
       Button = New-Object System.Windows.Controls.Image
       Icon   = New-Object System.Windows.Controls.Image
+      Active  = $false
    }
    $SettingsButton.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\Bar.png")))
    $SettingsButton.Button.Width = 30
@@ -112,20 +113,62 @@
    $SettingsButton.Button.Tag = $SettingsButton
    $SettingsButton.Icon.Tag   = $SettingsButton
    $SettingsButton.Button.Add_MouseEnter({
-      $this.Tag.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\BarHover.png")))
-      $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\SettingsHover.png")))
+      if (-not $this.Tag.Active) {
+         $this.Tag.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\BarHover.png")))
+         $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\SettingsHover.png")))
+      }
    })
    $SettingsButton.Button.Add_MouseLeave({
-      $this.Tag.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\Bar.png")))
-      $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\Settings.png")))
+      if (-not $this.Tag.Active) {
+         $this.Tag.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\Bar.png")))
+         $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\Settings.png")))
+      }
    })
    $SettingsButton.Icon.Add_MouseEnter({
-      $this.Tag.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\BarHover.png")))
-      $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\SettingsHover.png")))
+      if (-not $this.Tag.Active) {
+         $this.Tag.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\BarHover.png")))
+         $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\SettingsHover.png")))
+      }
    })
    $SettingsButton.Icon.Add_MouseLeave({
-      $this.Tag.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\Bar.png")))
-      $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\Settings.png")))
+      if (-not $this.Tag.Active) {
+         $this.Tag.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\Bar.png")))
+         $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\Settings.png")))
+      }
+   })
+   $SettingsButton.Button.Add_MouseLeftButtonDown({
+      $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\SettingsPressed.png")))
+      $this.CaptureMouse() | Out-Null
+   })
+   $SettingsButton.Button.Add_MouseLeftButtonUp({
+      $this.ReleaseMouseCapture()
+      if ($this.IsMouseOver) {
+         $this.Tag.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\BarActiveHover.png")))
+         $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\SettingsPressed.png")))
+         if (-not $this.Tag.Active) {
+            SystemSettings $SystemWindowsControlsCanvas $this.Tag
+         }
+         $this.Tag.Active = $true
+      } else {
+         $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\Settings.png")))
+    }
+   })
+   $SettingsButton.Icon.Add_MouseLeftButtonDown({
+      $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\SettingsPressed.png")))
+      $this.CaptureMouse() | Out-Null
+   })
+   $SettingsButton.Icon.Add_MouseLeftButtonUp({
+      $this.ReleaseMouseCapture()
+      if ($this.IsMouseOver) {
+         $this.Tag.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\BarActiveHover.png")))
+         $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\SettingsPressed.png")))
+         if (-not $this.Tag.Active) {
+            SystemSettings $SystemWindowsControlsCanvas $this.Tag
+         }
+         $this.Tag.Active = $true
+      } else {
+         $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\Settings.png")))
+    }
    })
 
    $CloseButton = @{
@@ -163,7 +206,8 @@
    $CloseButton.Button.Add_MouseLeftButtonUp({
       $this.ReleaseMouseCapture()
       if ($this.IsMouseOver) {
-         [System.Windows.Window]::GetWindow($this).Close()
+         $SystemWindowsWindow.Close()
+         exit
       } else {
          $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\Close.png")))
     }
@@ -175,7 +219,8 @@
    $CloseButton.Icon.Add_MouseLeftButtonUp({
       $this.ReleaseMouseCapture()
       if ($this.IsMouseOver) {
-         [System.Windows.Window]::GetWindow($this).Close()
+         $SystemWindowsWindow.Close()
+         exit
       } else {
          $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\Close.png")))
     }
@@ -216,7 +261,10 @@
    [System.Windows.Controls.Canvas]::SetLeft($CloseButton.Icon, 864)
    [System.Windows.Controls.Canvas]::SetTop($CloseButton.Icon, 14)
 
+   
+
    $SystemWindowsControlsCanvas = New-Object System.Windows.Controls.Canvas
+   $SystemWindowsWindow.Content = $SystemWindowsControlsCanvas
    $SystemWindowsControlsCanvas.Children.Add($Background) | Out-Null
    $SystemWindowsControlsCanvas.Children.Add($DragBarImage) | Out-Null
    $SystemWindowsControlsCanvas.Children.Add($Logo) | Out-Null
@@ -234,12 +282,11 @@
    $SystemWindowsControlsCanvas.Children.Add($SettingsButton.Icon) | Out-Null
    $SystemWindowsControlsCanvas.Children.Add($CloseButton.Button) | Out-Null
    $SystemWindowsControlsCanvas.Children.Add($CloseButton.Icon) | Out-Null
-   $SystemWindowsWindow.Content = $SystemWindowsControlsCanvas
 
    $SystemWindowsWindow.Show()
    return $SystemWindowsWindow, $SystemWindowsControlsCanvas, $SystemWindowsControlsRichTextBox0, $SystemWindowsControlsRichTextBox1, $SystemWindowsControlsRichTextBox2
 }
-function HomeUpdateButton($SystemWindowsControlsCanvas, $AppList) {
+function SystemAddUpdateButton($SystemWindowsControlsCanvas, $AppList) {
    $UpdateNowButton = @{
       Button = New-Object System.Windows.Controls.Image
       Icon = New-Object System.Windows.Controls.Image
@@ -316,7 +363,7 @@ function HomeUpdateButton($SystemWindowsControlsCanvas, $AppList) {
          $this.Tag.Button.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\UpdateButton.png")))
          $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\UpdateButtonIcon.png")))
          $this.Tag.Text.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\UpdateButtonText.png")))  
-         StartUpdateRun $AppList    
+         UpdateRun $AppList    
       } else {
          $this.Tag.Button.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\UpdateButton.png")))
          $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\UpdateButtonIcon.png")))
@@ -334,7 +381,7 @@ function HomeUpdateButton($SystemWindowsControlsCanvas, $AppList) {
          $this.Tag.Button.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\UpdateButton.png")))
          $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\UpdateButtonIcon.png")))
          $this.Tag.Text.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\UpdateButtonText.png")))  
-         StartUpdateRun $AppList
+         UpdateRun $AppList
       } else {
          $this.Tag.Button.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\UpdateButton.png")))
          $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\UpdateButtonIcon.png")))
@@ -353,7 +400,7 @@ function HomeUpdateButton($SystemWindowsControlsCanvas, $AppList) {
    $SystemWindowsControlsCanvas.Children.Add($UpdateNowButton.Icon) | Out-Null
    $SystemWindowsControlsCanvas.Children.Add($UpdateNowButton.Text) | Out-Null
 }
-function StartUpdateRun($AppList) {
+function UpdateRun($AppList) {
    RichTextBox $SystemWindowsControlsRichTextBox0 ""  | Out-Null
    RichTextBox $SystemWindowsControlsRichTextBox0 ""  | Out-Null
    RichTextBox $SystemWindowsControlsRichTextBox0 "‎  Update Run"  | Out-Null
@@ -462,3 +509,100 @@ function StartUpdateRun($AppList) {
       }
    }
 }
+function SystemSettings($SystemWindowsControlsCanvas, $SettingsButton) {
+
+   $Elements = [System.Collections.Generic.List[System.Windows.UIElement]]::new()
+
+
+   $Background = New-Object System.Windows.Controls.Image
+   $Background.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\BackgroundSettings.png")))
+   $Background.Width = 450
+   $Background.Height = 500
+
+
+   $CloseButton = @{
+      Button = New-Object System.Windows.Controls.Image
+      Icon   = New-Object System.Windows.Controls.Image
+      SystemWindowsControlsCanvas = $SystemWindowsControlsCanvas
+      SettingsButton = $SettingsButton
+      Elements = $Elements
+   }
+   $CloseButton.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\Bar.png")))
+   $CloseButton.Button.Width = 30
+   $CloseButton.Button.Height = 30
+   $CloseButton.Icon.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\Close.png")))
+   $CloseButton.Icon.Width = 22
+   $CloseButton.Icon.Height = 22
+   $CloseButton.Button.Tag = $CloseButton
+   $CloseButton.Icon.Tag   = $CloseButton
+   $CloseButton.Button.Add_MouseEnter({
+      $this.Tag.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\BarHover.png")))
+      $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\CloseHover.png")))
+   })
+   $CloseButton.Button.Add_MouseLeave({
+      $this.Tag.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\Bar.png")))
+      $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\Close.png")))
+   })
+   $CloseButton.Icon.Add_MouseEnter({
+      $this.Tag.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\BarHover.png")))
+      $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\CloseHover.png")))
+   })
+   $CloseButton.Icon.Add_MouseLeave({
+      $this.Tag.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\Bar.png")))
+      $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\Close.png")))
+   })
+   $CloseButton.Button.Add_MouseLeftButtonDown({
+      $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\ClosePressed.png")))
+      $this.CaptureMouse() | Out-Null
+   })
+   $CloseButton.Button.Add_MouseLeftButtonUp({
+      $this.ReleaseMouseCapture()
+      if ($this.IsMouseOver) {
+         foreach ($Element in $this.Tag.Elements) {
+            $this.Tag.SystemWindowsControlsCanvas.Children.Remove($Element) | Out-Null
+         }         
+         $this.Tag.SettingsButton.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\Bar.png")))
+         $this.Tag.SettingsButton.Icon.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\Settings.png")))
+         $this.Tag.SettingsButton.Active = $false
+      } else {
+         $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\Close.png")))
+    }
+   })
+   $CloseButton.Icon.Add_MouseLeftButtonDown({
+      $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\ClosePressed.png")))
+      $this.CaptureMouse() | Out-Null
+   })
+   $CloseButton.Icon.Add_MouseLeftButtonUp({
+      $this.ReleaseMouseCapture()
+      if ($this.IsMouseOver) {
+         foreach ($Element in $this.Tag.Elements) {
+            $this.Tag.SystemWindowsControlsCanvas.Children.Remove($Element) | Out-Null
+         }
+         $this.Tag.SettingsButton.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\Bar.png")))
+         $this.Tag.SettingsButton.Icon.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\Settings.png")))
+         $this.Tag.SettingsButton.Active = $false
+      } else {
+         $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\Close.png")))
+    }
+   })
+
+
+   
+
+   [System.Windows.Controls.Canvas]::SetLeft($Background, 900)
+   [System.Windows.Controls.Canvas]::SetTop($Background, 0)
+   [System.Windows.Controls.Canvas]::SetLeft($CloseButton.Button, 1310)
+   [System.Windows.Controls.Canvas]::SetTop($CloseButton.Button, 10)
+   [System.Windows.Controls.Canvas]::SetLeft($CloseButton.Icon, 1314)
+   [System.Windows.Controls.Canvas]::SetTop($CloseButton.Icon, 14)
+   $SystemWindowsControlsCanvas.Children.Add($Background) | Out-Null
+   $Elements.Add($Background)
+   $SystemWindowsControlsCanvas.Children.Add($CloseButton.Button) | Out-Null
+   $Elements.Add($CloseButton.Button)
+   $SystemWindowsControlsCanvas.Children.Add($CloseButton.Icon) | Out-Null
+   $Elements.Add($CloseButton.Icon)
+
+
+   
+}
+

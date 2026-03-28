@@ -2,5 +2,5 @@
 . "$PSScriptRoot\ListWinget.ps1"
 . "$PSScriptRoot\ListWingetApps.ps1"
 . "$PSScriptRoot\Logo.ps1"
-. "$PSScriptRoot\Home.ps1"
+. "$PSScriptRoot\System.ps1"
 . "$PSScriptRoot\UpdateRun.ps1"
