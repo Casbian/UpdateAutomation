@@ -8,4 +8,5 @@
     $Paragraph = New-Object System.Windows.Documents.Paragraph $Run
     $Paragraph.Margin = [System.Windows.Thickness]::new(0)
     $SystemWindowsControlsRichTextBox.Document.Blocks.Add($Paragraph)
+    $SystemWindowsControlsRichTextBox.ScrollToEnd()
 }
