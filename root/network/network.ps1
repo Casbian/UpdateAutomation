@@ -22,6 +22,16 @@ function Network() {
             return "Network $WlanNetworkProfile"
         }
     }
+    $ResultQuestion = [System.Windows.MessageBox]::Show(
+    "None of the Users known Networks connected to the Internet",
+    "Scan for Open Network ?",
+    "YesNo",
+    "Question"
+    )
+    if ($ResultQuestion -eq "No") {
+        $SystemWindowsWindow.Close()
+        exit  
+    }
     $WlanNetworksBlocksRaw = netsh.exe wlan show networks
     $WlanNetworksBlocks = @()
     $LineCurrent = @()

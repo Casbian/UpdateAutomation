@@ -9,7 +9,7 @@
    $FrameIndex = 0
    while (-not $Handle.IsCompleted) {
       $Frame = $Frames[$FrameIndex % $Frames.Count]
-      RichTextBox $SystemWindowsControlsRichTextBox0 "> SYSTEM               | $Frame $TaskName $Frame" -RemoveLast -Color ([System.Windows.Media.Brushes]::Cyan)  | Out-Null
+      RichTextBox $SystemWindowsControlsRichTextBox0 "> SYSTEM                                | $Frame $TaskName $Frame" -RemoveLast -Color ([System.Windows.Media.Brushes]::Cyan)  | Out-Null
       Window  | Out-Null
       $FrameIndex++
    }
