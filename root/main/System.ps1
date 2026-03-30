@@ -345,7 +345,7 @@ function SystemAddUpdateButton($SystemWindowsControlsCanvas, $AppList) {
          $this.Tag.Button.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\UpdateButton.png")))
          $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\UpdateButtonIcon.png")))
          $this.Tag.Text.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\UpdateButtonText.png")))  
-         StartUpdateRun $AppList
+         UpdateRun $AppList
       } else {
          $this.Tag.Button.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\UpdateButton.png")))
          $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\UpdateButtonIcon.png")))
