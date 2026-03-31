@@ -1,28 +1,4 @@
 ﻿#======================================#
-# CHECK Administrator
-#======================================#
-if (-not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
-   try {
-      Start-Process pwsh -Verb RunAs -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" -WindowStyle Hidden
-      exit
-   } catch {
-      if ($_.Exception.Message -match 'cancel') {
-            exit
-      }
-      Start-Process powershell.exe -Verb RunAs -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" -WindowStyle Hidden
-      exit
-   }
-   exit
-}
-#======================================#
-# CHECK Powershell 7
-#======================================#
-if ($PSVersionTable.PSVersion.Major -lt 7) {
-   winget install --id Microsoft.PowerShell --uninstall-previous --accept-package-agreements --accept-source-agreements --silent --force
-   Start-Process pwsh -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`""
-   exit
-}
-#======================================#
 # IMPORTS
 #======================================#
 Import-Module "$PSScriptRoot\file\file.psm1"
@@ -56,7 +32,10 @@ LogoContinueOneFrame $SystemWindowsWindow $LoadingBar $LoadingBarFrames 5
 LogoContinueOneFrame $SystemWindowsWindow $LoadingBar $LoadingBarFrames 6
 LogoContinueOneFrame $SystemWindowsWindow $LoadingBar $LoadingBarFrames 7
 
-$SystemWindowsWindow, $SystemWindowsControlsCanvas, $SystemWindowsControlsRichTextBox0, $SystemWindowsControlsRichTextBox1, $SystemWindowsControlsRichTextBox2 = System
+$SystemWindowsWindow, $SystemWindowsControlsCanvas, $UpdateNowButton, $SystemWindowsControlsRichTextBox0, $SystemWindowsControlsRichTextBox1, $SystemWindowsControlsRichTextBox2 = System
+
+$UpdateNowButton.Active = $true
+
 
 RichTextBox $SystemWindowsControlsRichTextBox0 "SYSTEM v$CurrentVersion" -Clear | Out-Null
 RichTextBox $SystemWindowsControlsRichTextBox0 "" | Out-Null
@@ -118,20 +97,20 @@ try {
       param($Function, $Parameter)
       $FunctionBlock = [scriptblock]::Create($Function)
       & $FunctionBlock $Parameter
-   } -ThreadPool $ThreadPool -Function ${function:FileCheckAutologon} -Parameter $PSScriptRoot -TaskName "CHECK AddOns"
+   } -ThreadPool $ThreadPool -Function ${function:FileCheckAutologon} -Parameter $PSScriptRoot -TaskName "CHECK AddONs"
    if ($Result -eq 1) {
       $FilePathAddOns = Join-Path $PSScriptRoot "file\files\AutoLogon.exe"
-      RichTextBox $SystemWindowsControlsRichTextBox0 ">> LOAD Addons                          | $FilePathAddOns" -RemoveLast -Color ([System.Windows.Media.Brushes]::LightGreen) | Out-Null
+      RichTextBox $SystemWindowsControlsRichTextBox0 ">> LOAD AddONs                          | $FilePathAddOns" -RemoveLast -Color ([System.Windows.Media.Brushes]::LightGreen) | Out-Null
       Window | Out-Null
    } else {
       RichTextBox $SystemWindowsControlsRichTextBox0 "" | Out-Null
-      RichTextBox $SystemWindowsControlsRichTextBox0 ">> LOAD Addons                          | $Result" -RemoveLast -Color ([System.Windows.Media.Brushes]::Red) | Out-Null
+      RichTextBox $SystemWindowsControlsRichTextBox0 ">> LOAD AddONs                          | $Result" -RemoveLast -Color ([System.Windows.Media.Brushes]::Red) | Out-Null
       RichTextBox $SystemWindowsControlsRichTextBox0 ">>                                        Download Link - https://learn.microsoft.com/en-us/sysinternals/downloads/autologon" -Color ([System.Windows.Media.Brushes]::LightGreen) | Out-Null
       RichTextBox $SystemWindowsControlsRichTextBox0 "" | Out-Null
       Window | Out-Null
    }
 } catch {
-   RichTextBox $SystemWindowsControlsRichTextBox0 ">> LOAD Addons                    | ERROR" -RemoveLast -Color ([System.Windows.Media.Brushes]::Red) | Out-Null
+   RichTextBox $SystemWindowsControlsRichTextBox0 ">> LOAD AddONs                    | ERROR" -RemoveLast -Color ([System.Windows.Media.Brushes]::Red) | Out-Null
    Window | Out-Null
 }
 $EnvironmentKVariables = @('COMPUTERNAME','USERNAME','USERDOMAIN','USERDNSDOMAIN','OS','PROCESSOR_ARCHITECTURE','PROCESSOR_IDENTIFIER','NUMBER_OF_PROCESSORS','LOGONSERVER')
@@ -256,8 +235,6 @@ if ($RebootFlag -eq $true) {
       exit
    }
 }
-RichTextBox $SystemWindowsControlsRichTextBox0 "_______________________________________________________________________________________________________________________________________" | Out-Null
-Window | Out-Null
 RichTextBox $SystemWindowsControlsRichTextBox0 "SYSTEM v$CurrentVersion" -Clear | Out-Null
 RichTextBox $SystemWindowsControlsRichTextBox0 "" | Out-Null
 RichTextBox $SystemWindowsControlsRichTextBox0 " ALL Programs" | Out-Null
@@ -279,18 +256,17 @@ foreach ($Line in $ProgrammsAll) {
    RichTextBox $SystemWindowsControlsRichTextBox0 (">> {0,-30}" -f $Line) -Color ([System.Windows.Media.Brushes]::LightGreen) | Out-Null
    Window | Out-Null
 }
+Start-Sleep -Seconds 2
 $UserName = [System.Environment]::GetEnvironmentVariable("USERNAME")
 RichTextBox $SystemWindowsControlsRichTextBox0 "SYSTEM v$CurrentVersion" -Clear | Out-Null
 RichTextBox $SystemWindowsControlsRichTextBox0 "" | Out-Null
 RichTextBox $SystemWindowsControlsRichTextBox0 "Welcome $UserName" | Out-Null
+RichTextBox $SystemWindowsControlsRichTextBox0 "_______________________________________________________________________________________________________________________________________" | Out-Null
 Window | Out-Null
 
 
+$UpdateNowButton.Active = $false
 
-
-
-
-SystemAddUpdateButton $SystemWindowsControlsCanvas $AppList
 
 $SystemWindowsWindow.Hide()
 $SystemWindowsWindow.ShowDialog()

@@ -11,7 +11,7 @@
    $SystemWindowsWindow.Left = ($ScreenParameter::PrimaryScreenWidth - 300) / 2
    $SystemWindowsWindow.Top = ($ScreenParameter::PrimaryScreenHeight * 0.45) - (300 / 2)
    $Logo = New-Object System.Windows.Controls.Image
-   $Logo.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\LogoBig.png")))
+   $Logo.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconBig.png")))
    $Logo.Width = 282
    $Logo.Height = 282
    $LoadingBar = New-Object System.Windows.Controls.Image
