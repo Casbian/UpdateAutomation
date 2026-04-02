@@ -1,4 +1,5 @@
-﻿. "$PSScriptRoot\ListWindowsUpdate.ps1"
+﻿. "$PSScriptRoot\ListSystemInfo.ps1"
+. "$PSScriptRoot\ListWindowsUpdate.ps1"
 . "$PSScriptRoot\ListWinget.ps1"
 . "$PSScriptRoot\ListWingetApps.ps1"
 . "$PSScriptRoot\Logo.ps1"

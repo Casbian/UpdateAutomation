@@ -5,22 +5,19 @@
    $SystemWindowsWindow.Background = "Transparent"
    $SystemWindowsWindow.ResizeMode = "NoResize"
    $SystemWindowsWindow.Topmost = $false
-   $SystemWindowsWindow.Width = 1350
-   $SystemWindowsWindow.Height = 750
+   $SystemWindowsWindow.Width = 1375
+   $SystemWindowsWindow.Height = 690
    $ScreenParameter = [System.Windows.SystemParameters]
    $SystemWindowsWindow.Left = ($ScreenParameter::PrimaryScreenWidth - 900) / 2
    $SystemWindowsWindow.Top = ($ScreenParameter::PrimaryScreenHeight * 0.30) - (500 / 2)
-
    $Background = New-Object System.Windows.Controls.Image
    $Background.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\BackgroundSystem.png")))
    $Background.Width = 900
    $Background.Height = 500
-
    $Logo = New-Object System.Windows.Controls.Image
    $Logo.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconSmall.png")))
    $Logo.Width = 44
    $Logo.Height = 44
-
    $SignCheckAutomation = @{
       Box = New-Object System.Windows.Controls.Image
       Text   = New-Object System.Windows.Controls.Image
@@ -31,7 +28,6 @@
    $SignCheckAutomation.Text.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\BarAutomationCheckText.png")))
    $SignCheckAutomation.Text.Width = 94
    $SignCheckAutomation.Text.Height = 18
-
    $DragBarImage = New-Object System.Windows.Controls.Image
    $DragBarImage.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\DragBar.png")))
    $DragBarImage.Width = 900
@@ -39,7 +35,6 @@
    $DragBarImage.Add_MouseLeftButtonDown({
       [System.Windows.Window]::GetWindow($args[0]).DragMove()
    })
-
    $UpdateNowButton = @{
       Button = New-Object System.Windows.Controls.Image
       Icon   = New-Object System.Windows.Controls.Image
@@ -123,7 +118,6 @@
          }
       }
    })
-
    $InfoButton = @{
       Button = New-Object System.Windows.Controls.Image
       Icon   = New-Object System.Windows.Controls.Image
@@ -162,40 +156,49 @@
       }
    })
    $InfoButton.Button.Add_MouseLeftButtonDown({
-      $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconSystemInfoPressed.png")))
-      $this.CaptureMouse() | Out-Null
+      if (-not $this.Tag.Active) {
+         $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconSystemInfoPressed.png")))
+         $this.CaptureMouse() | Out-Null
+      }
    })
    $InfoButton.Button.Add_MouseLeftButtonUp({
       $this.ReleaseMouseCapture()
       if ($this.IsMouseOver -or $this.Tag.Icon.IsMouseOver) {
-         $this.Tag.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\BarActiveHover.png")))
-         $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconSystemInfoPressed.png")))
          if (-not $this.Tag.Active) {
-            SystemInfo $SystemWindowsControlsCanvas $this.Tag
+            $this.Tag.Active = $true
+            $this.Tag.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\BarActiveHover.png")))
+            $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconSystemInfoPressed.png")))
+            $EnvironmentValues, $NetworkValues, $CPUValues, $GPUValues, $RAMValues = ListSystemInfo
+            SystemInfo $SystemWindowsControlsCanvas $this.Tag $EnvironmentValues $NetworkValues $CPUValues $GPUValues $RAMValues
          }
-         $this.Tag.Active = $true
       } else {
-         $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconSystemInfo.png")))
+         if (-not $this.Tag.Active) {
+            $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconSystemInfo.png")))
+         }
     }
    })
    $InfoButton.Icon.Add_MouseLeftButtonDown({
-      $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconSystemInfoPressed.png")))
-      $this.CaptureMouse() | Out-Null
+      if (-not $this.Tag.Active) {
+         $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconSystemInfoPressed.png")))
+         $this.CaptureMouse() | Out-Null
+      }
    })
    $InfoButton.Icon.Add_MouseLeftButtonUp({
       $this.ReleaseMouseCapture()
       if ($this.IsMouseOver -or $this.Tag.Button.IsMouseOver) {
-         $this.Tag.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\BarActiveHover.png")))
-         $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconSystemInfoPressed.png")))
          if (-not $this.Tag.Active) {
-            SystemInfo $SystemWindowsControlsCanvas $this.Tag
+            $this.Tag.Active = $true
+            $this.Tag.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\BarActiveHover.png")))
+            $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconSystemInfoPressed.png")))
+            $EnvironmentValues, $NetworkValues, $CPUValues, $GPUValues, $RAMValues = ListSystemInfo
+            SystemInfo $SystemWindowsControlsCanvas $this.Tag $EnvironmentValues $NetworkValues $CPUValues $GPUValues $RAMValues
          }
-         $this.Tag.Active = $true
       } else {
-         $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconSystemInfo.png")))
+         if (-not $this.Tag.Active) {
+            $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconSystemInfo.png")))
+         }
     }
    })
-
    $SettingsButton = @{
       Button = New-Object System.Windows.Controls.Image
       Icon   = New-Object System.Windows.Controls.Image
@@ -267,7 +270,6 @@
          $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconSystemSettings.png")))
     }
    })
-
    $CloseButton = @{
       Button = New-Object System.Windows.Controls.Image
       Icon   = New-Object System.Windows.Controls.Image
@@ -322,12 +324,10 @@
          $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconClose.png")))
     }
    })
-
    $SystemWindowsControlsRichTextBoxImage0 = New-Object System.Windows.Controls.Image
    $SystemWindowsControlsRichTextBoxImage0.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\TextBoxConsole.png")))
    $SystemWindowsControlsRichTextBoxImage0.Width = 880
    $SystemWindowsControlsRichTextBoxImage0.Height = 310
-  
    $SystemWindowsControlsRichTextBox0 = New-Object System.Windows.Controls.RichTextBox
    $SystemWindowsControlsRichTextBox0.FontFamily = New-Object System.Windows.Media.FontFamily("Consolas")
    $SystemWindowsControlsRichTextBox0.FontSize = 10
@@ -337,12 +337,10 @@
    $SystemWindowsControlsRichTextBox0.Document.PagePadding = [System.Windows.Thickness]::new(0)
    $SystemWindowsControlsRichTextBox0.Background = [System.Windows.Media.Brushes]::Transparent
    $SystemWindowsControlsRichTextBox0.Foreground = [System.Windows.Media.Brushes]::White
-  
    $SystemWindowsControlsRichTextBoxImage1 = New-Object System.Windows.Controls.Image
    $SystemWindowsControlsRichTextBoxImage1.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\TextBoxWindowsUpdates.png")))
    $SystemWindowsControlsRichTextBoxImage1.Width = 410
    $SystemWindowsControlsRichTextBoxImage1.Height = 120
- 
    $SystemWindowsControlsRichTextBox1 = New-Object System.Windows.Controls.RichTextBox
    $SystemWindowsControlsRichTextBox1.FontFamily = New-Object System.Windows.Media.FontFamily("Consolas")
    $SystemWindowsControlsRichTextBox1.FontSize = 10
@@ -352,12 +350,10 @@
    $SystemWindowsControlsRichTextBox1.Document.PagePadding = [System.Windows.Thickness]::new(0)
    $SystemWindowsControlsRichTextBox1.Background = [System.Windows.Media.Brushes]::Transparent
    $SystemWindowsControlsRichTextBox1.Foreground = [System.Windows.Media.Brushes]::White
-
    $SystemWindowsControlsRichTextBoxImage2 = New-Object System.Windows.Controls.Image
    $SystemWindowsControlsRichTextBoxImage2.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\TextBoxApps.png")))
    $SystemWindowsControlsRichTextBoxImage2.Width = 460
    $SystemWindowsControlsRichTextBoxImage2.Height = 120
-
    $SystemWindowsControlsRichTextBox2 = New-Object System.Windows.Controls.RichTextBox
    $SystemWindowsControlsRichTextBox2.FontFamily = New-Object System.Windows.Media.FontFamily("Consolas")
    $SystemWindowsControlsRichTextBox2.FontSize = 10
@@ -367,48 +363,44 @@
    $SystemWindowsControlsRichTextBox2.Document.PagePadding = [System.Windows.Thickness]::new(0)
    $SystemWindowsControlsRichTextBox2.Background = [System.Windows.Media.Brushes]::Transparent
    $SystemWindowsControlsRichTextBox2.Foreground = [System.Windows.Media.Brushes]::White
-
-   
-   
-   [System.Windows.Controls.Canvas]::SetLeft($Background, 0)
-   [System.Windows.Controls.Canvas]::SetTop($Background, 250)
-   [System.Windows.Controls.Canvas]::SetLeft($Logo, 0)
-   [System.Windows.Controls.Canvas]::SetTop($Logo, 255)
-   [System.Windows.Controls.Canvas]::SetLeft($SignCheckAutomation.Box, 50)
-   [System.Windows.Controls.Canvas]::SetTop($SignCheckAutomation.Box, 260)
-   [System.Windows.Controls.Canvas]::SetLeft($SignCheckAutomation.Text, 60)
-   [System.Windows.Controls.Canvas]::SetTop($SignCheckAutomation.Text, 265)
-   [System.Windows.Controls.Canvas]::SetLeft($DragBarImage, 0)
-   [System.Windows.Controls.Canvas]::SetTop($DragBarImage, 250)
-   [System.Windows.Controls.Canvas]::SetLeft($UpdateNowButton.Button, 740)
-   [System.Windows.Controls.Canvas]::SetTop($UpdateNowButton.Button, 260)
-   [System.Windows.Controls.Canvas]::SetLeft($UpdateNowButton.Icon, 746)
-   [System.Windows.Controls.Canvas]::SetTop($UpdateNowButton.Icon, 266)
-   [System.Windows.Controls.Canvas]::SetLeft($InfoButton.Button, 780)
-   [System.Windows.Controls.Canvas]::SetTop($InfoButton.Button, 260)
-   [System.Windows.Controls.Canvas]::SetLeft($InfoButton.Icon, 786)
-   [System.Windows.Controls.Canvas]::SetTop($InfoButton.Icon, 266)
-   [System.Windows.Controls.Canvas]::SetLeft($SettingsButton.Button, 820)
-   [System.Windows.Controls.Canvas]::SetTop($SettingsButton.Button, 260)
-   [System.Windows.Controls.Canvas]::SetLeft($SettingsButton.Icon, 826)
-   [System.Windows.Controls.Canvas]::SetTop($SettingsButton.Icon, 266)
-   [System.Windows.Controls.Canvas]::SetLeft($CloseButton.Button, 860)
-   [System.Windows.Controls.Canvas]::SetTop($CloseButton.Button, 260)
-   [System.Windows.Controls.Canvas]::SetLeft($CloseButton.Icon, 864)
-   [System.Windows.Controls.Canvas]::SetTop($CloseButton.Icon, 264)
-   [System.Windows.Controls.Canvas]::SetLeft($SystemWindowsControlsRichTextBoxImage0, 10)
-   [System.Windows.Controls.Canvas]::SetTop($SystemWindowsControlsRichTextBoxImage0, 300)
-   [System.Windows.Controls.Canvas]::SetLeft($SystemWindowsControlsRichTextBox0, 15)
-   [System.Windows.Controls.Canvas]::SetTop($SystemWindowsControlsRichTextBox0, 310)
-   [System.Windows.Controls.Canvas]::SetLeft($SystemWindowsControlsRichTextBoxImage1, 10)
-   [System.Windows.Controls.Canvas]::SetTop($SystemWindowsControlsRichTextBoxImage1, 620)
-   [System.Windows.Controls.Canvas]::SetLeft($SystemWindowsControlsRichTextBox1, 15)
-   [System.Windows.Controls.Canvas]::SetTop($SystemWindowsControlsRichTextBox1, 630)
-   [System.Windows.Controls.Canvas]::SetLeft($SystemWindowsControlsRichTextBoxImage2, 430)
-   [System.Windows.Controls.Canvas]::SetTop($SystemWindowsControlsRichTextBoxImage2, 620)
-   [System.Windows.Controls.Canvas]::SetLeft($SystemWindowsControlsRichTextBox2, 435)
-   [System.Windows.Controls.Canvas]::SetTop($SystemWindowsControlsRichTextBox2, 630)
-   
+   [System.Windows.Controls.Canvas]::SetLeft($Background, 25)
+   [System.Windows.Controls.Canvas]::SetTop($Background, 190)
+   [System.Windows.Controls.Canvas]::SetLeft($Logo, 25)
+   [System.Windows.Controls.Canvas]::SetTop($Logo, 195)
+   [System.Windows.Controls.Canvas]::SetLeft($SignCheckAutomation.Box, 75)
+   [System.Windows.Controls.Canvas]::SetTop($SignCheckAutomation.Box, 200)
+   [System.Windows.Controls.Canvas]::SetLeft($SignCheckAutomation.Text, 85)
+   [System.Windows.Controls.Canvas]::SetTop($SignCheckAutomation.Text, 205)
+   [System.Windows.Controls.Canvas]::SetLeft($DragBarImage, 25)
+   [System.Windows.Controls.Canvas]::SetTop($DragBarImage, 190)
+   [System.Windows.Controls.Canvas]::SetLeft($UpdateNowButton.Button, 765)
+   [System.Windows.Controls.Canvas]::SetTop($UpdateNowButton.Button, 200)
+   [System.Windows.Controls.Canvas]::SetLeft($UpdateNowButton.Icon, 771)
+   [System.Windows.Controls.Canvas]::SetTop($UpdateNowButton.Icon, 206)
+   [System.Windows.Controls.Canvas]::SetLeft($InfoButton.Button, 805)
+   [System.Windows.Controls.Canvas]::SetTop($InfoButton.Button, 200)
+   [System.Windows.Controls.Canvas]::SetLeft($InfoButton.Icon, 811)
+   [System.Windows.Controls.Canvas]::SetTop($InfoButton.Icon, 206)
+   [System.Windows.Controls.Canvas]::SetLeft($SettingsButton.Button, 845)
+   [System.Windows.Controls.Canvas]::SetTop($SettingsButton.Button, 200)
+   [System.Windows.Controls.Canvas]::SetLeft($SettingsButton.Icon, 851)
+   [System.Windows.Controls.Canvas]::SetTop($SettingsButton.Icon, 206)
+   [System.Windows.Controls.Canvas]::SetLeft($CloseButton.Button, 885)
+   [System.Windows.Controls.Canvas]::SetTop($CloseButton.Button, 200)
+   [System.Windows.Controls.Canvas]::SetLeft($CloseButton.Icon, 889)
+   [System.Windows.Controls.Canvas]::SetTop($CloseButton.Icon, 204)
+   [System.Windows.Controls.Canvas]::SetLeft($SystemWindowsControlsRichTextBoxImage0, 35)
+   [System.Windows.Controls.Canvas]::SetTop($SystemWindowsControlsRichTextBoxImage0, 240)
+   [System.Windows.Controls.Canvas]::SetLeft($SystemWindowsControlsRichTextBox0, 40)
+   [System.Windows.Controls.Canvas]::SetTop($SystemWindowsControlsRichTextBox0, 250)
+   [System.Windows.Controls.Canvas]::SetLeft($SystemWindowsControlsRichTextBoxImage1, 35)
+   [System.Windows.Controls.Canvas]::SetTop($SystemWindowsControlsRichTextBoxImage1, 560)
+   [System.Windows.Controls.Canvas]::SetLeft($SystemWindowsControlsRichTextBox1, 40)
+   [System.Windows.Controls.Canvas]::SetTop($SystemWindowsControlsRichTextBox1, 570)
+   [System.Windows.Controls.Canvas]::SetLeft($SystemWindowsControlsRichTextBoxImage2, 455)
+   [System.Windows.Controls.Canvas]::SetTop($SystemWindowsControlsRichTextBoxImage2, 560)
+   [System.Windows.Controls.Canvas]::SetLeft($SystemWindowsControlsRichTextBox2, 460)
+   [System.Windows.Controls.Canvas]::SetTop($SystemWindowsControlsRichTextBox2, 570)
    $SystemWindowsControlsCanvas = New-Object System.Windows.Controls.Canvas
    $SystemWindowsWindow.Content = $SystemWindowsControlsCanvas
    $SystemWindowsControlsCanvas.Children.Add($Background) | Out-Null
@@ -430,23 +422,15 @@
    $SystemWindowsControlsCanvas.Children.Add($SystemWindowsControlsRichTextBox1) | Out-Null
    $SystemWindowsControlsCanvas.Children.Add($SystemWindowsControlsRichTextBoxImage2) | Out-Null
    $SystemWindowsControlsCanvas.Children.Add($SystemWindowsControlsRichTextBox2) | Out-Null
-   
-
    $SystemWindowsWindow.Show()
-   return $SystemWindowsWindow, $SystemWindowsControlsCanvas, $UpdateNowButton, $SystemWindowsControlsRichTextBox0, $SystemWindowsControlsRichTextBox1, $SystemWindowsControlsRichTextBox2
+   return $SystemWindowsWindow, $SystemWindowsControlsCanvas, $UpdateNowButton, $InfoButton, $SystemWindowsControlsRichTextBox0, $SystemWindowsControlsRichTextBox1, $SystemWindowsControlsRichTextBox2
 }
-
 function SystemSettings($SystemWindowsControlsCanvas, $SettingsButton) {
-
    $Elements = [System.Collections.Generic.List[System.Windows.UIElement]]::new()
-
-
    $Background = New-Object System.Windows.Controls.Image
    $Background.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\BackgroundSystemSettings.png")))
    $Background.Width = 450
    $Background.Height = 500
-
-
    $CloseButton = @{
       Button = New-Object System.Windows.Controls.Image
       Icon   = New-Object System.Windows.Controls.Image
@@ -512,38 +496,125 @@ function SystemSettings($SystemWindowsControlsCanvas, $SettingsButton) {
          $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconSystemSettings.png")))
     }
    })
-
-
-   
-
-   [System.Windows.Controls.Canvas]::SetLeft($Background, 900)
-   [System.Windows.Controls.Canvas]::SetTop($Background, 250)
-   [System.Windows.Controls.Canvas]::SetLeft($CloseButton.Button, 1310)
-   [System.Windows.Controls.Canvas]::SetTop($CloseButton.Button, 260)
-   [System.Windows.Controls.Canvas]::SetLeft($CloseButton.Icon, 1314)
-   [System.Windows.Controls.Canvas]::SetTop($CloseButton.Icon, 264)
+   [System.Windows.Controls.Canvas]::SetLeft($Background, 925)
+   [System.Windows.Controls.Canvas]::SetTop($Background, 190)
+   [System.Windows.Controls.Canvas]::SetLeft($CloseButton.Button, 1335)
+   [System.Windows.Controls.Canvas]::SetTop($CloseButton.Button, 200)
+   [System.Windows.Controls.Canvas]::SetLeft($CloseButton.Icon, 1339)
+   [System.Windows.Controls.Canvas]::SetTop($CloseButton.Icon, 204)
    $SystemWindowsControlsCanvas.Children.Add($Background) | Out-Null
    $Elements.Add($Background)
    $SystemWindowsControlsCanvas.Children.Add($CloseButton.Button) | Out-Null
    $Elements.Add($CloseButton.Button)
    $SystemWindowsControlsCanvas.Children.Add($CloseButton.Icon) | Out-Null
    $Elements.Add($CloseButton.Icon)
-
-
-   
 }
-function SystemInfo($SystemWindowsControlsCanvas, $InfoButton) {
-
- 
+function SystemInfo($SystemWindowsControlsCanvas, $InfoButton, $EnvironmentValues, $NetworkValues, $CPUValues, $GPUValues, $RAMValues) {
    $Elements = [System.Collections.Generic.List[System.Windows.UIElement]]::new()
-
-
    $Background = New-Object System.Windows.Controls.Image
    $Background.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\BackgroundSystemInfo.png")))
-   $Background.Width = 900
-   $Background.Height = 250
-
-
+   $Background.Width = 950
+   $Background.Height = 190
+   $IconEnvironmentValues = New-Object System.Windows.Controls.Image
+   $IconEnvironmentValues.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconEnvironmentValues.png")))
+   $IconEnvironmentValues.Width = 30
+   $IconEnvironmentValues.Height = 30
+   $TextBoxEnvironmentValues = New-Object System.Windows.Controls.RichTextBox
+   $TextBoxEnvironmentValues.FontFamily = New-Object System.Windows.Media.FontFamily("Consolas")
+   $TextBoxEnvironmentValues.FontSize = 12
+   $TextBoxEnvironmentValues.Width = 290
+   $TextBoxEnvironmentValues.Height = 130
+   $TextBoxEnvironmentValues.BorderThickness = 0
+   $TextBoxEnvironmentValues.Document.PagePadding = [System.Windows.Thickness]::new(0)
+   $TextBoxEnvironmentValues.Background = [System.Windows.Media.Brushes]::Transparent
+   $TextBoxEnvironmentValues.Foreground = [System.Windows.Media.Brushes]::White
+   RichTextBox $TextBoxEnvironmentValues ("{0,-14}| {1}" -f "PC Name", $EnvironmentValues[0]) -Clear | Out-Null
+   RichTextBox $TextBoxEnvironmentValues ("{0,-14}| {1}" -f "Domain", $EnvironmentValues[1]) | Out-Null
+   RichTextBox $TextBoxEnvironmentValues ("{0,-14}| {1}" -f "Logon Server", $EnvironmentValues[2]) | Out-Null
+   RichTextBox $TextBoxEnvironmentValues ("{0,-14}| {1}" -f "User", $EnvironmentValues[3]) | Out-Null
+   RichTextBox $TextBoxEnvironmentValues ("{0,-14}| {1}" -f "Session Admin", $EnvironmentValues[4]) | Out-Null
+   RichTextBox $TextBoxEnvironmentValues ("{0,-14}| {1}" -f "OS", $EnvironmentValues[5]) | Out-Null
+   RichTextBox $TextBoxEnvironmentValues ("{0,-14}| {1}" -f "Architecture", $EnvironmentValues[6]) | Out-Null
+   RichTextBox $TextBoxEnvironmentValues ("{0,-14}| {1}" -f "Type", $EnvironmentValues[7]) | Out-Null
+   RichTextBox $TextBoxEnvironmentValues ("{0,-14}| {1}" -f "UPTime", $EnvironmentValues[8]) | Out-Null
+   Window | Out-Null
+   $IconNetworkValues = New-Object System.Windows.Controls.Image
+   $IconNetworkValues.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconNetworkValues.png")))
+   $IconNetworkValues.Width = 30
+   $IconNetworkValues.Height = 30
+   $TextBoxNetworkValues = New-Object System.Windows.Controls.RichTextBox
+   $TextBoxNetworkValues.FontFamily = New-Object System.Windows.Media.FontFamily("Consolas")
+   $TextBoxNetworkValues.FontSize = 12
+   $TextBoxNetworkValues.Width = 320
+   $TextBoxNetworkValues.Height = 100
+   $TextBoxNetworkValues.BorderThickness = 0
+   $TextBoxNetworkValues.Document.PagePadding = [System.Windows.Thickness]::new(0)
+   $TextBoxNetworkValues.Background = [System.Windows.Media.Brushes]::Transparent
+   $TextBoxNetworkValues.Foreground = [System.Windows.Media.Brushes]::White
+   for ($i = 0; $i -lt $NetworkValues.Count; $i += 3) {
+      if ($i -eq 0) {
+         RichTextBox $TextBoxNetworkValues ("{0,-5}| {1}" -f "Name", $NetworkValues[$i]) -Clear | Out-Null
+      } else {
+         RichTextBox $TextBoxNetworkValues ("{0,-5}| {1}" -f "Name", $NetworkValues[$i]) | Out-Null
+      }
+      RichTextBox $TextBoxNetworkValues ("{0,-5}| {1}" -f "MAC", $NetworkValues[$i+1]) | Out-Null
+      RichTextBox $TextBoxNetworkValues ("{0,-5}| {1}" -f "IP'S", $NetworkValues[$i+2]) | Out-Null
+      Window | Out-Null
+   }
+   $IconCPUValues = New-Object System.Windows.Controls.Image
+   $IconCPUValues.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconCPUValues.png")))
+   $IconCPUValues.Width = 30
+   $IconCPUValues.Height = 30
+   $TextBoxCPUValues = New-Object System.Windows.Controls.RichTextBox
+   $TextBoxCPUValues.FontFamily = New-Object System.Windows.Media.FontFamily("Consolas")
+   $TextBoxCPUValues.FontSize = 12
+   $TextBoxCPUValues.Width = 380
+   $TextBoxCPUValues.Height = 100
+   $TextBoxCPUValues.BorderThickness = 0
+   $TextBoxCPUValues.Document.PagePadding = [System.Windows.Thickness]::new(0)
+   $TextBoxCPUValues.Background = [System.Windows.Media.Brushes]::Transparent
+   $TextBoxCPUValues.Foreground = [System.Windows.Media.Brushes]::White
+   RichTextBox $TextBoxCPUValues $CPUValues[0] -Clear | Out-Null
+   RichTextBox $TextBoxCPUValues ("{0,-14}| {1}" -f "Architecture", $CPUValues[1]) | Out-Null
+   RichTextBox $TextBoxCPUValues ("{0,-14}| {1}" -f "Cores", $CPUValues[2]) | Out-Null
+   RichTextBox $TextBoxCPUValues ("{0,-14}| {1}" -f "Logical Cores", $CPUValues[3]) | Out-Null
+   Window | Out-Null
+   $IconGPUValues = New-Object System.Windows.Controls.Image
+   $IconGPUValues.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconGPUValues.png")))
+   $IconGPUValues.Width = 30
+   $IconGPUValues.Height = 30
+   $TextBoxGPUValues = New-Object System.Windows.Controls.RichTextBox
+   $TextBoxGPUValues.FontFamily = New-Object System.Windows.Media.FontFamily("Consolas")
+   $TextBoxGPUValues.FontSize = 12
+   $TextBoxGPUValues.Width = 380
+   $TextBoxGPUValues.Height = 100
+   $TextBoxGPUValues.BorderThickness = 0
+   $TextBoxGPUValues.Document.PagePadding = [System.Windows.Thickness]::new(0)
+   $TextBoxGPUValues.Background = [System.Windows.Media.Brushes]::Transparent
+   $TextBoxGPUValues.Foreground = [System.Windows.Media.Brushes]::White
+   RichTextBox $TextBoxGPUValues $GPUValues[0] -Clear | Out-Null
+   RichTextBox $TextBoxGPUValues ("{0,-7}| {1}" -f "Driver", $GPUValues[1]) | Out-Null
+   Window | Out-Null
+   $IconRAMValues = New-Object System.Windows.Controls.Image
+   $IconRAMValues.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconRAMValues.png")))
+   $IconRAMValues.Width = 30
+   $IconRAMValues.Height = 30
+   $TextBoxRAMValues = New-Object System.Windows.Controls.RichTextBox
+   $TextBoxRAMValues.FontFamily = New-Object System.Windows.Media.FontFamily("Consolas")
+   $TextBoxRAMValues.FontSize = 12
+   $TextBoxRAMValues.Width = 380
+   $TextBoxRAMValues.Height = 100
+   $TextBoxRAMValues.BorderThickness = 0
+   $TextBoxRAMValues.Document.PagePadding = [System.Windows.Thickness]::new(0)
+   $TextBoxRAMValues.Background = [System.Windows.Media.Brushes]::Transparent
+   $TextBoxRAMValues.Foreground = [System.Windows.Media.Brushes]::White
+   for ($i = 0; $i -lt $NetworkValues.Count; $i += 3) {
+      if ($i -eq 0) {
+         RichTextBox $TextBoxRAMValues ("{0} {1} GB {2} MHZ" -f $RAMValues[$i], $RAMValues[$i+1], $RAMValues[$i+2]) -Clear | Out-Null
+      } else {
+         RichTextBox $TextBoxRAMValues ("{0} {1} GB {2} MHZ" -f $RAMValues[$i], $RAMValues[$i+1], $RAMValues[$i+2]) | Out-Null
+      }
+   }
    $CloseButton = @{
       Button = New-Object System.Windows.Controls.Image
       Icon   = New-Object System.Windows.Controls.Image
@@ -609,33 +680,66 @@ function SystemInfo($SystemWindowsControlsCanvas, $InfoButton) {
          $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconClose.png")))
     }
    })
-
-
-   
-
    [System.Windows.Controls.Canvas]::SetLeft($Background, 0)
    [System.Windows.Controls.Canvas]::SetTop($Background, 0)
-   [System.Windows.Controls.Canvas]::SetLeft($CloseButton.Button, 860)
+   [System.Windows.Controls.Canvas]::SetLeft($IconEnvironmentValues, 10)
+   [System.Windows.Controls.Canvas]::SetTop($IconEnvironmentValues, 15)
+   [System.Windows.Controls.Canvas]::SetLeft($TextBoxEnvironmentValues, 50)
+   [System.Windows.Controls.Canvas]::SetTop($TextBoxEnvironmentValues, 15)
+   [System.Windows.Controls.Canvas]::SetLeft($IconCPUValues, 340)
+   [System.Windows.Controls.Canvas]::SetTop($IconCPUValues, 15)
+   [System.Windows.Controls.Canvas]::SetLeft($IconGPUValues, 340)
+   [System.Windows.Controls.Canvas]::SetTop($IconGPUValues, 80)
+   [System.Windows.Controls.Canvas]::SetLeft($IconRAMValues, 340)
+   [System.Windows.Controls.Canvas]::SetTop($IconRAMValues, 120)
+   [System.Windows.Controls.Canvas]::SetLeft($TextBoxCPUValues, 390)
+   [System.Windows.Controls.Canvas]::SetTop($TextBoxCPUValues, 15)
+   [System.Windows.Controls.Canvas]::SetLeft($TextBoxGPUValues, 390)
+   [System.Windows.Controls.Canvas]::SetTop($TextBoxGPUValues, 80)
+   [System.Windows.Controls.Canvas]::SetLeft($TextBoxRAMValues, 390)
+   [System.Windows.Controls.Canvas]::SetTop($TextBoxRAMValues, 120)
+   [System.Windows.Controls.Canvas]::SetLeft($IconNetworkValues, 590)
+   [System.Windows.Controls.Canvas]::SetTop($IconNetworkValues, 70)
+   [System.Windows.Controls.Canvas]::SetLeft($TextBoxNetworkValues, 630)
+   [System.Windows.Controls.Canvas]::SetTop($TextBoxNetworkValues, 70)
+   [System.Windows.Controls.Canvas]::SetLeft($CloseButton.Button, 910)
    [System.Windows.Controls.Canvas]::SetTop($CloseButton.Button, 10)
-   [System.Windows.Controls.Canvas]::SetLeft($CloseButton.Icon, 864)
+   [System.Windows.Controls.Canvas]::SetLeft($CloseButton.Icon, 914)
    [System.Windows.Controls.Canvas]::SetTop($CloseButton.Icon, 14)
    $SystemWindowsControlsCanvas.Children.Add($Background) | Out-Null
    $Elements.Add($Background)
+   $SystemWindowsControlsCanvas.Children.Add($IconEnvironmentValues) | Out-Null
+   $Elements.Add($IconEnvironmentValues)
+   $SystemWindowsControlsCanvas.Children.Add($IconNetworkValues) | Out-Null
+   $Elements.Add($IconNetworkValues)
+   $SystemWindowsControlsCanvas.Children.Add($TextBoxEnvironmentValues) | Out-Null
+   $Elements.Add($TextBoxEnvironmentValues)
+   $SystemWindowsControlsCanvas.Children.Add($TextBoxNetworkValues) | Out-Null
+   $Elements.Add($TextBoxNetworkValues)
+   $SystemWindowsControlsCanvas.Children.Add($IconCPUValues) | Out-Null
+   $Elements.Add($IconCPUValues)
+   $SystemWindowsControlsCanvas.Children.Add($IconGPUValues) | Out-Null
+   $Elements.Add($IconGPUValues)
+   $SystemWindowsControlsCanvas.Children.Add($IconRAMValues) | Out-Null
+   $Elements.Add($IconRAMValues)
+   $SystemWindowsControlsCanvas.Children.Add($TextBoxCPUValues) | Out-Null
+   $Elements.Add($TextBoxCPUValues)
+   $SystemWindowsControlsCanvas.Children.Add($TextBoxGPUValues) | Out-Null
+   $Elements.Add($TextBoxGPUValues)
+   $SystemWindowsControlsCanvas.Children.Add($TextBoxRAMValues) | Out-Null
+   $Elements.Add($TextBoxRAMValues)
    $SystemWindowsControlsCanvas.Children.Add($CloseButton.Button) | Out-Null
    $Elements.Add($CloseButton.Button)
    $SystemWindowsControlsCanvas.Children.Add($CloseButton.Icon) | Out-Null
    $Elements.Add($CloseButton.Icon)
-
-
 }
 function UpdateRun($AppList) {
    RichTextBox $SystemWindowsControlsRichTextBox0 ""  | Out-Null
    RichTextBox $SystemWindowsControlsRichTextBox0 "Update Run"  | Out-Null
-   RichTextBox $SystemWindowsControlsRichTextBox0 "_________________________________________________________________"  | Out-Null
+   RichTextBox $SystemWindowsControlsRichTextBox0 "______________________________________________________________________________"  | Out-Null
    RichTextBox $SystemWindowsControlsRichTextBox0 ""  | Out-Null
    RichTextBox $SystemWindowsControlsRichTextBox0 ""  | Out-Null
    Window  | Out-Null
-
    $Result = Thread {
       param($Function, $Parameter)
       $FunctionBlock = [scriptblock]::Create($Function)
@@ -650,10 +754,8 @@ function UpdateRun($AppList) {
          Window | Out-Null
       }
    }
-
    RichTextBox $SystemWindowsControlsRichTextBox0 ""  | Out-Null
    Window | Out-Null
-
    $Result = Thread {
       param($Function, $Parameter)
       $FunctionBlock = [scriptblock]::Create($Function)
@@ -668,7 +770,6 @@ function UpdateRun($AppList) {
          Window | Out-Null
       }
    }
-
    RichTextBox $SystemWindowsControlsRichTextBox0 "" | Out-Null
    Window | Out-Null
    try {
@@ -694,7 +795,6 @@ function UpdateRun($AppList) {
       RichTextBox $SystemWindowsControlsRichTextBox0 ">> ReScan                               | ERROR" -RemoveLast -Color ([System.Windows.Media.Brushes]::Red) | Out-Null
       Window | Out-Null
    }
-
    RichTextBox $SystemWindowsControlsRichTextBox0 "" | Out-Null
    Window | Out-Null
    try {

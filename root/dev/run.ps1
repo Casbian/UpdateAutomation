@@ -9,8 +9,8 @@
         }
         try {
             if ($PSVersionTable.PSVersion.Major -lt 7) {
-                winget install --id Microsoft.PowerShell --uninstall-previous --accept-package-agreements --accept-source-agreements --silent --force
-                Start-Process pwsh -Verb RunAs -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`""
+                winget install --id Microsoft.PowerShell --uninstall-previous --accept-package-agreements --accept-source-agreements --force
+                Start-Process pwsh -Verb RunAs -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" -WindowStyle Hidden
                 exit
             }
         } catch {
