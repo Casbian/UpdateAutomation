@@ -1,15 +1,24 @@
-﻿Import-Module "$PSScriptRoot\file\file.psm1"
+﻿param(
+   [switch]$EXELaunch
+)
+Import-Module "$PSScriptRoot\update\update.psm1"
+$CurrentVersion = Update $MyInvocation
+Import-Module "$PSScriptRoot\flag\flag.psm1"
+if ($EXELaunch -eq $false) {
+   $FlagValue = ChecklastautomatedrunFlag $PSScriptRoot
+   if ($FlagValue -eq 1) {
+      exit
+   }
+}
 Import-Module "$PSScriptRoot\main\main.psm1"
 Import-Module "$PSScriptRoot\network\network.psm1"
 Import-Module "$PSScriptRoot\richtextbox\richtextbox.psm1"
 Import-Module "$PSScriptRoot\thread\thread.psm1" 
-Import-Module "$PSScriptRoot\update\update.psm1"
 Import-Module "$PSScriptRoot\window\window.psm1"
 Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName System.Drawing
 Add-Type -AssemblyName PresentationFramework
 Add-Type -AssemblyName PresentationCore
-$CurrentVersion = Update $MyInvocation
 $SystemWindowsWindow, $LoadingBar, $LoadingBarFrames = Logo
 LogoContinueOneFrame $SystemWindowsWindow $LoadingBar $LoadingBarFrames 0
 $ThreadPool = ThreadPool
@@ -20,7 +29,8 @@ LogoContinueOneFrame $SystemWindowsWindow $LoadingBar $LoadingBarFrames 4
 LogoContinueOneFrame $SystemWindowsWindow $LoadingBar $LoadingBarFrames 5
 LogoContinueOneFrame $SystemWindowsWindow $LoadingBar $LoadingBarFrames 6
 LogoContinueOneFrame $SystemWindowsWindow $LoadingBar $LoadingBarFrames 7
-$SystemWindowsWindow, $SystemWindowsControlsCanvas, $UpdateNowButton, $InfoButton, $SystemWindowsControlsRichTextBox0, $SystemWindowsControlsRichTextBox1, $SystemWindowsControlsRichTextBox2 = System
+$SystemWindowsWindow, $SystemWindowsControlsCanvas, $AutomationButton, $UpdateNowButton, $InfoButton, $SystemWindowsControlsRichTextBox0, $SystemWindowsControlsRichTextBox1, $SystemWindowsControlsRichTextBox2, $AutomationCheck = System
+$AutomationButton.Active = $true
 $UpdateNowButton.Active = $true
 RichTextBox $SystemWindowsControlsRichTextBox0 "SYSTEM v$CurrentVersion" -Clear | Out-Null
 RichTextBox $SystemWindowsControlsRichTextBox0 "" | Out-Null
@@ -53,49 +63,6 @@ try {
    }
 } catch {
    RichTextBox $SystemWindowsControlsRichTextBox0 ">> SCAN Network                         | ERROR" -RemoveLast -Color ([System.Windows.Media.Brushes]::Red) | Out-Null
-   Window | Out-Null
-}
-try {
-   $Result = Thread {
-      param($Function, $Parameter)
-      $FunctionBlock = [scriptblock]::Create($Function)
-      & $FunctionBlock $Parameter
-   } -ThreadPool $ThreadPool -Function ${function:FileCheckSettings} -Parameter $PSScriptRoot -TaskName "LOAD Settings"
-   if ($Result -eq 1) {
-      $FilePathSettings = Join-Path $PSScriptRoot "file\files\settings"
-      RichTextBox $SystemWindowsControlsRichTextBox0 ">> LOAD Settings                        | $FilePathSettings" -RemoveLast -Color ([System.Windows.Media.Brushes]::LightGreen) | Out-Null
-      RichTextBox $SystemWindowsControlsRichTextBox0 "" | Out-Null
-      Window | Out-Null
-   } else {
-      RichTextBox $SystemWindowsControlsRichTextBox0 "" | Out-Null
-      RichTextBox $SystemWindowsControlsRichTextBox0 ">> LOAD Settings                        | $Result" -RemoveLast -Color ([System.Windows.Media.Brushes]::Red) | Out-Null
-      RichTextBox $SystemWindowsControlsRichTextBox0 ">>                                        SYSTEM created NEW BUT EMPTY Settings" -Color ([System.Windows.Media.Brushes]::LightGreen) | Out-Null
-      RichTextBox $SystemWindowsControlsRichTextBox0 "" | Out-Null
-      Window | Out-Null
-   } 
-} catch {
-   RichTextBox $SystemWindowsControlsRichTextBox0 ">> LOAD Settings                        | ERROR" -RemoveLast -Color ([System.Windows.Media.Brushes]::Red) | Out-Null
-   Window | Out-Null
-}
-try {
-   $Result = Thread {
-      param($Function, $Parameter)
-      $FunctionBlock = [scriptblock]::Create($Function)
-      & $FunctionBlock $Parameter
-   } -ThreadPool $ThreadPool -Function ${function:FileCheckAutologon} -Parameter $PSScriptRoot -TaskName "CHECK AddONs"
-   if ($Result -eq 1) {
-      $FilePathAddOns = Join-Path $PSScriptRoot "file\files\AutoLogon.exe"
-      RichTextBox $SystemWindowsControlsRichTextBox0 ">> LOAD AddONs                          | $FilePathAddOns" -RemoveLast -Color ([System.Windows.Media.Brushes]::LightGreen) | Out-Null
-      Window | Out-Null
-   } else {
-      RichTextBox $SystemWindowsControlsRichTextBox0 "" | Out-Null
-      RichTextBox $SystemWindowsControlsRichTextBox0 ">> LOAD AddONs                          | $Result" -RemoveLast -Color ([System.Windows.Media.Brushes]::Red) | Out-Null
-      RichTextBox $SystemWindowsControlsRichTextBox0 ">>                                        Download Link - https://learn.microsoft.com/en-us/sysinternals/downloads/autologon" -Color ([System.Windows.Media.Brushes]::LightGreen) | Out-Null
-      RichTextBox $SystemWindowsControlsRichTextBox0 "" | Out-Null
-      Window | Out-Null
-   }
-} catch {
-   RichTextBox $SystemWindowsControlsRichTextBox0 ">> LOAD AddONs                    | ERROR" -RemoveLast -Color ([System.Windows.Media.Brushes]::Red) | Out-Null
    Window | Out-Null
 }
 try {
@@ -160,15 +127,31 @@ if ($RebootFlag -eq $true) {
       exit
    }
 }
-$UserName = [System.Environment]::GetEnvironmentVariable("USERNAME")
-RichTextBox $SystemWindowsControlsRichTextBox0 "SYSTEM v$CurrentVersion" -Clear | Out-Null
-RichTextBox $SystemWindowsControlsRichTextBox0 "" | Out-Null
-RichTextBox $SystemWindowsControlsRichTextBox0 "Welcome $UserName" | Out-Null
-RichTextBox $SystemWindowsControlsRichTextBox0 "____________________________________________________________________________________________________________________________________________________________" | Out-Null
-Window | Out-Null
-$UpdateNowButton.Active = $false
-$SystemWindowsWindow.Hide()
-$SystemWindowsWindow.ShowDialog()
-$ThreadPool.Close()
-$ThreadPool.Dispose()
-exit
+if ($EXELaunch -eq $true) {
+   $UserName = [System.Environment]::GetEnvironmentVariable("USERNAME")
+   RichTextBox $SystemWindowsControlsRichTextBox0 "SYSTEM v$CurrentVersion" -Clear | Out-Null
+   RichTextBox $SystemWindowsControlsRichTextBox0 "" | Out-Null
+   RichTextBox $SystemWindowsControlsRichTextBox0 "Welcome $UserName" | Out-Null
+   RichTextBox $SystemWindowsControlsRichTextBox0 "____________________________________________________________________________________________________________________________________________________________" | Out-Null
+   Window | Out-Null
+   $AutomationButton.Active = $false
+   $UpdateNowButton.Active = $false
+   $SystemWindowsWindow.Hide()
+   $SystemWindowsWindow.ShowDialog()
+   $ThreadPool.Close()
+   $ThreadPool.Dispose()
+   exit
+}
+if ($AutomationCheck) {
+   $UserName = [System.Environment]::GetEnvironmentVariable("USERNAME")
+   RichTextBox $SystemWindowsControlsRichTextBox0 "SYSTEM v$CurrentVersion" -Clear | Out-Null
+   RichTextBox $SystemWindowsControlsRichTextBox0 "" | Out-Null
+   RichTextBox $SystemWindowsControlsRichTextBox0 "Welcome $UserName" | Out-Null
+   RichTextBox $SystemWindowsControlsRichTextBox0 "____________________________________________________________________________________________________________________________________________________________" | Out-Null
+   UpdateRun $AppList
+   $SystemWindowsWindow.Hide()
+   $SystemWindowsWindow.Show()
+   $ThreadPool.Close()
+   $ThreadPool.Dispose()
+   exit
+}

@@ -1,0 +1,1 @@
+﻿. "$PSScriptRoot\flag.ps1"
