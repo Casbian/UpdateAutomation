@@ -18,8 +18,6 @@
    $Logo.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconSmall.png")))
    $Logo.Width = 44
    $Logo.Height = 44
-
-
    $DragBarImage = New-Object System.Windows.Controls.Image
    $DragBarImage.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\DragBar.png")))
    $DragBarImage.Width = 900
@@ -27,8 +25,6 @@
    $DragBarImage.Add_MouseLeftButtonDown({
       [System.Windows.Window]::GetWindow($args[0]).DragMove()
    })
-
-
    $AutomationCheck = Get-ScheduledTask -TaskName "CoreForge_Automation"
    $AutomationButton = @{
       Button = New-Object System.Windows.Controls.Image
@@ -157,26 +153,6 @@
          }
       }
    })
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
    $UpdateNowButton = @{
       Button = New-Object System.Windows.Controls.Image
       Icon   = New-Object System.Windows.Controls.Image
@@ -341,8 +317,6 @@
          }
     }
    })
-
-
    $SettingsButton = @{
       Button = New-Object System.Windows.Controls.Image
       Icon   = New-Object System.Windows.Controls.Image
@@ -414,13 +388,6 @@
          $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconSystemSettings.png")))
     }
    })
-
-
-
-
-
-
-   
    $CloseButton = @{
       Button = New-Object System.Windows.Controls.Image
       Icon   = New-Object System.Windows.Controls.Image
@@ -1003,7 +970,7 @@ function AutomationActivate() {
    $TaskTrigger.UserId = $TaskUser;
    $TaskTrigger.Delay = "PT0M";
    $MainScriptPath = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot "..\main.ps1"))
-   $TaskAction = New-ScheduledTaskAction -Execute "pwsh.exe" -Argument "-ExecutionPolicy Bypass -File `"$MainScriptPath`"";
+   $TaskAction = New-ScheduledTaskAction -Execute "pwsh.exe" -Argument "-ExecutionPolicy Bypass -File `"$MainScriptPath`" -WindowStyle Hidden";
    $TaskPrincipal = New-ScheduledTaskPrincipal -UserId $TaskUser -LogonType Interactive -RunLevel Highest;
    $TaskSettings = New-ScheduledTaskSettingsSet -StartWhenAvailable -AllowStartIfOnBatteries -DontStopOnIdleEnd;
    Register-ScheduledTask -TaskName $TaskName -Trigger $TaskTrigger -Action $TaskAction -Principal $TaskPrincipal -Settings $TaskSettings;
@@ -1020,6 +987,4 @@ function AutomationDeactivate() {
    Unregister-ScheduledTask -TaskName "CoreForge_Automation" -Confirm:$false
    RichTextBox $SystemWindowsControlsRichTextBox0 "Automation Deactivated" -Color ([System.Windows.Media.Brushes]::LightGreen) | Out-Null
    Window  | Out-Null
-   
-   
 }
