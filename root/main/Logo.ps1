@@ -6,10 +6,10 @@
    $SystemWindowsWindow.ResizeMode = "NoResize"
    $SystemWindowsWindow.Topmost = $true
    $SystemWindowsWindow.Width = 300
-   $SystemWindowsWindow.Height = 300
+   $SystemWindowsWindow.Height = 310
    $ScreenParameter = [System.Windows.SystemParameters]
    $SystemWindowsWindow.Left = ($ScreenParameter::PrimaryScreenWidth - 300) / 2
-   $SystemWindowsWindow.Top = ($ScreenParameter::PrimaryScreenHeight * 0.45) - (300 / 2)
+   $SystemWindowsWindow.Top = ($ScreenParameter::PrimaryScreenHeight * 0.45) - (310 / 2)
    $Logo = New-Object System.Windows.Controls.Image
    $Logo.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconBig.png")))
    $Logo.Width = 282

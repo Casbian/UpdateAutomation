@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CoreForge UI</title>
+    <style>
+        body {
+            background-color: #ffffff;
+            color: #ffffff;
+            font-family: "Agency FB", sans-serif;
+            font-size: 1rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .mainbody {
+            background: #000000;
+            padding: 50px;
+            border-radius: 15px;
+            text-align: center;
+            width: 100%;
+            max-width: 800px;
+            box-sizing: border-box;
+            position: relative;
+        }
+
+        /* Container for the Logo */
+        .logo-container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+
+        .logo-img {
+            width: 400px; /* Adjusted size for better visibility */
+            height: auto;
+            display: block;
+        }
+
+        .badge {
+            background: #000000;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 15px;
+            font-size: 1.2rem;
+            display: inline-block;
+            margin-top: 10px;
+            text-transform: uppercase;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            margin-bottom: 40px;
+            font-weight: 400;
+        }
+
+        .content-wrapper {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        h3 {
+            text-align: left;
+            font-size: 2rem;
+            margin-bottom: 10px;
+            margin-top: 0;
+            text-transform: uppercase;
+        }
+
+        .soon-header {
+            margin-top: 40px;
+        }
+
+        ul {
+            list-style: square;
+            padding: 0;
+            text-align: left;
+            list-style-position: inside;
+        }
+
+        li {
+            margin: 8px 0;
+            font-size: 1.2rem;
+        }
+
+        /* Styling for the nested sub-points */
+        ul li ul {
+            list-style-type: square;
+            margin-left: 30px;
+            margin-top: 5px;
+        }
+
+        ul li ul li {
+            font-size: 1rem;
+            margin: 2px 0;
+        }
+
+        .learn-more {
+            display: inline-block;
+            margin-top: 40px;
+            color: #0077ff; 
+            text-decoration: none; 
+            font-weight: bold;
+            font-size: 1.5rem;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+<body>
+
+<div class="mainbody">
+    <div class="logo-container">
+        <img src="https://raw.githubusercontent.com/Casbian/CoreForge/main/root/assets/IconBig.png" alt="CoreForge Logo" class="logo-img">
+    </div>
+    
+    <span class="badge">Work in Progress</span>
+    
+    <h2>Application to automate getting Updates on PC-Startup</h2>
+
+    <div class="content-wrapper">
+        <h3>Features</h3>
+        <ul>
+            <li>Normal and Automatic Launch Mode</li>
+            <li>1 Click Update Button
+                <ul>
+                    <li>Windows Update</li>
+                    <li>Application Updates</li>
+                </ul>
+            </li>
+            <li>Device Information</li>
+        </ul>
+
+        <h3 class="soon-header">Soon™</h3>
+        <ul>
+            <li>GPU Driver Implementation</li>
+            <li>More Settings</li>
+        </ul>
+        
+        <a href="#" class="learn-more">Learn More →</a>
+    </div>
+</div>
+
+</body>
+</html>
