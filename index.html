@@ -6,51 +6,56 @@
     <title>CoreForge UI</title>
     <style>
         body {
-            background-color: #ffffff;
-            color: #ffffff;
+            background-color: #000000;
+            color: #000000;
             font-family: "Agency FB", sans-serif;
             font-size: 1rem;
             display: flex;
+            flex-direction: column; 
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             margin: 0;
+            padding: 20px;
         }
 
-        .mainbody {
-            background: #000000;
-            padding: 50px;
-            border-radius: 15px;
-            text-align: center;
-            width: 100%;
-            max-width: 800px;
-            box-sizing: border-box;
-            position: relative;
-        }
-
-        /* Container for the Logo */
         .logo-container {
             width: 100%;
             display: flex;
             justify-content: center;
-            margin-bottom: 10px;
+            margin-bottom: 15px; 
+            position: relative;
+            z-index: 10;
         }
 
         .logo-img {
-            width: 400px; /* Adjusted size for better visibility */
+            width: 100%;
+            max-width: 300px;
             height: auto;
             display: block;
         }
 
+        .mainbody {
+            background: #ffffff;
+            padding: 30px 50px 20px 20px; 
+            border-radius: 15px;
+            text-align: center;
+            width: 45%;
+            
+            box-sizing: border-box;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
         .badge {
-            background: #000000;
-            color: white;
+            background: #000000; 
+            color: #ffffff;
             padding: 5px 15px;
             border-radius: 15px;
             font-size: 1.2rem;
             display: inline-block;
-            margin-top: 10px;
+            margin-top: 0;
             text-transform: uppercase;
+            font-weight: bold;
         }
 
         h2 {
@@ -88,7 +93,6 @@
             font-size: 1.2rem;
         }
 
-        /* Styling for the nested sub-points */
         ul li ul {
             list-style-type: square;
             margin-left: 30px;
@@ -109,15 +113,19 @@
             font-size: 1.5rem;
             text-transform: uppercase;
         }
+
+        .learn-more:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
 
+<div class="logo-container">
+    <img src="https://raw.githubusercontent.com/Casbian/CoreForge/main/root/assets/IconBig.png?v=1" alt="CoreForge Logo" class="logo-img">
+</div>
+
 <div class="mainbody">
-    <div class="logo-container">
-        <img src="https://raw.githubusercontent.com/Casbian/CoreForge/main/root/assets/IconBig.png" alt="CoreForge Logo" class="logo-img">
-    </div>
-    
     <span class="badge">Work in Progress</span>
     
     <h2>Application to automate getting Updates on PC-Startup</h2>
@@ -141,9 +149,9 @@
             <li>More Settings</li>
         </ul>
         
-        <a href="#" class="learn-more">Learn More →</a>
+        <a href="https://github.com/Casbian/CoreForge" class="learn-more">Learn More →</a>
     </div>
 </div>
 
 </body>
-</html>
+</html>s
