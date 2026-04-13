@@ -13,8 +13,8 @@
             padding: 0;
             display: flex;
             flex-direction: column;
-            height: 100vh; 
-            overflow: hidden; 
+            height: 100vh;
+            overflow: hidden; /* Keeps site non-scrollable */
         }
 
         .site-banner {
@@ -32,7 +32,7 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding: 10px 20px;
+            padding: 10px;
             box-sizing: border-box;
             min-height: 0;
         }
@@ -46,19 +46,19 @@
         }
 
         .logo-img {
-            width: 60%;
+            width: 50%;
             max-width: 220px;
             height: auto;
         }
 
         .mainbody {
             background: #ffffff;
-            width: 95%;
+            width: 98%;
             max-width: 850px; 
             border-radius: 15px;
             box-sizing: border-box;
             box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-            padding: 25px 40px;
+            padding: 20px 30px;
             display: flex;
             flex-direction: column;
         }
@@ -66,28 +66,28 @@
         .header-section {
             text-align: center;
             width: 100%;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
         }
 
+        /* Forced landscape layout for all devices */
         .card-horizontal-layout {
             display: flex;
-            flex-direction: row;
-            /* This controls the gap between the two columns */
+            flex-direction: row; 
             justify-content: flex-start; 
-            gap: 80px; 
+            gap: 10%; /* Percentage gap helps on smaller screens */
             text-align: left;
         }
 
         .badge {
             background: #000000; 
             color: #ffffff;
-            padding: 5px 15px;
+            padding: 4px 12px;
             border-radius: 15px;
             font-size: 1rem;
             display: inline-block;
             text-transform: uppercase;
             font-weight: bold;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
 
         h2 {
@@ -97,18 +97,13 @@
         }
 
         .content-column {
-            /* Remove flex: 1 to allow them to sit closer together on the left */
-            min-width: fit-content;
+            min-width: 0; /* Allows shrinking on mobile */
         }
 
         h3 {
-            font-size: 1.6rem;
-            margin-bottom: 8px;
+            font-size: 1.5rem;
+            margin-bottom: 5px;
             text-transform: uppercase;
-            margin-top: 0;
-        }
-
-        .soon-header {
             margin-top: 0;
         }
 
@@ -119,20 +114,20 @@
         }
 
         li {
-            margin: 4px 0;
-            font-size: 1.1rem;
-            white-space: nowrap; /* Prevents text wrapping to keep card height low */
+            margin: 2px 0;
+            font-size: 1rem;
+            white-space: nowrap; /* Keeps it strictly one line to maintain landscape shape */
         }
 
         ul li ul {
             list-style-type: square;
-            margin-left: 25px;
+            margin-left: 20px;
         }
 
         .footer-link-container {
             width: 100%;
             text-align: center;
-            margin-top: 20px;
+            margin-top: 15px;
         }
 
         .learn-more {
@@ -140,22 +135,17 @@
             color: #0077ff; 
             text-decoration: none; 
             font-weight: bold;
-            font-size: 1.3rem;
+            font-size: 1rem;
             text-transform: uppercase;
         }
 
-        @media (max-width: 768px) {
-            body { overflow-y: auto; height: auto; }
-            .card-horizontal-layout { 
-                flex-direction: column; 
-                gap: 20px; 
-                align-items: center;
-                text-align: center;
-            }
-            .mainbody { padding: 20px; }
-            h2 { font-size: 1.2rem; }
-            li { white-space: normal; }
-            ul li ul { margin-left: 0; list-style-position: inside; }
+        /* Scaling for very small phones to prevent horizontal overflow */
+        @media (max-width: 480px) {
+            h2 { font-size: 1.5rem; }
+            h3 { font-size: 1.5rem; }
+            li { font-size: 1rem; }
+            .mainbody { padding: 15px; }
+            .card-horizontal-layout { gap: 5%; }
         }
     </style>
 </head>
@@ -171,7 +161,7 @@
         <div class="mainbody">
             <div class="header-section">
                 <span class="badge">Work in Progress</span>
-                <h2>Application to automate getting Updates on PC-Startup</h2>
+                <h2>Application to automate getting Updates on PC-Startup</h2><br>
             </div>
 
             <div class="card-horizontal-layout">
@@ -185,21 +175,22 @@
                                 <li>Application Updates</li>
                             </ul>
                         </li>
-                        <li>Device Information</li>
                     </ul>
                 </div>
 
                 <div class="content-column">
-                    <h3 class="soon-header">Soon™</h3>
+                    <h3>Soon™</h3>
                     <ul>
                         <li>GPU Driver Implementation</li>
                         <li>More Settings</li>
+                        <li>Device Information</li>
                     </ul>
                 </div>
             </div>
 
             <div class="footer-link-container">
-                <a href="https://github.com/Casbian/CoreForge" class="learn-more">Learn More →</a>
+                <br>
+                <a href="https://github.com/Casbian/CoreForge" class="learn-more">Learn More >>></a>
             </div>
         </div>
     </div>
