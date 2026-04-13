@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -6,179 +6,157 @@
     <title>CoreForge UI</title>
     <style>
         body {
-            background-color: #000000;
-            color: #000000;
+            background-color: #000;
+            color: #000;
             font-family: "Agency FB", sans-serif;
             margin: 0;
             padding: 0;
             display: flex;
             flex-direction: column;
-            height: 100vh;
-            overflow: hidden; /* Keeps site non-scrollable */
+            min-height: 100vh;
         }
-
+        @media (min-width: 769px) {
+            body { height: 100vh; overflow: hidden; }
+        }
         .site-banner {
             width: 100%;
             height: auto;
-            max-height: 12vh; 
+            max-height: 10vh; 
             object-fit: cover;
-            display: block;
             flex-shrink: 0;
+            display: block;
         }
-
         .main-content {
             flex: 1;
             display: flex;
-            flex-direction: column;
+            flex-direction: row;
             justify-content: center;
             align-items: center;
-            padding: 10px;
             box-sizing: border-box;
             min-height: 0;
+            gap: 100px;
         }
-
-        .logo-container {
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            margin-bottom: 10px;
+        .logo-img {
+            width: 300px;
+            height: 310px;
+            object-fit: contain;
+            margin-bottom: 15px;
             flex-shrink: 0;
         }
-
-        .logo-img {
-            width: 50%;
-            max-width: 220px;
-            height: auto;
-        }
-
         .mainbody {
-            background: #ffffff;
-            width: 98%;
-            max-width: 850px; 
+            background: linear-gradient(to bottom, #6bd5ff 0%, #8b18ff 100%);
             border-radius: 15px;
-            box-sizing: border-box;
             box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-            padding: 20px 30px;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .header-section {
+            padding: 25px 40px;
             text-align: center;
-            width: 100%;
-            margin-bottom: 10px;
+            max-width: 95%;
         }
-
-        /* Forced landscape layout for all devices */
-        .card-horizontal-layout {
-            display: flex;
-            flex-direction: row; 
-            justify-content: flex-start; 
-            gap: 10%; /* Percentage gap helps on smaller screens */
-            text-align: left;
-        }
-
         .badge {
-            background: #000000; 
-            color: #ffffff;
-            padding: 4px 12px;
+            background: #000; 
+            color: #fff;
+            padding: 5px 15px;
             border-radius: 15px;
             font-size: 1rem;
             display: inline-block;
             text-transform: uppercase;
             font-weight: bold;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
         }
-
         h2 {
             font-size: 1.5rem;
-            margin: 0;
+            margin: 0 0 20px 0;
             font-weight: 400;
         }
-
-        .content-column {
-            min-width: 0; /* Allows shrinking on mobile */
+        .card-inner-layout {
+            display: center;
+            justify-content: center;
+            align-items: center;
+            gap: 40px;
         }
-
+        .content-side {
+            min-width: 160px;
+        }
+        .left-align { text-align: left; }
+        .right-align { text-align: right; }
+        .manual-img {
+            width: 450px; 
+            height: 250px;
+            object-fit: contain;
+            display: block;
+        }
         h3 {
-            font-size: 1.5rem;
-            margin-bottom: 5px;
+            font-size: 2rem;
+            margin: 0 0 10px 0;
             text-transform: uppercase;
-            margin-top: 0;
         }
-
         ul {
             list-style: none;
             padding: 0;
             margin: 0;
         }
-
         li {
-            margin: 2px 0;
-            font-size: 1rem;
-            white-space: nowrap; /* Keeps it strictly one line to maintain landscape shape */
+            margin: 0px 0;
+            font-size: 1.3rem;
+            white-space: nowrap;
         }
-
         ul li ul {
             list-style-type: square;
-            margin-left: 20px;
+            margin-left: 25px;
         }
-
-        .footer-link-container {
-            width: 100%;
-            text-align: center;
-            margin-top: 15px;
+        .right-align ul {
+            display: inline-block;
+            text-align: right;
+            padding: 0;
+            margin: 0;
         }
-
         .learn-more {
             display: inline-block;
-            color: #0077ff; 
+            margin-top: 20px;
+            color: #0099ff; 
             text-decoration: none; 
             font-weight: bold;
-            font-size: 1rem;
+            font-size: 1.5rem;
             text-transform: uppercase;
         }
-
-        /* Scaling for very small phones to prevent horizontal overflow */
-        @media (max-width: 480px) {
-            h2 { font-size: 1rem; }
-            h3 { font-size: 1rem; }
-            li { font-size: 0.5rem; }
-            .mainbody { padding: 15px; }
-            .card-horizontal-layout { gap: 5%; }
+        @media (max-width: 900px) {
+            .card-inner-layout { gap: 20px; }
+            .manual-img { width: 350px; height: auto; }
+        }
+        @media (max-width: 768px) {
+            .logo-img { width: 80%; height: auto; max-width: 300px; }
+            .card-inner-layout { flex-direction: column; }
+            .left-align, .right-align, .right-align ul { text-align: center; }
+            .right-align ul li ul { text-align: left; }
+            li { white-space: normal; }
+            .manual-img { width: 100%; height: auto; margin: 15px 0; }
+            .site-banner { max-height: 80px; }
         }
     </style>
 </head>
 <body>
-
-    <img src="https://raw.githubusercontent.com/Casbian/CoreForge/main/root/assets/webbannertop.png" alt="" class="site-banner">
-
+    <img src="https://raw.githubusercontent.com/Casbian/CoreForge/main/root/assets/webbannertop.png" alt="Top Banner" class="site-banner">
     <div class="main-content">
-        <div class="logo-container">
-            <img src="https://raw.githubusercontent.com/Casbian/CoreForge/main/root/assets/IconBig.png" alt="CoreForge Logo" class="logo-img">
-        </div>
-
         <div class="mainbody">
-            <div class="header-section">
-                <span class="badge">Work in Progress</span>
-                <h2>Application to automate getting Updates on PC-Startup</h2><br>
-            </div>
-
-            <div class="card-horizontal-layout">
-                <div class="content-column">
+            <span class="badge">Work in Progress</span><br>
+            <h2>Application to automate getting Updates on PC-Startup</h2>
+            <div class="card-inner-layout">
+                <div class="content-side left-align">
                     <h3>Features</h3>
                     <ul>
-                        <li>Normal and Automatic Launch Mode</li>
+                        <li>Normal and Auto Launch Mode</li>
                         <li>1 Click Update Button
                             <ul>
-                                <li>Windows Update</li>
                                 <li>Application Updates</li>
+                                <li>Windows Update</li>
+                                <ul>
+                                    <li>Reboot Supression Prompt</li>
+                                </ul>
                             </ul>
                         </li>
                     </ul>
                 </div>
-
-                <div class="content-column">
+                <img src="https://raw.githubusercontent.com/Casbian/CoreForge/main/root/assets/webmanual.png" alt="Manual" class="manual-img">
+                <div class="content-side right-align">
                     <h3>Soon™</h3>
                     <ul>
                         <li>GPU Driver Implementation</li>
@@ -187,15 +165,10 @@
                     </ul>
                 </div>
             </div>
-
-            <div class="footer-link-container">
-                <br>
-                <a href="https://github.com/Casbian/CoreForge" class="learn-more">Learn More >>></a>
-            </div>
+            <a href="https://github.com/Casbian/CoreForge" class="learn-more">Learn More >>></a>
         </div>
+        <img src="https://raw.githubusercontent.com/Casbian/CoreForge/main/root/assets/weblogo.png" alt="CoreForge Logo" class="logo-img">
     </div>
-
-    <img src="https://raw.githubusercontent.com/Casbian/CoreForge/main/root/assets/webbannerbottom.png" alt="" class="site-banner">
-
+    <img src="https://raw.githubusercontent.com/Casbian/CoreForge/main/root/assets/webbannerbottom.png" alt="Bottom Banner" class="site-banner">
 </body>
 </html>
