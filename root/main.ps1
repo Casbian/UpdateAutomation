@@ -28,7 +28,6 @@ LogoContinueOneFrame $SystemWindowsWindow $LoadingBar $LoadingBarFrames 3
 LogoContinueOneFrame $SystemWindowsWindow $LoadingBar $LoadingBarFrames 4
 LogoContinueOneFrame $SystemWindowsWindow $LoadingBar $LoadingBarFrames 5
 LogoContinueOneFrame $SystemWindowsWindow $LoadingBar $LoadingBarFrames 6
-Pause
 LogoContinueOneFrame $SystemWindowsWindow $LoadingBar $LoadingBarFrames 7
 $SystemWindowsWindow, $SystemWindowsControlsCanvas, $AutomationButton, $UpdateNowButton, $InfoButton, $SystemWindowsControlsRichTextBox0, $SystemWindowsControlsRichTextBox1, $SystemWindowsControlsRichTextBox2, $AutomationCheck = System
 $AutomationButton.Active = $true
