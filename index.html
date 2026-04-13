@@ -17,6 +17,7 @@
             min-height: 100vh;
             margin: 0;
             padding: 20px;
+            box-sizing: border-box;
         }
 
         .logo-container {
@@ -29,7 +30,7 @@
         }
 
         .logo-img {
-            width: 100%;
+            width: 80%; /* Smaller on mobile */
             max-width: 300px;
             height: auto;
             display: block;
@@ -37,13 +38,14 @@
 
         .mainbody {
             background: #ffffff;
-            padding: 30px 50px 20px 20px; 
+            /* Changed from fixed 45% to a flexible width with a max-limit */
+            width: 100%;
+            max-width: 600px; 
+            padding: 30px 20px; /* Balanced padding for mobile */
             border-radius: 15px;
             text-align: center;
-            width: 45%;
-            
             box-sizing: border-box;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
         .badge {
@@ -51,7 +53,7 @@
             color: #ffffff;
             padding: 5px 15px;
             border-radius: 15px;
-            font-size: 1.2rem;
+            font-size: 1rem;
             display: inline-block;
             margin-top: 0;
             text-transform: uppercase;
@@ -59,63 +61,85 @@
         }
 
         h2 {
-            font-size: 1.5rem;
-            margin-bottom: 40px;
+            font-size: 1.2rem;
+            margin-bottom: 30px;
             font-weight: 400;
+            padding: 0 10px;
         }
 
         .content-wrapper {
-            max-width: 500px;
+            width: 100%;
+            max-width: 400px;
             margin: 0 auto;
+            text-align: left;
         }
 
         h3 {
-            text-align: left;
-            font-size: 2rem;
+            font-size: 1.6rem;
             margin-bottom: 10px;
             margin-top: 0;
             text-transform: uppercase;
         }
 
         .soon-header {
-            margin-top: 40px;
+            margin-top: 30px;
         }
 
         ul {
-            list-style: square;
+            list-style: none;
             padding: 0;
-            text-align: left;
-            list-style-position: inside;
+            margin: 0;
         }
 
         li {
             margin: 8px 0;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
+            line-height: 1.2;
         }
 
         ul li ul {
             list-style-type: square;
-            margin-left: 30px;
+            margin-left: 25px;
             margin-top: 5px;
         }
 
         ul li ul li {
-            font-size: 1rem;
-            margin: 2px 0;
+            font-size: 0.95rem;
         }
 
         .learn-more {
             display: inline-block;
-            margin-top: 40px;
+            margin-top: 30px;
             color: #0077ff; 
             text-decoration: none; 
             font-weight: bold;
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             text-transform: uppercase;
+            transition: transform 0.2s ease;
         }
 
         .learn-more:hover {
             text-decoration: underline;
+            transform: scale(1.05);
+        }
+
+        /* Desktop Adjustments */
+        @media (min-width: 768px) {
+            .mainbody {
+                padding: 40px 50px;
+            }
+            
+            h2 {
+                font-size: 1.5rem;
+            }
+
+            h3 {
+                font-size: 2rem;
+            }
+            
+            .badge {
+                font-size: 1.2rem;
+            }
         }
     </style>
 </head>
@@ -149,9 +173,11 @@
             <li>More Settings</li>
         </ul>
         
-        <a href="https://github.com/Casbian/CoreForge" class="learn-more">Learn More →</a>
+        <div style="text-align: center;">
+            <a href="https://github.com/Casbian/CoreForge" class="learn-more">Learn More →</a>
+        </div>
     </div>
 </div>
 
 </body>
-</html>s
+</html>
