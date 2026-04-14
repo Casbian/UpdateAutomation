@@ -1,8 +1,10 @@
 ﻿param(
    [switch]$EXELaunch
 )
+
 Import-Module "$PSScriptRoot\update\update.psm1"
 $CurrentVersion = Update $MyInvocation
+
 Import-Module "$PSScriptRoot\flag\flag.psm1"
 if ($EXELaunch -eq $false) {
    $FlagValue = ChecklastautomatedrunFlag $PSScriptRoot
@@ -10,28 +12,35 @@ if ($EXELaunch -eq $false) {
       exit
    }
 }
+
 Import-Module "$PSScriptRoot\main\main.psm1"
 Import-Module "$PSScriptRoot\network\network.psm1"
 Import-Module "$PSScriptRoot\richtextbox\richtextbox.psm1"
 Import-Module "$PSScriptRoot\thread\thread.psm1" 
 Import-Module "$PSScriptRoot\window\window.psm1"
+
 Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName System.Drawing
 Add-Type -AssemblyName PresentationFramework
 Add-Type -AssemblyName PresentationCore
+
 $SystemWindowsWindow, $LoadingBar, $LoadingBarFrames = Logo
 LogoContinueOneFrame $SystemWindowsWindow $LoadingBar $LoadingBarFrames 0
+
 $ThreadPool = ThreadPool
 LogoContinueOneFrame $SystemWindowsWindow $LoadingBar $LoadingBarFrames 1
+
 LogoContinueOneFrame $SystemWindowsWindow $LoadingBar $LoadingBarFrames 2
 LogoContinueOneFrame $SystemWindowsWindow $LoadingBar $LoadingBarFrames 3
 LogoContinueOneFrame $SystemWindowsWindow $LoadingBar $LoadingBarFrames 4
 LogoContinueOneFrame $SystemWindowsWindow $LoadingBar $LoadingBarFrames 5
 LogoContinueOneFrame $SystemWindowsWindow $LoadingBar $LoadingBarFrames 6
 LogoContinueOneFrame $SystemWindowsWindow $LoadingBar $LoadingBarFrames 7
+
 $SystemWindowsWindow, $SystemWindowsControlsCanvas, $AutomationButton, $UpdateNowButton, $InfoButton, $SystemWindowsControlsRichTextBox0, $SystemWindowsControlsRichTextBox1, $SystemWindowsControlsRichTextBox2, $AutomationCheck = System
 $AutomationButton.Active = $true
 $UpdateNowButton.Active = $true
+
 RichTextBox $SystemWindowsControlsRichTextBox0 "SYSTEM v$CurrentVersion" -Clear | Out-Null
 RichTextBox $SystemWindowsControlsRichTextBox0 "" | Out-Null
 RichTextBox $SystemWindowsControlsRichTextBox0 "Task                                    |                                                                                                             RESULT" | Out-Null
@@ -39,6 +48,7 @@ RichTextBox $SystemWindowsControlsRichTextBox0 "________________________________
 RichTextBox $SystemWindowsControlsRichTextBox0 "" | Out-Null
 RichTextBox $SystemWindowsControlsRichTextBox0 "" | Out-Null
 Window | Out-Null
+
 try {
    $Result = Thread {
       param($Function, $Parameter)
@@ -65,6 +75,7 @@ try {
    RichTextBox $SystemWindowsControlsRichTextBox0 ">> SCAN Network                         | ERROR" -RemoveLast -Color ([System.Windows.Media.Brushes]::Red) | Out-Null
    Window | Out-Null
 }
+
 try {
    $Result = Thread {
       param($Function, $Parameter)
@@ -90,6 +101,7 @@ try {
 }
 RichTextBox $SystemWindowsControlsRichTextBox0 "" | Out-Null
 Window | Out-Null
+
 try {
    $Result = Thread {
       param($Function, $Parameter)
@@ -115,6 +127,7 @@ try {
    RichTextBox $SystemWindowsControlsRichTextBox0 "> PreSCAN Winget                        | ERROR" -RemoveLast -Color ([System.Windows.Media.Brushes]::Red) | Out-Null
    Window | Out-Null
 }
+
 if ($RebootFlag -eq $true) {
    $ResultQuestion = [System.Windows.MessageBox]::Show(
    "It was detected that a Reboot is needed`n`nDo you want to reboot now ?",
@@ -127,6 +140,7 @@ if ($RebootFlag -eq $true) {
       exit
    }
 }
+
 if ($EXELaunch -eq $true) {
    $UserName = [System.Environment]::GetEnvironmentVariable("USERNAME")
    RichTextBox $SystemWindowsControlsRichTextBox0 "SYSTEM v$CurrentVersion" -Clear | Out-Null
@@ -142,6 +156,7 @@ if ($EXELaunch -eq $true) {
    $ThreadPool.Dispose()
    exit
 }
+
 if ($AutomationCheck) {
    $UserName = [System.Environment]::GetEnvironmentVariable("USERNAME")
    RichTextBox $SystemWindowsControlsRichTextBox0 "SYSTEM v$CurrentVersion" -Clear | Out-Null

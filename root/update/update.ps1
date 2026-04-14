@@ -1,6 +1,6 @@
 ﻿function Update($MyInvocation) {
    try {
-      $LocalVersion = "1.1.0"
+      $LocalVersion = "1.1.1"
       $InstallDir = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Path)
       $ScriptPath = $MyInvocation.MyCommand.Path
       $Release = Invoke-RestMethod "https://api.github.com/repos/Casbian/CoreForge/releases/latest"
