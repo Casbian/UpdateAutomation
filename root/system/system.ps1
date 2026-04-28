@@ -1,4 +1,41 @@
-﻿function System(){
+﻿function SystemLogo(){
+   $SystemWindowsWindow = New-Object System.Windows.Window
+   $SystemWindowsWindow.WindowStyle = "None"
+   $SystemWindowsWindow.AllowsTransparency = $true
+   $SystemWindowsWindow.Background = "Transparent"
+   $SystemWindowsWindow.ResizeMode = "NoResize"
+   $SystemWindowsWindow.Topmost = $true
+   $SystemWindowsWindow.Width = 300
+   $SystemWindowsWindow.Height = 310
+   $ScreenParameter = [System.Windows.SystemParameters]
+   $SystemWindowsWindow.Left = ($ScreenParameter::PrimaryScreenWidth - 300) / 2
+   $SystemWindowsWindow.Top = ($ScreenParameter::PrimaryScreenHeight * 0.45) - (310 / 2)
+   $Logo = New-Object System.Windows.Controls.Image
+   $Logo.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconBig.png")))
+   $Logo.Width = 282
+   $Logo.Height = 282
+   $LoadingBar = New-Object System.Windows.Controls.Image
+   $LoadingBar.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\LoadingBar1.png")))
+   $LoadingBar.Width = 292
+   $LoadingBar.Height = 30
+   $LoadingBarFrames = @("LoadingBar2","LoadingBar3","LoadingBar4","LoadingBar5","LoadingBar6","LoadingBar7","LoadingBar8","LoadingBar9")
+   $SystemWindowsControlsCanvas = New-Object System.Windows.Controls.Canvas
+   [System.Windows.Controls.Canvas]::SetTop($LoadingBar, 270)
+   $SystemWindowsControlsCanvas.Children.Add($Logo) | Out-Null
+   $SystemWindowsControlsCanvas.Children.Add($LoadingBar) | Out-Null
+   $SystemWindowsWindow.Content = $SystemWindowsControlsCanvas
+   $SystemWindowsWindow.Show()
+   return $SystemWindowsWindow, $LoadingBar, $LoadingBarFrames
+}
+function SystemLogoContinueOneFrame($SystemWindowsWindow, $LoadingBar, $LoadingBarFrames, $Counter) {
+   $LoadingBar.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\$($LoadingBarFrames[$Counter]).png")))
+   Window
+   if ($Counter -eq 7) {
+      $Counter = 0
+      $SystemWindowsWindow.Close()
+   }
+}
+function System(){
    $SystemWindowsWindow = New-Object System.Windows.Window
    $SystemWindowsWindow.WindowStyle = "None"
    $SystemWindowsWindow.AllowsTransparency = $true
@@ -6,14 +43,14 @@
    $SystemWindowsWindow.ResizeMode = "NoResize"
    $SystemWindowsWindow.Topmost = $false
    $SystemWindowsWindow.Width = 1350
-   $SystemWindowsWindow.Height = 750
+   $SystemWindowsWindow.Height = 880
    $ScreenParameter = [System.Windows.SystemParameters]
    $SystemWindowsWindow.Left = ($ScreenParameter::PrimaryScreenWidth - 900) / 2
    $SystemWindowsWindow.Top = ($ScreenParameter::PrimaryScreenHeight * 0.30) - (500 / 2)
    $Background = New-Object System.Windows.Controls.Image
    $Background.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\BackgroundSystem.png")))
    $Background.Width = 900
-   $Background.Height = 500
+   $Background.Height = 630
    $Logo = New-Object System.Windows.Controls.Image
    $Logo.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconSmall.png")))
    $Logo.Width = 44
@@ -286,7 +323,7 @@
             $this.Tag.Active = $true
             $this.Tag.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\BarActiveHover.png")))
             $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconSystemInfoPressed.png")))
-            $EnvironmentValues, $NetworkValues, $CPUValues, $GPUValues, $RAMValues = ListSystemInfo
+            $EnvironmentValues, $NetworkValues, $CPUValues, $GPUValues, $RAMValues = SystemInfoGet
             SystemInfo $SystemWindowsControlsCanvas $this.Tag $EnvironmentValues $NetworkValues $CPUValues $GPUValues $RAMValues
          }
       } else {
@@ -308,7 +345,7 @@
             $this.Tag.Active = $true
             $this.Tag.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\BarActiveHover.png")))
             $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconSystemInfoPressed.png")))
-            $EnvironmentValues, $NetworkValues, $CPUValues, $GPUValues, $RAMValues = ListSystemInfo
+            $EnvironmentValues, $NetworkValues, $CPUValues, $GPUValues, $RAMValues = SystemInfoGet
             SystemInfo $SystemWindowsControlsCanvas $this.Tag $EnvironmentValues $NetworkValues $CPUValues $GPUValues $RAMValues
          }
       } else {
@@ -481,6 +518,21 @@
    $SystemWindowsControlsRichTextBox2.Document.PagePadding = [System.Windows.Thickness]::new(0)
    $SystemWindowsControlsRichTextBox2.Background = [System.Windows.Media.Brushes]::Transparent
    $SystemWindowsControlsRichTextBox2.Foreground = [System.Windows.Media.Brushes]::White
+
+   $SystemWindowsControlsRichTextBoxImage3 = New-Object System.Windows.Controls.Image
+   $SystemWindowsControlsRichTextBoxImage3.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\TextBoxGPU.png")))
+   $SystemWindowsControlsRichTextBoxImage3.Width = 880
+   $SystemWindowsControlsRichTextBoxImage3.Height = 120
+   $SystemWindowsControlsRichTextBox3 = New-Object System.Windows.Controls.RichTextBox
+   $SystemWindowsControlsRichTextBox3.FontFamily = New-Object System.Windows.Media.FontFamily("Consolas")
+   $SystemWindowsControlsRichTextBox3.FontSize = 10
+   $SystemWindowsControlsRichTextBox3.Width = 880
+   $SystemWindowsControlsRichTextBox3.Height = 100
+   $SystemWindowsControlsRichTextBox3.BorderThickness = 0
+   $SystemWindowsControlsRichTextBox3.Document.PagePadding = [System.Windows.Thickness]::new(0)
+   $SystemWindowsControlsRichTextBox3.Background = [System.Windows.Media.Brushes]::Transparent
+   $SystemWindowsControlsRichTextBox3.Foreground = [System.Windows.Media.Brushes]::White
+
    [System.Windows.Controls.Canvas]::SetLeft($Background, 0)
    [System.Windows.Controls.Canvas]::SetTop($Background, 250)
    [System.Windows.Controls.Canvas]::SetLeft($Logo, 0)
@@ -519,6 +571,12 @@
    [System.Windows.Controls.Canvas]::SetTop($SystemWindowsControlsRichTextBoxImage2, 620)
    [System.Windows.Controls.Canvas]::SetLeft($SystemWindowsControlsRichTextBox2, 435)
    [System.Windows.Controls.Canvas]::SetTop($SystemWindowsControlsRichTextBox2, 630)
+
+   [System.Windows.Controls.Canvas]::SetLeft($SystemWindowsControlsRichTextBoxImage3, 10)
+   [System.Windows.Controls.Canvas]::SetTop($SystemWindowsControlsRichTextBoxImage3, 750)
+   [System.Windows.Controls.Canvas]::SetLeft($SystemWindowsControlsRichTextBox3, 15)
+   [System.Windows.Controls.Canvas]::SetTop($SystemWindowsControlsRichTextBox3, 760)
+
    $SystemWindowsControlsCanvas = New-Object System.Windows.Controls.Canvas
    $SystemWindowsWindow.Content = $SystemWindowsControlsCanvas
    $SystemWindowsControlsCanvas.Children.Add($Background) | Out-Null
@@ -540,8 +598,10 @@
    $SystemWindowsControlsCanvas.Children.Add($SystemWindowsControlsRichTextBox1) | Out-Null
    $SystemWindowsControlsCanvas.Children.Add($SystemWindowsControlsRichTextBoxImage2) | Out-Null
    $SystemWindowsControlsCanvas.Children.Add($SystemWindowsControlsRichTextBox2) | Out-Null
+   $SystemWindowsControlsCanvas.Children.Add($SystemWindowsControlsRichTextBoxImage3) | Out-Null
+   $SystemWindowsControlsCanvas.Children.Add($SystemWindowsControlsRichTextBox3) | Out-Null
    $SystemWindowsWindow.Show()
-   return $SystemWindowsWindow, $SystemWindowsControlsCanvas, $AutomationButton, $UpdateNowButton, $InfoButton, $SystemWindowsControlsRichTextBox0, $SystemWindowsControlsRichTextBox1, $SystemWindowsControlsRichTextBox2, $AutomationCheck
+   return $SystemWindowsWindow, $SystemWindowsControlsCanvas, $AutomationButton, $UpdateNowButton, $InfoButton, $SystemWindowsControlsRichTextBox0, $SystemWindowsControlsRichTextBox1, $SystemWindowsControlsRichTextBox2, $SystemWindowsControlsRichTextBox3, $AutomationCheck
 }
 function SystemSettings($SystemWindowsControlsCanvas, $SettingsButton) {
    $Elements = [System.Collections.Generic.List[System.Windows.UIElement]]::new()
@@ -851,11 +911,54 @@ function SystemInfo($SystemWindowsControlsCanvas, $InfoButton, $EnvironmentValue
    $SystemWindowsControlsCanvas.Children.Add($CloseButton.Icon) | Out-Null
    $Elements.Add($CloseButton.Icon)
 }
+function SystemInfoGet() {
+   $Environment = @('COMPUTERNAME','USERDOMAIN','LOGONSERVER', 'USERNAME')
+   $EnvironmentValues = @()
+   foreach ($Variable in $Environment) {
+      $EnvironmentValues += [System.Environment]::GetEnvironmentVariable($Variable)
+   }
+   $UserID = [System.Security.Principal.WindowsIdentity]::GetCurrent()
+   $UserPrincipal = New-Object System.Security.Principal.WindowsPrincipal($UserID)
+   $UserPrincipal = $UserPrincipal.IsInRole([System.Security.Principal.WindowsBuiltInRole]::Administrator)
+   $EnvironmentValues += $UserPrincipal
+   $OS = Get-CimInstance Win32_OperatingSystem
+   $EnvironmentValues += $OS.Caption
+   $EnvironmentValues += $OS.OSArchitecture
+   $EnvironmentValues += @{1='Workstation';2='Domain Controller';3='Server'}[[int]$OS.ProductType]
+   $EnvironmentValues += ((Get-Date) - $OS.LastBootUpTime).ToString("d'd 'h'h 'm'm'")
+   $NetworkValues = @()
+   Get-CimInstance Win32_NetworkAdapterConfiguration | Where-Object { $_.IPEnabled } | ForEach-Object {
+   $NetworkValues += $_.Description
+   $NetworkValues += $_.MACAddress
+   $NetworkValues += ($_.IPAddress | Where-Object { $_ -notmatch ':' }) -join ', '
+   }
+   $CPUValues = @()
+   Get-CimInstance Win32_Processor | ForEach-Object {
+   $CPUValues += $_.Name.Trim()
+   $CPUValues += @{0='x86';1='MIPS';2='Alpha';3='PowerPC';5='ARM';6='ia64';9='x64'}[[int]$_.Architecture]
+   $CPUValues += $_.NumberOfCores
+   $CPUValues += $_.NumberOfLogicalProcessors
+   }
+   $GPUValues = @()
+   Get-CimInstance Win32_VideoController | ForEach-Object {
+   $GPUValues += $_.Name
+   $GPUValues += $_.DriverVersion
+   }
+   $RAMValues = @()
+   Get-CimInstance Win32_PhysicalMemory | ForEach-Object {
+   $RAMValues += $_.DeviceLocator
+   $RAMValues += [math]::Round($_.Capacity / 1GB, 1)
+   $RAMValues += $_.Speed
+   }
+   return $EnvironmentValues, $NetworkValues, $CPUValues, $GPUValues, $RAMValues
+}
 function UpdateRun($AppList) {
+   RichTextBox $SystemWindowsControlsRichTextBox0 ""  | Out-Null
    RichTextBox $SystemWindowsControlsRichTextBox0 ""  | Out-Null
    RichTextBox $SystemWindowsControlsRichTextBox0 "Update Run"  | Out-Null
    RichTextBox $SystemWindowsControlsRichTextBox0 "______________________________________________________________________________"  | Out-Null
    RichTextBox $SystemWindowsControlsRichTextBox0 ""  | Out-Null
+   RichTextBox $SystemWindowsControlsRichTextBox0 "Windows Updates"  | Out-Null
    RichTextBox $SystemWindowsControlsRichTextBox0 ""  | Out-Null
    Window  | Out-Null
    $Result = Thread {
@@ -863,15 +966,18 @@ function UpdateRun($AppList) {
       $FunctionBlock = [scriptblock]::Create($Function)
       & $FunctionBlock $Parameter
    } -ThreadPool $ThreadPool -Function ${function:UpdateRunWindowsUpdate} -TaskName "Windows Updates"
-   RichTextBox $SystemWindowsControlsRichTextBox0 ">> Windows Update                       | ✓" -RemoveLast -Color ([System.Windows.Media.Brushes]::LightGreen) | Out-Null
-   Window | Out-Null
+   RichTextBox $SystemWindowsControlsRichTextBox0 ""  -RemoveLast -Replace | Out-Null
+   Window  | Out-Null
    $Lines = $Result -split "`r?`n"
    foreach ($Line in $Lines) {
       if (-not [string]::IsNullOrWhiteSpace($Line)) {
-         RichTextBox $SystemWindowsControlsRichTextBox0 ">> $($Line.Trim())" -Color ([System.Windows.Media.Brushes]::Cyan) | Out-Null
+         RichTextBox $SystemWindowsControlsRichTextBox0 ">> $($Line.Trim())" -Color ([System.Windows.Media.Brushes]::LightGreen) | Out-Null
          Window | Out-Null
       }
    }
+   RichTextBox $SystemWindowsControlsRichTextBox0 "______________________________________________________________________________"  | Out-Null
+   RichTextBox $SystemWindowsControlsRichTextBox0 ""  | Out-Null
+   RichTextBox $SystemWindowsControlsRichTextBox0 "Application Updates"  | Out-Null
    RichTextBox $SystemWindowsControlsRichTextBox0 ""  | Out-Null
    Window | Out-Null
    $Result = Thread {
@@ -879,64 +985,68 @@ function UpdateRun($AppList) {
       $FunctionBlock = [scriptblock]::Create($Function)
       & $FunctionBlock $Parameter
    } -ThreadPool $ThreadPool -Function ${function:UpdateRunWinget} -Parameter $AppList -TaskName "App Updates"
-   RichTextBox $SystemWindowsControlsRichTextBox0 ">> App Update                           | ✓" -RemoveLast -Color ([System.Windows.Media.Brushes]::LightGreen) | Out-Null
-   Window | Out-Null
+   RichTextBox $SystemWindowsControlsRichTextBox0 ""  -RemoveLast -Replace | Out-Null
+   Window  | Out-Null
    $Lines = $Result -split "`r?`n"
    foreach ($Line in $Lines) {
       if (-not [string]::IsNullOrWhiteSpace($Line)) {
-         RichTextBox $SystemWindowsControlsRichTextBox0 ">> $($Line.Trim())" -Color ([System.Windows.Media.Brushes]::Cyan) | Out-Null
+         RichTextBox $SystemWindowsControlsRichTextBox0 ">> $($Line.Trim())" -Color ([System.Windows.Media.Brushes]::LightGreen) | Out-Null
          Window | Out-Null
       }
    }
-   RichTextBox $SystemWindowsControlsRichTextBox0 "" | Out-Null
+   RichTextBox $SystemWindowsControlsRichTextBox0 "______________________________________________________________________________"  | Out-Null
+   RichTextBox $SystemWindowsControlsRichTextBox0 ""  | Out-Null
+   RichTextBox $SystemWindowsControlsRichTextBox0 "ReScan"  | Out-Null
+   RichTextBox $SystemWindowsControlsRichTextBox0 ""  | Out-Null
    Window | Out-Null
    try {
       $Result = Thread {
          param($Function, $Parameter)
          $FunctionBlock = [scriptblock]::Create($Function)
          & $FunctionBlock $Parameter
-      } -ThreadPool $ThreadPool -Function ${function:ListWindowsUpdate} -TaskName "ReScan"
+      } -ThreadPool $ThreadPool -Function ${function:WindowsUpdateGetStatus} -TaskName "ReSCAN Windows Update"
       if ($Result -eq 0) {
+         RichTextBox $SystemWindowsControlsRichTextBox0 ">> ReSCAN Windows Update                | No Windows Updates available" -RemoveLast -Color ([System.Windows.Media.Brushes]::LightGreen) | Out-Null
          RichTextBox $SystemWindowsControlsRichTextBox1 "No Windows Updates available" -Clear -Color ([System.Windows.Media.Brushes]::LightGreen) | Out-Null
+         RichTextBox $SystemWindowsControlsRichTextBox0 "" | Out-Null
          Window | Out-Null
       } elseif ($Result -eq 1) {
          $RebootFlag = $true
+         RichTextBox $SystemWindowsControlsRichTextBox0 ">> ReSCAN Windows Update                | No Windows Updates available - Reboot Required" -RemoveLast -Color ([System.Windows.Media.Brushes]::LightGreen) | Out-Null
          RichTextBox $SystemWindowsControlsRichTextBox1 "No Windows Updates available - Reboot Required" -Clear -Color ([System.Windows.Media.Brushes]::LightGreen) | Out-Null
+         RichTextBox $SystemWindowsControlsRichTextBox0 "" | Out-Null
          Window | Out-Null
       } else {
          RichTextBox $SystemWindowsControlsRichTextBox1 $Result -Clear | Out-Null
          Window | Out-Null
       }
-      RichTextBox $SystemWindowsControlsRichTextBox0 ">> ReScan                               | ✓" -RemoveLast -Color ([System.Windows.Media.Brushes]::LightGreen) | Out-Null
-      Window | Out-Null
    } catch {
-      RichTextBox $SystemWindowsControlsRichTextBox0 ">> ReScan                               | ERROR" -RemoveLast -Color ([System.Windows.Media.Brushes]::Red) | Out-Null
+      RichTextBox $SystemWindowsControlsRichTextBox0 ">> ReSCAN Windows Update                | ERROR" -RemoveLast -Color ([System.Windows.Media.Brushes]::Red) | Out-Null
       Window | Out-Null
    }
-   RichTextBox $SystemWindowsControlsRichTextBox0 "" | Out-Null
-   Window | Out-Null
    try {
       $Result = Thread {
          param($Function, $Parameter)
          $FunctionBlock = [scriptblock]::Create($Function)
          & $FunctionBlock $Parameter
-      } -ThreadPool $ThreadPool -Function ${function:ListWinget} -TaskName "ReScan"
+      } -ThreadPool $ThreadPool -Function ${function:AppGetStatus} -TaskName "ReSCAN Winget"
       $Result2 = Thread {
          param($Function, $Parameter)
          $FunctionBlock = [scriptblock]::Create($Function)
          & $FunctionBlock $Parameter
-      } -ThreadPool $ThreadPool -Function ${function:ListWingetApps} -TaskName "ReScan"
-      if ($null -eq $Result2 -or $Result2.Count -eq 0) {
+      } -ThreadPool $ThreadPool -Function ${function:AppGetApplist} -TaskName "PreSCAN Winget Applist"
+      $AppList = $Result2
+      if ($null -eq $AppList -or $AppList.Count -eq 0) {
+         RichTextBox $SystemWindowsControlsRichTextBox0 ">> ReSCAN Winget                        | No Updates for Apps available" -RemoveLast -Color ([System.Windows.Media.Brushes]::LightGreen) | Out-Null
          RichTextBox $SystemWindowsControlsRichTextBox2 "No Updates for Apps available" -Clear -Color ([System.Windows.Media.Brushes]::LightGreen) | Out-Null
+         RichTextBox $SystemWindowsControlsRichTextBox0 "" | Out-Null
          Window | Out-Null
       } else {
          RichTextBox $SystemWindowsControlsRichTextBox2 $Result -Clear | Out-Null
          Window | Out-Null
       }
-      RichTextBox $SystemWindowsControlsRichTextBox0 ">> ReScan                               | ✓" -RemoveLast -Color ([System.Windows.Media.Brushes]::LightGreen) | Out-Null
-      Window | Out-Null
    } catch {
-      RichTextBox $SystemWindowsControlsRichTextBox0 ">> ReScan                               | ERROR" -RemoveLast -Color ([System.Windows.Media.Brushes]::Red) | Out-Null
+      RichTextBox $SystemWindowsControlsRichTextBox0 ">> ReSCAN Winget                        | ERROR" -RemoveLast -Color ([System.Windows.Media.Brushes]::Red) | Out-Null
       Window | Out-Null
    }
    if ($RebootFlag -eq $true) {
@@ -950,7 +1060,7 @@ function UpdateRun($AppList) {
          Restart-Computer -Force
          exit
       }
-   }
+}
 }
 function AutomationActivate() {
    RichTextBox $SystemWindowsControlsRichTextBox0 ""  | Out-Null

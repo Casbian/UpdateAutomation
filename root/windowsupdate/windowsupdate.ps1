@@ -1,4 +1,4 @@
-﻿function ListWindowsUpdate() {
+function WindowsUpdateGetStatus() {
    try {
       if (-not (Get-Module -ListAvailable -Name PSWindowsUpdate)) {
          Remove-Module PSWindowsUpdate -Force -ErrorAction SilentlyContinue

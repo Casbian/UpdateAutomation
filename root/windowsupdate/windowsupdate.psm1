@@ -1,0 +1,1 @@
+. "$PSScriptRoot\windowsupdate.ps1"

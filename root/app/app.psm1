@@ -1,0 +1,1 @@
+. "$PSScriptRoot\app.ps1"
