@@ -35,1161 +35,981 @@ function SystemLogoContinueOneFrame($SystemWindowsWindow, $LoadingBar, $LoadingB
       $SystemWindowsWindow.Close()
    }
 }
-function System($MyInvocation){
-   $SystemWindowsWindow = New-Object System.Windows.Window
-   $SystemWindowsWindow.WindowStyle = "None"
-   $SystemWindowsWindow.AllowsTransparency = $true
-   $SystemWindowsWindow.Background = "Transparent"
-   $SystemWindowsWindow.ResizeMode = "NoResize"
-   $SystemWindowsWindow.Topmost = $false
-   $SystemWindowsWindow.Width = 1350
-   $SystemWindowsWindow.Height = 880
-   $ScreenParameter = [System.Windows.SystemParameters]
-   $SystemWindowsWindow.Left = ($ScreenParameter::PrimaryScreenWidth - 900) / 2
-   $SystemWindowsWindow.Top = ($ScreenParameter::PrimaryScreenHeight * 0.30) - (500 / 2)
-   $Background = New-Object System.Windows.Controls.Image
-   $Background.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\BackgroundSystem.png")))
-   $Background.Width = 900
-   $Background.Height = 630
-   $Logo = New-Object System.Windows.Controls.Image
-   $Logo.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconSmall.png")))
-   $Logo.Width = 44
-   $Logo.Height = 44
-   $DragBarImage = New-Object System.Windows.Controls.Image
-   $DragBarImage.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\DragBar.png")))
-   $DragBarImage.Width = 900
-   $DragBarImage.Height = 40
-   $DragBarImage.Add_MouseLeftButtonDown({
-      [System.Windows.Window]::GetWindow($args[0]).DragMove()
-   })
-   $AutomationCheck = Get-ScheduledTask -TaskName "CoreForge_Automation" -ErrorAction SilentlyContinue
-   $AutomationButton = @{
-      Button = New-Object System.Windows.Controls.Image
-      Icon   = New-Object System.Windows.Controls.Image
-      Active  = $false
-      AutomationCheck = $AutomationCheck
-   }
-   $AutomationButton.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\BarAutomationLabel.png")))
-   $AutomationButton.Button.Width = 110
-   $AutomationButton.Button.Height = 30
-   $AutomationButton.Icon.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\BarAutomationLabelText.png")))
-   $AutomationButton.Icon.Width = 94
-   $AutomationButton.Icon.Height = 18
-   $AutomationButton.Button.Tag = $AutomationButton
-   $AutomationButton.Icon.Tag   = $AutomationButton
-   if (-not $AutomationCheck) {
-      $AutomationButton.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\BarAutomationLabelInactive.png")))
-      $AutomationButton.Icon.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\BarAutomationLabelTextInactive.png")))
-   } else {
-      $AutomationButton.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\BarAutomationLabelActive.png")))
-      $AutomationButton.Icon.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\BarAutomationLabelTextActive.png")))
-   }
-   $AutomationButton.Button.Add_MouseEnter({
-      if (-not $this.Tag.Active) {
-         $this.Tag.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\BarAutomationLabel.png")))
-         $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\BarAutomationLabelText.png")))
-      }
-   })
-   $AutomationButton.Button.Add_MouseLeave({
-      if (-not $this.Tag.Active) {
-         if (-not $this.Tag.AutomationCheck) {
-            $this.Tag.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\BarAutomationLabelInactive.png")))
-            $this.Tag.Icon.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\BarAutomationLabelTextInactive.png")))
-         } else {
-            $this.Tag.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\BarAutomationLabelActive.png")))
-            $this.Tag.Icon.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\BarAutomationLabelTextActive.png")))
-         }
-      }
-   })
-   $AutomationButton.Icon.Add_MouseEnter({
-      if (-not $this.Tag.Active) {
-         $this.Tag.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\BarAutomationLabel.png")))
-         $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\BarAutomationLabelText.png")))
-      }
-   })
-   $AutomationButton.Icon.Add_MouseLeave({
-      if (-not $this.Tag.Active) {
-         if (-not $this.Tag.AutomationCheck) {
-            $this.Tag.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\BarAutomationLabelInactive.png")))
-            $this.Tag.Icon.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\BarAutomationLabelTextInactive.png")))
-         } else {
-            $this.Tag.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\BarAutomationLabelActive.png")))
-            $this.Tag.Icon.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\BarAutomationLabelTextActive.png")))
-         }
-      }
-   })
-   $AutomationButton.Button.Add_MouseLeftButtonDown({
-      if (-not $this.Tag.Active) {
-         $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\BarAutomationLabelTextPressed.png")))
-         $this.CaptureMouse() | Out-Null
-      }
-   })
-   $AutomationButton.Button.Add_MouseLeftButtonUp({
-      $this.ReleaseMouseCapture()
-      if ($this.IsMouseOver -or $this.Tag.Icon.IsMouseOver) {
-         if (-not $this.Tag.Active) {
-            $this.Tag.Active = $true
-            if (-not $this.Tag.AutomationCheck) {
-               AutomationActivate
-               $this.Tag.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\BarAutomationLabelActive.png")))
-               $this.Tag.Icon.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\BarAutomationLabelTextActive.png")))
-               $this.Tag.AutomationCheck = Get-ScheduledTask -TaskName "CoreForge_Automation" -ErrorAction SilentlyContinue
-            } else {
-               AutomationDeactivate
-               $this.Tag.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\BarAutomationLabelInactive.png")))
-               $this.Tag.Icon.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\BarAutomationLabelTextInactive.png")))
-               $this.Tag.AutomationCheck = Get-ScheduledTask -TaskName "CoreForge_Automation" -ErrorAction SilentlyContinue
-            }
-            $this.Tag.Active = $false
-         }
-      } else {
-         if (-not $this.Tag.Active) {
-            if (-not $this.Tag.AutomationCheck) {
-               $this.Tag.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\BarAutomationLabelInactive.png")))
-               $this.Tag.Icon.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\BarAutomationLabelTextInactive.png")))
-            } else {
-               $this.Tag.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\BarAutomationLabelActive.png")))
-               $this.Tag.Icon.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\BarAutomationLabelTextActive.png")))
-            }
-         }
-      }
-   })
-   $AutomationButton.Icon.Add_MouseLeftButtonDown({
-      if (-not $this.Tag.Active) {
-         $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\BarAutomationLabelTextPressed.png")))
-         $this.CaptureMouse() | Out-Null
-      }
-   })
-   $AutomationButton.Icon.Add_MouseLeftButtonUp({
-      $this.ReleaseMouseCapture()
-      if ($this.IsMouseOver -or $this.Tag.Button.IsMouseOver) {
-         if (-not $this.Tag.Active) {
-            $this.Tag.Active = $true
-            if (-not $this.Tag.AutomationCheck) {
-               AutomationActivate
-               $this.Tag.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\BarAutomationLabelActive.png")))
-               $this.Tag.Icon.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\BarAutomationLabelTextActive.png")))
-               $this.Tag.AutomationCheck = Get-ScheduledTask -TaskName "CoreForge_Automation" -ErrorAction SilentlyContinue
-            } else {
-               AutomationDeactivate
-               $this.Tag.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\BarAutomationLabelInactive.png")))
-               $this.Tag.Icon.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\BarAutomationLabelTextInactive.png")))
-               $this.Tag.AutomationCheck = Get-ScheduledTask -TaskName "CoreForge_Automation" -ErrorAction SilentlyContinue
-            }
-            $this.Tag.Active = $false
-         }
-      } else {
-         if (-not $this.Tag.Active) {
-            if (-not $this.Tag.AutomationCheck) {
-               $this.Tag.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\BarAutomationLabelInactive.png")))
-               $this.Tag.Icon.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\BarAutomationLabelTextInactive.png")))
-            } else {
-               $this.Tag.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\BarAutomationLabelActive.png")))
-               $this.Tag.Icon.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\BarAutomationLabelTextActive.png")))
-            }
-         }
-      }
-   })
-   $UpdateNowButton = @{
-      Button = New-Object System.Windows.Controls.Image
-      Icon   = New-Object System.Windows.Controls.Image
-      Active  = $false
-      MyInvocation = $MyInvocation
-   }
-   $UpdateNowButton.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\Bar.png")))
-   $UpdateNowButton.Button.Width = 30
-   $UpdateNowButton.Button.Height = 30
-   $UpdateNowButton.Icon.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconSystemUpdate.png")))
-   $UpdateNowButton.Icon.Width = 18
-   $UpdateNowButton.Icon.Height = 18
-   $UpdateNowButton.Button.Tag = $UpdateNowButton
-   $UpdateNowButton.Icon.Tag   = $UpdateNowButton
-   $UpdateNowButton.Button.Add_MouseEnter({
-      if (-not $this.Tag.Active) {
-         $this.Tag.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\BarHover.png")))
-         $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconSystemUpdateHover.png")))
-      }
-   })
-   $UpdateNowButton.Button.Add_MouseLeave({
-      if (-not $this.Tag.Active) {
-         $this.Tag.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\Bar.png")))
-         $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconSystemUpdate.png")))
-      }
-   })
-   $UpdateNowButton.Icon.Add_MouseEnter({
-      if (-not $this.Tag.Active) {
-         $this.Tag.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\BarHover.png")))
-         $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconSystemUpdateHover.png")))
-      }
-   })
-   $UpdateNowButton.Icon.Add_MouseLeave({
-      if (-not $this.Tag.Active) {
-         $this.Tag.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\Bar.png")))
-         $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconSystemUpdate.png")))
-      }
-   })
-   $UpdateNowButton.Button.Add_MouseLeftButtonDown({
-      if (-not $this.Tag.Active) {
-         $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconSystemUpdatePressed.png")))
-         $this.CaptureMouse() | Out-Null
-      }
-   })
-   $UpdateNowButton.Button.Add_MouseLeftButtonUp({
-      $this.ReleaseMouseCapture()
-      if ($this.IsMouseOver -or $this.Tag.Icon.IsMouseOver) {
-         if (-not $this.Tag.Active) {
-            $this.Tag.Active = $true
-            $this.Tag.Button.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\BarActiveHover.png")))
-            SystemStartUpdateRun $WingetAppList $this.Tag.MyInvocation $WindowsUpdateNeeded $AppUpdateNeeded $GPUUpdateNeeded
-            $this.Tag.Button.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\Bar.png")))
-            $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconSystemUpdate.png")))
-            $this.Tag.Active = $false
-         }
-      } else {
-         if (-not $this.Tag.Active) {
-            $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconSystemUpdate.png")))
-         }
-      }
-   })
-   $UpdateNowButton.Icon.Add_MouseLeftButtonDown({
-      if (-not $this.Tag.Active) {
-         $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconSystemUpdatePressed.png")))
-         $this.CaptureMouse() | Out-Null
-      }
-   })
-   $UpdateNowButton.Icon.Add_MouseLeftButtonUp({
-      $this.ReleaseMouseCapture()
-      if ($this.IsMouseOver -or $this.Tag.Button.IsMouseOver) {
-         if (-not $this.Tag.Active) {
-            $this.Tag.Active = $true
-            $this.Tag.Button.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\BarActiveHover.png")))
-            SystemStartUpdateRun $WingetAppList $this.Tag.MyInvocation $WindowsUpdateNeeded $AppUpdateNeeded $GPUUpdateNeeded
-            $this.Tag.Button.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\Bar.png")))
-            $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconSystemUpdate.png")))
-            $this.Tag.Active = $false
-         }
-      } else {
-         if (-not $this.Tag.Active) {
-            $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconSystemUpdate.png")))
-         }
-      }
-   })
-   $InfoButton = @{
-      Button = New-Object System.Windows.Controls.Image
-      Icon   = New-Object System.Windows.Controls.Image
-      Active  = $false
-   }
-   $InfoButton.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\Bar.png")))
-   $InfoButton.Button.Width = 30
-   $InfoButton.Button.Height = 30
-   $InfoButton.Icon.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconSystemInfo.png")))
-   $InfoButton.Icon.Width = 18
-   $InfoButton.Icon.Height = 18
-   $InfoButton.Button.Tag = $InfoButton
-   $InfoButton.Icon.Tag   = $InfoButton
-   $InfoButton.Button.Add_MouseEnter({
-      if (-not $this.Tag.Active) {
-         $this.Tag.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\BarHover.png")))
-         $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconSystemInfoHover.png")))
-      }
-   })
-   $InfoButton.Button.Add_MouseLeave({
-      if (-not $this.Tag.Active) {
-         $this.Tag.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\Bar.png")))
-         $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconSystemInfo.png")))
-      }
-   })
-   $InfoButton.Icon.Add_MouseEnter({
-      if (-not $this.Tag.Active) {
-         $this.Tag.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\BarHover.png")))
-         $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconSystemInfoHover.png")))
-      }
-   })
-   $InfoButton.Icon.Add_MouseLeave({
-      if (-not $this.Tag.Active) {
-         $this.Tag.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\Bar.png")))
-         $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconSystemInfo.png")))
-      }
-   })
-   $InfoButton.Button.Add_MouseLeftButtonDown({
-      if (-not $this.Tag.Active) {
-         $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconSystemInfoPressed.png")))
-         $this.CaptureMouse() | Out-Null
-      }
-   })
-   $InfoButton.Button.Add_MouseLeftButtonUp({
-      $this.ReleaseMouseCapture()
-      if ($this.IsMouseOver -or $this.Tag.Icon.IsMouseOver) {
-         if (-not $this.Tag.Active) {
-            $this.Tag.Active = $true
-            $this.Tag.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\BarActiveHover.png")))
-            $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconSystemInfoPressed.png")))
-            $EnvironmentValues, $NetworkValues, $CPUValues, $GPUValues, $RAMValues = SystemInfoGet
-            SystemInfo $SystemWindowsControlsCanvas $this.Tag $EnvironmentValues $NetworkValues $CPUValues $GPUValues $RAMValues
-         }
-      } else {
-         if (-not $this.Tag.Active) {
-            $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconSystemInfo.png")))
-         }
-    }
-   })
-   $InfoButton.Icon.Add_MouseLeftButtonDown({
-      if (-not $this.Tag.Active) {
-         $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconSystemInfoPressed.png")))
-         $this.CaptureMouse() | Out-Null
-      }
-   })
-   $InfoButton.Icon.Add_MouseLeftButtonUp({
-      $this.ReleaseMouseCapture()
-      if ($this.IsMouseOver -or $this.Tag.Button.IsMouseOver) {
-         if (-not $this.Tag.Active) {
-            $this.Tag.Active = $true
-            $this.Tag.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\BarActiveHover.png")))
-            $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconSystemInfoPressed.png")))
-            $EnvironmentValues, $NetworkValues, $CPUValues, $GPUValues, $RAMValues = SystemInfoGet
-            SystemInfo $SystemWindowsControlsCanvas $this.Tag $EnvironmentValues $NetworkValues $CPUValues $GPUValues $RAMValues
-         }
-      } else {
-         if (-not $this.Tag.Active) {
-            $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconSystemInfo.png")))
-         }
-    }
-   })
-   $SettingsButton = @{
-      Button = New-Object System.Windows.Controls.Image
-      Icon   = New-Object System.Windows.Controls.Image
-      Active  = $false
-   }
-   $SettingsButton.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\Bar.png")))
-   $SettingsButton.Button.Width = 30
-   $SettingsButton.Button.Height = 30
-   $SettingsButton.Icon.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconSystemSettings.png")))
-   $SettingsButton.Icon.Width = 18
-   $SettingsButton.Icon.Height = 18
-   $SettingsButton.Button.Tag = $SettingsButton
-   $SettingsButton.Icon.Tag   = $SettingsButton
-   $SettingsButton.Button.Add_MouseEnter({
-      if (-not $this.Tag.Active) {
-         $this.Tag.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\BarHover.png")))
-         $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconSystemSettingsHover.png")))
-      }
-   })
-   $SettingsButton.Button.Add_MouseLeave({
-      if (-not $this.Tag.Active) {
-         $this.Tag.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\Bar.png")))
-         $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconSystemSettings.png")))
-      }
-   })
-   $SettingsButton.Icon.Add_MouseEnter({
-      if (-not $this.Tag.Active) {
-         $this.Tag.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\BarHover.png")))
-         $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconSystemSettingsHover.png")))
-      }
-   })
-   $SettingsButton.Icon.Add_MouseLeave({
-      if (-not $this.Tag.Active) {
-         $this.Tag.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\Bar.png")))
-         $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconSystemSettings.png")))
-      }
-   })
-   $SettingsButton.Button.Add_MouseLeftButtonDown({
-      $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconSystemSettingsPressed.png")))
-      $this.CaptureMouse() | Out-Null
-   })
-   $SettingsButton.Button.Add_MouseLeftButtonUp({
-      $this.ReleaseMouseCapture()
-      if ($this.IsMouseOver -or $this.Tag.Icon.IsMouseOver) {
-         $this.Tag.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\BarActiveHover.png")))
-         $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconSystemSettingsPressed.png")))
-         if (-not $this.Tag.Active) {
-            SystemSettings $SystemWindowsControlsCanvas $this.Tag
-         }
-         $this.Tag.Active = $true
-      } else {
-         $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconSystemSettings.png")))
-    }
-   })
-   $SettingsButton.Icon.Add_MouseLeftButtonDown({
-      $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconSystemSettingsPressed.png")))
-      $this.CaptureMouse() | Out-Null
-   })
-   $SettingsButton.Icon.Add_MouseLeftButtonUp({
-      $this.ReleaseMouseCapture()
-      if ($this.IsMouseOver -or $this.Tag.Button.IsMouseOver) {
-         $this.Tag.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\BarActiveHover.png")))
-         $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconSystemSettingsPressed.png")))
-         if (-not $this.Tag.Active) {
-            SystemSettings $SystemWindowsControlsCanvas $this.Tag
-         }
-         $this.Tag.Active = $true
-      } else {
-         $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconSystemSettings.png")))
-    }
-   })
-   $CloseButton = @{
-      Button = New-Object System.Windows.Controls.Image
-      Icon   = New-Object System.Windows.Controls.Image
-   }
-   $CloseButton.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\Bar.png")))
-   $CloseButton.Button.Width = 30
-   $CloseButton.Button.Height = 30
-   $CloseButton.Icon.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconClose.png")))
-   $CloseButton.Icon.Width = 22
-   $CloseButton.Icon.Height = 22
-   $CloseButton.Button.Tag = $CloseButton
-   $CloseButton.Icon.Tag   = $CloseButton
-   $CloseButton.Button.Add_MouseEnter({
-      $this.Tag.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\BarHover.png")))
-      $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconCloseHover.png")))
-   })
-   $CloseButton.Button.Add_MouseLeave({
-      $this.Tag.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\Bar.png")))
-      $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconClose.png")))
-   })
-   $CloseButton.Icon.Add_MouseEnter({
-      $this.Tag.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\BarHover.png")))
-      $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconCloseHover.png")))
-   })
-   $CloseButton.Icon.Add_MouseLeave({
-      $this.Tag.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\Bar.png")))
-      $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconClose.png")))
-   })
-   $CloseButton.Button.Add_MouseLeftButtonDown({
-      $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconClosePressed.png")))
-      $this.CaptureMouse() | Out-Null
-   })
-   $CloseButton.Button.Add_MouseLeftButtonUp({
-      $this.ReleaseMouseCapture()
-      if ($this.IsMouseOver -or $this.Tag.Icon.IsMouseOver) {
-         $SystemWindowsWindow.Close()
-         $ThreadPool.Close()
-         $ThreadPool.Dispose()
-         exit
-      } else {
-         $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconClose.png")))
-    }
-   })
-   $CloseButton.Icon.Add_MouseLeftButtonDown({
-      $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconClosePressed.png")))
-      $this.CaptureMouse() | Out-Null
-   })
-   $CloseButton.Icon.Add_MouseLeftButtonUp({
-      $this.ReleaseMouseCapture()
-      if ($this.IsMouseOver -or $this.Tag.Button.IsMouseOver) {
-         $SystemWindowsWindow.Close()
-         $ThreadPool.Close()
-         $ThreadPool.Dispose()
-         exit
-      } else {
-         $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconClose.png")))
-    }
-   })
-   $SystemWindowsControlsRichTextBoxImage0 = New-Object System.Windows.Controls.Image
-   $SystemWindowsControlsRichTextBoxImage0.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\TextBoxConsole.png")))
-   $SystemWindowsControlsRichTextBoxImage0.Width = 880
-   $SystemWindowsControlsRichTextBoxImage0.Height = 310
-   $SystemWindowsControlsRichTextBox0 = New-Object System.Windows.Controls.RichTextBox
-   $SystemWindowsControlsRichTextBox0.FontFamily = New-Object System.Windows.Media.FontFamily("Consolas")
-   $SystemWindowsControlsRichTextBox0.FontSize = 10
-   $SystemWindowsControlsRichTextBox0.Width = 880
-   $SystemWindowsControlsRichTextBox0.Height = 290
-   $SystemWindowsControlsRichTextBox0.BorderThickness = 0
-   $SystemWindowsControlsRichTextBox0.Document.PagePadding = [System.Windows.Thickness]::new(0)
-   $SystemWindowsControlsRichTextBox0.Background = [System.Windows.Media.Brushes]::Transparent
-   $SystemWindowsControlsRichTextBox0.Foreground = [System.Windows.Media.Brushes]::White
-   $SystemWindowsControlsRichTextBoxImage1 = New-Object System.Windows.Controls.Image
-   $SystemWindowsControlsRichTextBoxImage1.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\TextBoxWindowsUpdates.png")))
-   $SystemWindowsControlsRichTextBoxImage1.Width = 410
-   $SystemWindowsControlsRichTextBoxImage1.Height = 120
-   $SystemWindowsControlsRichTextBox1 = New-Object System.Windows.Controls.RichTextBox
-   $SystemWindowsControlsRichTextBox1.FontFamily = New-Object System.Windows.Media.FontFamily("Consolas")
-   $SystemWindowsControlsRichTextBox1.FontSize = 10
-   $SystemWindowsControlsRichTextBox1.Width = 410
-   $SystemWindowsControlsRichTextBox1.Height = 100
-   $SystemWindowsControlsRichTextBox1.BorderThickness = 0
-   $SystemWindowsControlsRichTextBox1.Document.PagePadding = [System.Windows.Thickness]::new(0)
-   $SystemWindowsControlsRichTextBox1.Background = [System.Windows.Media.Brushes]::Transparent
-   $SystemWindowsControlsRichTextBox1.Foreground = [System.Windows.Media.Brushes]::White
-   $SystemWindowsControlsRichTextBoxImage2 = New-Object System.Windows.Controls.Image
-   $SystemWindowsControlsRichTextBoxImage2.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\TextBoxApps.png")))
-   $SystemWindowsControlsRichTextBoxImage2.Width = 460
-   $SystemWindowsControlsRichTextBoxImage2.Height = 120
-   $SystemWindowsControlsRichTextBox2 = New-Object System.Windows.Controls.RichTextBox
-   $SystemWindowsControlsRichTextBox2.FontFamily = New-Object System.Windows.Media.FontFamily("Consolas")
-   $SystemWindowsControlsRichTextBox2.FontSize = 10
-   $SystemWindowsControlsRichTextBox2.Width = 460
-   $SystemWindowsControlsRichTextBox2.Height = 100
-   $SystemWindowsControlsRichTextBox2.BorderThickness = 0
-   $SystemWindowsControlsRichTextBox2.Document.PagePadding = [System.Windows.Thickness]::new(0)
-   $SystemWindowsControlsRichTextBox2.Background = [System.Windows.Media.Brushes]::Transparent
-   $SystemWindowsControlsRichTextBox2.Foreground = [System.Windows.Media.Brushes]::White
-
-   $SystemWindowsControlsRichTextBoxImage3 = New-Object System.Windows.Controls.Image
-   $SystemWindowsControlsRichTextBoxImage3.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\TextBoxGPU.png")))
-   $SystemWindowsControlsRichTextBoxImage3.Width = 880
-   $SystemWindowsControlsRichTextBoxImage3.Height = 120
-   $SystemWindowsControlsRichTextBox3 = New-Object System.Windows.Controls.RichTextBox
-   $SystemWindowsControlsRichTextBox3.FontFamily = New-Object System.Windows.Media.FontFamily("Consolas")
-   $SystemWindowsControlsRichTextBox3.FontSize = 10
-   $SystemWindowsControlsRichTextBox3.Width = 880
-   $SystemWindowsControlsRichTextBox3.Height = 100
-   $SystemWindowsControlsRichTextBox3.BorderThickness = 0
-   $SystemWindowsControlsRichTextBox3.Document.PagePadding = [System.Windows.Thickness]::new(0)
-   $SystemWindowsControlsRichTextBox3.Background = [System.Windows.Media.Brushes]::Transparent
-   $SystemWindowsControlsRichTextBox3.Foreground = [System.Windows.Media.Brushes]::White
-
-   [System.Windows.Controls.Canvas]::SetLeft($Background, 0)
-   [System.Windows.Controls.Canvas]::SetTop($Background, 250)
-   [System.Windows.Controls.Canvas]::SetLeft($Logo, 0)
-   [System.Windows.Controls.Canvas]::SetTop($Logo, 255)
-   [System.Windows.Controls.Canvas]::SetLeft($DragBarImage, 0)
-   [System.Windows.Controls.Canvas]::SetTop($DragBarImage, 250)
-   [System.Windows.Controls.Canvas]::SetLeft($AutomationButton.Button, 50)
-   [System.Windows.Controls.Canvas]::SetTop($AutomationButton.Button, 260)
-   [System.Windows.Controls.Canvas]::SetLeft($AutomationButton.Icon, 60)
-   [System.Windows.Controls.Canvas]::SetTop($AutomationButton.Icon, 265)
-   [System.Windows.Controls.Canvas]::SetLeft($UpdateNowButton.Button, 740)
-   [System.Windows.Controls.Canvas]::SetTop($UpdateNowButton.Button, 260)
-   [System.Windows.Controls.Canvas]::SetLeft($UpdateNowButton.Icon, 746)
-   [System.Windows.Controls.Canvas]::SetTop($UpdateNowButton.Icon, 266)
-   [System.Windows.Controls.Canvas]::SetLeft($InfoButton.Button, 780)
-   [System.Windows.Controls.Canvas]::SetTop($InfoButton.Button, 260)
-   [System.Windows.Controls.Canvas]::SetLeft($InfoButton.Icon, 786)
-   [System.Windows.Controls.Canvas]::SetTop($InfoButton.Icon, 266)
-   [System.Windows.Controls.Canvas]::SetLeft($SettingsButton.Button, 820)
-   [System.Windows.Controls.Canvas]::SetTop($SettingsButton.Button, 260)
-   [System.Windows.Controls.Canvas]::SetLeft($SettingsButton.Icon, 826)
-   [System.Windows.Controls.Canvas]::SetTop($SettingsButton.Icon, 266)
-   [System.Windows.Controls.Canvas]::SetLeft($CloseButton.Button, 860)
-   [System.Windows.Controls.Canvas]::SetTop($CloseButton.Button, 260)
-   [System.Windows.Controls.Canvas]::SetLeft($CloseButton.Icon, 864)
-   [System.Windows.Controls.Canvas]::SetTop($CloseButton.Icon, 264)
-   [System.Windows.Controls.Canvas]::SetLeft($SystemWindowsControlsRichTextBoxImage0, 10)
-   [System.Windows.Controls.Canvas]::SetTop($SystemWindowsControlsRichTextBoxImage0, 300)
-   [System.Windows.Controls.Canvas]::SetLeft($SystemWindowsControlsRichTextBox0, 15)
-   [System.Windows.Controls.Canvas]::SetTop($SystemWindowsControlsRichTextBox0, 310)
-   [System.Windows.Controls.Canvas]::SetLeft($SystemWindowsControlsRichTextBoxImage1, 10)
-   [System.Windows.Controls.Canvas]::SetTop($SystemWindowsControlsRichTextBoxImage1, 620)
-   [System.Windows.Controls.Canvas]::SetLeft($SystemWindowsControlsRichTextBox1, 15)
-   [System.Windows.Controls.Canvas]::SetTop($SystemWindowsControlsRichTextBox1, 630)
-   [System.Windows.Controls.Canvas]::SetLeft($SystemWindowsControlsRichTextBoxImage2, 430)
-   [System.Windows.Controls.Canvas]::SetTop($SystemWindowsControlsRichTextBoxImage2, 620)
-   [System.Windows.Controls.Canvas]::SetLeft($SystemWindowsControlsRichTextBox2, 435)
-   [System.Windows.Controls.Canvas]::SetTop($SystemWindowsControlsRichTextBox2, 630)
-
-   [System.Windows.Controls.Canvas]::SetLeft($SystemWindowsControlsRichTextBoxImage3, 10)
-   [System.Windows.Controls.Canvas]::SetTop($SystemWindowsControlsRichTextBoxImage3, 750)
-   [System.Windows.Controls.Canvas]::SetLeft($SystemWindowsControlsRichTextBox3, 15)
-   [System.Windows.Controls.Canvas]::SetTop($SystemWindowsControlsRichTextBox3, 760)
-
-   $SystemWindowsControlsCanvas = New-Object System.Windows.Controls.Canvas
-   $SystemWindowsWindow.Content = $SystemWindowsControlsCanvas
-   $SystemWindowsControlsCanvas.Children.Add($Background) | Out-Null
-   $SystemWindowsControlsCanvas.Children.Add($Logo) | Out-Null
-   $SystemWindowsControlsCanvas.Children.Add($DragBarImage) | Out-Null
-   $SystemWindowsControlsCanvas.Children.Add($AutomationButton.Button) | Out-Null
-   $SystemWindowsControlsCanvas.Children.Add($AutomationButton.Icon) | Out-Null
-   $SystemWindowsControlsCanvas.Children.Add($UpdateNowButton.Button) | Out-Null
-   $SystemWindowsControlsCanvas.Children.Add($UpdateNowButton.Icon) | Out-Null
-   $SystemWindowsControlsCanvas.Children.Add($InfoButton.Button) | Out-Null
-   $SystemWindowsControlsCanvas.Children.Add($InfoButton.Icon) | Out-Null
-   $SystemWindowsControlsCanvas.Children.Add($SettingsButton.Button) | Out-Null
-   $SystemWindowsControlsCanvas.Children.Add($SettingsButton.Icon) | Out-Null
-   $SystemWindowsControlsCanvas.Children.Add($CloseButton.Button) | Out-Null
-   $SystemWindowsControlsCanvas.Children.Add($CloseButton.Icon) | Out-Null
-   $SystemWindowsControlsCanvas.Children.Add($SystemWindowsControlsRichTextBoxImage0) | Out-Null
-   $SystemWindowsControlsCanvas.Children.Add($SystemWindowsControlsRichTextBox0) | Out-Null
-   $SystemWindowsControlsCanvas.Children.Add($SystemWindowsControlsRichTextBoxImage1) | Out-Null
-   $SystemWindowsControlsCanvas.Children.Add($SystemWindowsControlsRichTextBox1) | Out-Null
-   $SystemWindowsControlsCanvas.Children.Add($SystemWindowsControlsRichTextBoxImage2) | Out-Null
-   $SystemWindowsControlsCanvas.Children.Add($SystemWindowsControlsRichTextBox2) | Out-Null
-   $SystemWindowsControlsCanvas.Children.Add($SystemWindowsControlsRichTextBoxImage3) | Out-Null
-   $SystemWindowsControlsCanvas.Children.Add($SystemWindowsControlsRichTextBox3) | Out-Null
-   $SystemWindowsWindow.Show()
-   return $SystemWindowsWindow, $SystemWindowsControlsCanvas, $AutomationButton, $UpdateNowButton, $InfoButton, $SystemWindowsControlsRichTextBox0, $SystemWindowsControlsRichTextBox1, $SystemWindowsControlsRichTextBox2, $SystemWindowsControlsRichTextBox3, $AutomationCheck
-}
-function SystemSettings($SystemWindowsControlsCanvas, $SettingsButton) {
-   $Elements = [System.Collections.Generic.List[System.Windows.UIElement]]::new()
-   $Background = New-Object System.Windows.Controls.Image
-   $Background.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\BackgroundSystemSettings.png")))
-   $Background.Width = 450
-   $Background.Height = 500
-   $CloseButton = @{
-      Button = New-Object System.Windows.Controls.Image
-      Icon   = New-Object System.Windows.Controls.Image
-      SystemWindowsControlsCanvas = $SystemWindowsControlsCanvas
-      SettingsButton = $SettingsButton
-      Elements = $Elements
-   }
-   $CloseButton.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\Bar.png")))
-   $CloseButton.Button.Width = 30
-   $CloseButton.Button.Height = 30
-   $CloseButton.Icon.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconClose.png")))
-   $CloseButton.Icon.Width = 22
-   $CloseButton.Icon.Height = 22
-   $CloseButton.Button.Tag = $CloseButton
-   $CloseButton.Icon.Tag   = $CloseButton
-   $CloseButton.Button.Add_MouseEnter({
-      $this.Tag.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\BarHover.png")))
-      $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconCloseHover.png")))
-   })
-   $CloseButton.Button.Add_MouseLeave({
-      $this.Tag.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\Bar.png")))
-      $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconClose.png")))
-   })
-   $CloseButton.Icon.Add_MouseEnter({
-      $this.Tag.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\BarHover.png")))
-      $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconCloseHover.png")))
-   })
-   $CloseButton.Icon.Add_MouseLeave({
-      $this.Tag.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\Bar.png")))
-      $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconClose.png")))
-   })
-   $CloseButton.Button.Add_MouseLeftButtonDown({
-      $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconClosePressed.png")))
-      $this.CaptureMouse() | Out-Null
-   })
-   $CloseButton.Button.Add_MouseLeftButtonUp({
-      $this.ReleaseMouseCapture()
-      if ($this.IsMouseOver -or $this.Tag.Icon.IsMouseOver) {
-         foreach ($Element in $this.Tag.Elements) {
-            $this.Tag.SystemWindowsControlsCanvas.Children.Remove($Element) | Out-Null
-         }         
-         $this.Tag.SettingsButton.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\Bar.png")))
-         $this.Tag.SettingsButton.Icon.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconSystemSettings.png")))
-         $this.Tag.SettingsButton.Active = $false
-      } else {
-         $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconSystemSettings.png")))
-    }
-   })
-   $CloseButton.Icon.Add_MouseLeftButtonDown({
-      $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconClosePressed.png")))
-      $this.CaptureMouse() | Out-Null
-   })
-   $CloseButton.Icon.Add_MouseLeftButtonUp({
-      $this.ReleaseMouseCapture()
-      if ($this.IsMouseOver -or $this.Tag.Button.IsMouseOver) {
-         foreach ($Element in $this.Tag.Elements) {
-            $this.Tag.SystemWindowsControlsCanvas.Children.Remove($Element) | Out-Null
-         }
-         $this.Tag.SettingsButton.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\Bar.png")))
-         $this.Tag.SettingsButton.Icon.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconSystemSettings.png")))
-         $this.Tag.SettingsButton.Active = $false
-      } else {
-         $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconSystemSettings.png")))
-    }
-   })
-   [System.Windows.Controls.Canvas]::SetLeft($Background, 900)
-   [System.Windows.Controls.Canvas]::SetTop($Background, 250)
-   [System.Windows.Controls.Canvas]::SetLeft($CloseButton.Button, 1310)
-   [System.Windows.Controls.Canvas]::SetTop($CloseButton.Button, 260)
-   [System.Windows.Controls.Canvas]::SetLeft($CloseButton.Icon, 1314)
-   [System.Windows.Controls.Canvas]::SetTop($CloseButton.Icon, 264)
-   $SystemWindowsControlsCanvas.Children.Add($Background) | Out-Null
-   $Elements.Add($Background)
-   $SystemWindowsControlsCanvas.Children.Add($CloseButton.Button) | Out-Null
-   $Elements.Add($CloseButton.Button)
-   $SystemWindowsControlsCanvas.Children.Add($CloseButton.Icon) | Out-Null
-   $Elements.Add($CloseButton.Icon)
-}
-function SystemInfo($SystemWindowsControlsCanvas, $InfoButton, $EnvironmentValues, $NetworkValues, $CPUValues, $GPUValues, $RAMValues) {
-   $Elements = [System.Collections.Generic.List[System.Windows.UIElement]]::new()
-   $Background = New-Object System.Windows.Controls.Image
-   $Background.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\BackgroundSystemInfo.png")))
-   $Background.Width = 720
-   $Background.Height = 250
-   $IconEnvironmentValues = New-Object System.Windows.Controls.Image
-   $IconEnvironmentValues.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconEnvironmentValues.png")))
-   $IconEnvironmentValues.Width = 30
-   $IconEnvironmentValues.Height = 30
-   $TextBoxEnvironmentValues = New-Object System.Windows.Controls.RichTextBox
-   $TextBoxEnvironmentValues.FontFamily = New-Object System.Windows.Media.FontFamily("Consolas")
-   $TextBoxEnvironmentValues.FontSize = 12
-   $TextBoxEnvironmentValues.Width = 340
-   $TextBoxEnvironmentValues.Height = 130
-   $TextBoxEnvironmentValues.BorderThickness = 0
-   $TextBoxEnvironmentValues.Document.PagePadding = [System.Windows.Thickness]::new(0)
-   $TextBoxEnvironmentValues.Background = [System.Windows.Media.Brushes]::Transparent
-   $TextBoxEnvironmentValues.Foreground = [System.Windows.Media.Brushes]::White
-   RichTextBoxClear $TextBoxEnvironmentValues
-   RichTextBox $TextBoxEnvironmentValues ("{0,-14}| {1}" -f "PC Name", $EnvironmentValues[0]) | Out-Null
-   RichTextBox $TextBoxEnvironmentValues ("{0,-14}| {1}" -f "Domain", $EnvironmentValues[1]) | Out-Null
-   RichTextBox $TextBoxEnvironmentValues ("{0,-14}| {1}" -f "Logon Server", $EnvironmentValues[2]) | Out-Null
-   RichTextBox $TextBoxEnvironmentValues ("{0,-14}| {1}" -f "User", $EnvironmentValues[3]) | Out-Null
-   RichTextBox $TextBoxEnvironmentValues ("{0,-14}| {1}" -f "Session Admin", $EnvironmentValues[4]) | Out-Null
-   RichTextBox $TextBoxEnvironmentValues ("{0,-14}| {1}" -f "OS", $EnvironmentValues[5]) | Out-Null
-   RichTextBox $TextBoxEnvironmentValues ("{0,-14}| {1}" -f "Architecture", $EnvironmentValues[6]) | Out-Null
-   RichTextBox $TextBoxEnvironmentValues ("{0,-14}| {1}" -f "Type", $EnvironmentValues[7]) | Out-Null
-   RichTextBox $TextBoxEnvironmentValues ("{0,-14}| {1}" -f "UPTime", $EnvironmentValues[8]) | Out-Null
-   Window | Out-Null
-   $IconNetworkValues = New-Object System.Windows.Controls.Image
-   $IconNetworkValues.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconNetworkValues.png")))
-   $IconNetworkValues.Width = 30
-   $IconNetworkValues.Height = 30
-   $TextBoxNetworkValues = New-Object System.Windows.Controls.RichTextBox
-   $TextBoxNetworkValues.FontFamily = New-Object System.Windows.Media.FontFamily("Consolas")
-   $TextBoxNetworkValues.FontSize = 12
-   $TextBoxNetworkValues.Width = 370
-   $TextBoxNetworkValues.Height = 100
-   $TextBoxNetworkValues.BorderThickness = 0
-   $TextBoxNetworkValues.Document.PagePadding = [System.Windows.Thickness]::new(0)
-   $TextBoxNetworkValues.Background = [System.Windows.Media.Brushes]::Transparent
-   $TextBoxNetworkValues.Foreground = [System.Windows.Media.Brushes]::White
-   for ($i = 0; $i -lt $NetworkValues.Count; $i += 3) {
-      if ($i -eq 0) {
-         RichTextBoxClear $TextBoxNetworkValues
-         RichTextBox $TextBoxNetworkValues ("{0,-5}| {1}" -f "Name", $NetworkValues[$i]) | Out-Null
-      } else {
-         RichTextBox $TextBoxNetworkValues ("{0,-5}| {1}" -f "Name", $NetworkValues[$i]) | Out-Null
-      }
-      RichTextBox $TextBoxNetworkValues ("{0,-5}| {1}" -f "MAC", $NetworkValues[$i+1]) | Out-Null
-      RichTextBox $TextBoxNetworkValues ("{0,-5}| {1}" -f "IP'S", $NetworkValues[$i+2]) | Out-Null
-      Window | Out-Null
-   }
-   $IconCPUValues = New-Object System.Windows.Controls.Image
-   $IconCPUValues.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconCPUValues.png")))
-   $IconCPUValues.Width = 30
-   $IconCPUValues.Height = 30
-   $TextBoxCPUValues = New-Object System.Windows.Controls.RichTextBox
-   $TextBoxCPUValues.FontFamily = New-Object System.Windows.Media.FontFamily("Consolas")
-   $TextBoxCPUValues.FontSize = 12
-   $TextBoxCPUValues.Width = 310
-   $TextBoxCPUValues.Height = 70
-   $TextBoxCPUValues.BorderThickness = 0
-   $TextBoxCPUValues.Document.PagePadding = [System.Windows.Thickness]::new(0)
-   $TextBoxCPUValues.Background = [System.Windows.Media.Brushes]::Transparent
-   $TextBoxCPUValues.Foreground = [System.Windows.Media.Brushes]::White
-   RichTextBoxClear $TextBoxCPUValues
-   RichTextBox $TextBoxCPUValues $CPUValues[0] | Out-Null
-   RichTextBox $TextBoxCPUValues ("{0,-14}| {1}" -f "Architecture", $CPUValues[1]) | Out-Null
-   RichTextBox $TextBoxCPUValues ("{0,-14}| {1}" -f "Cores", $CPUValues[2]) | Out-Null
-   RichTextBox $TextBoxCPUValues ("{0,-14}| {1}" -f "Logical Cores", $CPUValues[3]) | Out-Null
-   Window | Out-Null
-   $IconGPUValues = New-Object System.Windows.Controls.Image
-   $IconGPUValues.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconGPUValues.png")))
-   $IconGPUValues.Width = 30
-   $IconGPUValues.Height = 30
-   $TextBoxGPUValues = New-Object System.Windows.Controls.RichTextBox
-   $TextBoxGPUValues.FontFamily = New-Object System.Windows.Media.FontFamily("Consolas")
-   $TextBoxGPUValues.FontSize = 12
-   $TextBoxGPUValues.Width = 250
-   $TextBoxGPUValues.Height = 40
-   $TextBoxGPUValues.BorderThickness = 0
-   $TextBoxGPUValues.Document.PagePadding = [System.Windows.Thickness]::new(0)
-   $TextBoxGPUValues.Background = [System.Windows.Media.Brushes]::Transparent
-   $TextBoxGPUValues.Foreground = [System.Windows.Media.Brushes]::White
-   RichTextBoxClear $TextBoxGPUValues
-   RichTextBox $TextBoxGPUValues $GPUValues[0] | Out-Null
-   RichTextBox $TextBoxGPUValues ("{0,-7}| {1}" -f "Driver", $GPUValues[1]) | Out-Null
-   Window | Out-Null
-   $IconRAMValues = New-Object System.Windows.Controls.Image
-   $IconRAMValues.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconRAMValues.png")))
-   $IconRAMValues.Width = 30
-   $IconRAMValues.Height = 30
-   $TextBoxRAMValues = New-Object System.Windows.Controls.RichTextBox
-   $TextBoxRAMValues.FontFamily = New-Object System.Windows.Media.FontFamily("Consolas")
-   $TextBoxRAMValues.FontSize = 12
-   $TextBoxRAMValues.Width = 210
-   $TextBoxRAMValues.Height = 80
-   $TextBoxRAMValues.BorderThickness = 0
-   $TextBoxRAMValues.Document.PagePadding = [System.Windows.Thickness]::new(0)
-   $TextBoxRAMValues.Background = [System.Windows.Media.Brushes]::Transparent
-   $TextBoxRAMValues.Foreground = [System.Windows.Media.Brushes]::White
-   for ($i = 0; $i -lt $NetworkValues.Count; $i += 3) {
-      if ($i -eq 0) {
-         RichTextBoxClear $TextBoxRAMValues
-         RichTextBox $TextBoxRAMValues ("{0} {1} GB {2} MHZ" -f $RAMValues[$i], $RAMValues[$i+1], $RAMValues[$i+2]) | Out-Null
-      } else {
-         RichTextBox $TextBoxRAMValues ("{0} {1} GB {2} MHZ" -f $RAMValues[$i], $RAMValues[$i+1], $RAMValues[$i+2]) | Out-Null
-      }
-   }
-   $CloseButton = @{
-      Button = New-Object System.Windows.Controls.Image
-      Icon   = New-Object System.Windows.Controls.Image
-      SystemWindowsControlsCanvas = $SystemWindowsControlsCanvas
-      InfoButton = $InfoButton
-      Elements = $Elements
-   }
-   $CloseButton.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\Bar.png")))
-   $CloseButton.Button.Width = 30
-   $CloseButton.Button.Height = 30
-   $CloseButton.Icon.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconClose.png")))
-   $CloseButton.Icon.Width = 22
-   $CloseButton.Icon.Height = 22
-   $CloseButton.Button.Tag = $CloseButton
-   $CloseButton.Icon.Tag   = $CloseButton
-   $CloseButton.Button.Add_MouseEnter({
-      $this.Tag.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\BarHover.png")))
-      $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconCloseHover.png")))
-   })
-   $CloseButton.Button.Add_MouseLeave({
-      $this.Tag.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\Bar.png")))
-      $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconClose.png")))
-   })
-   $CloseButton.Icon.Add_MouseEnter({
-      $this.Tag.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\BarHover.png")))
-      $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconCloseHover.png")))
-   })
-   $CloseButton.Icon.Add_MouseLeave({
-      $this.Tag.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\Bar.png")))
-      $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconClose.png")))
-   })
-   $CloseButton.Button.Add_MouseLeftButtonDown({
-      $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconClosePressed.png")))
-      $this.CaptureMouse() | Out-Null
-   })
-   $CloseButton.Button.Add_MouseLeftButtonUp({
-      $this.ReleaseMouseCapture()
-      if ($this.IsMouseOver -or $this.Tag.Icon.IsMouseOver) {
-         foreach ($Element in $this.Tag.Elements) {
-            $this.Tag.SystemWindowsControlsCanvas.Children.Remove($Element) | Out-Null
-         }         
-         $this.Tag.InfoButton.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\Bar.png")))
-         $this.Tag.InfoButton.Icon.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconSystemInfo.png")))
-         $this.Tag.InfoButton.Active = $false
-      } else {
-         $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconClose.png")))
-    }
-   })
-   $CloseButton.Icon.Add_MouseLeftButtonDown({
-      $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconClosePressed.png")))
-      $this.CaptureMouse() | Out-Null
-   })
-   $CloseButton.Icon.Add_MouseLeftButtonUp({
-      $this.ReleaseMouseCapture()
-      if ($this.IsMouseOver -or $this.Tag.Button.IsMouseOver) {
-         foreach ($Element in $this.Tag.Elements) {
-            $this.Tag.SystemWindowsControlsCanvas.Children.Remove($Element) | Out-Null
-         }
-         $this.Tag.InfoButton.Button.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\Bar.png")))
-         $this.Tag.InfoButton.Icon.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconSystemInfo.png")))
-         $this.Tag.InfoButton.Active = $false
-      } else {
-         $this.Tag.Icon.Source   = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconClose.png")))
-    }
-   })
-   [System.Windows.Controls.Canvas]::SetLeft($Background, 180)
-   [System.Windows.Controls.Canvas]::SetTop($Background, 0)
-   [System.Windows.Controls.Canvas]::SetLeft($IconEnvironmentValues, 190)
-   [System.Windows.Controls.Canvas]::SetTop($IconEnvironmentValues, 15)
-   [System.Windows.Controls.Canvas]::SetLeft($IconNetworkValues, 190)
-   [System.Windows.Controls.Canvas]::SetTop($IconNetworkValues, 150)
-   [System.Windows.Controls.Canvas]::SetLeft($TextBoxEnvironmentValues, 230)
-   [System.Windows.Controls.Canvas]::SetTop($TextBoxEnvironmentValues, 15)
-   [System.Windows.Controls.Canvas]::SetLeft($TextBoxNetworkValues, 230)
-   [System.Windows.Controls.Canvas]::SetTop($TextBoxNetworkValues, 150)
-   [System.Windows.Controls.Canvas]::SetLeft($IconCPUValues, 520)
-   [System.Windows.Controls.Canvas]::SetTop($IconCPUValues, 15)
-   [System.Windows.Controls.Canvas]::SetLeft($IconGPUValues, 520)
-   [System.Windows.Controls.Canvas]::SetTop($IconGPUValues, 80)
-   [System.Windows.Controls.Canvas]::SetLeft($IconRAMValues, 520)
-   [System.Windows.Controls.Canvas]::SetTop($IconRAMValues, 120)
-   [System.Windows.Controls.Canvas]::SetLeft($TextBoxCPUValues, 570)
-   [System.Windows.Controls.Canvas]::SetTop($TextBoxCPUValues, 15)
-   [System.Windows.Controls.Canvas]::SetLeft($TextBoxGPUValues, 570)
-   [System.Windows.Controls.Canvas]::SetTop($TextBoxGPUValues, 80)
-   [System.Windows.Controls.Canvas]::SetLeft($TextBoxRAMValues, 570)
-   [System.Windows.Controls.Canvas]::SetTop($TextBoxRAMValues, 120)
-   [System.Windows.Controls.Canvas]::SetLeft($CloseButton.Button, 860)
-   [System.Windows.Controls.Canvas]::SetTop($CloseButton.Button, 10)
-   [System.Windows.Controls.Canvas]::SetLeft($CloseButton.Icon, 864)
-   [System.Windows.Controls.Canvas]::SetTop($CloseButton.Icon, 14)
-   $SystemWindowsControlsCanvas.Children.Add($Background) | Out-Null
-   $Elements.Add($Background)
-   $SystemWindowsControlsCanvas.Children.Add($IconEnvironmentValues) | Out-Null
-   $Elements.Add($IconEnvironmentValues)
-   $SystemWindowsControlsCanvas.Children.Add($IconNetworkValues) | Out-Null
-   $Elements.Add($IconNetworkValues)
-   $SystemWindowsControlsCanvas.Children.Add($TextBoxEnvironmentValues) | Out-Null
-   $Elements.Add($TextBoxEnvironmentValues)
-   $SystemWindowsControlsCanvas.Children.Add($TextBoxNetworkValues) | Out-Null
-   $Elements.Add($TextBoxNetworkValues)
-   $SystemWindowsControlsCanvas.Children.Add($IconCPUValues) | Out-Null
-   $Elements.Add($IconCPUValues)
-   $SystemWindowsControlsCanvas.Children.Add($IconGPUValues) | Out-Null
-   $Elements.Add($IconGPUValues)
-   $SystemWindowsControlsCanvas.Children.Add($IconRAMValues) | Out-Null
-   $Elements.Add($IconRAMValues)
-   $SystemWindowsControlsCanvas.Children.Add($TextBoxCPUValues) | Out-Null
-   $Elements.Add($TextBoxCPUValues)
-   $SystemWindowsControlsCanvas.Children.Add($TextBoxGPUValues) | Out-Null
-   $Elements.Add($TextBoxGPUValues)
-   $SystemWindowsControlsCanvas.Children.Add($TextBoxRAMValues) | Out-Null
-   $Elements.Add($TextBoxRAMValues)
-   $SystemWindowsControlsCanvas.Children.Add($CloseButton.Button) | Out-Null
-   $Elements.Add($CloseButton.Button)
-   $SystemWindowsControlsCanvas.Children.Add($CloseButton.Icon) | Out-Null
-   $Elements.Add($CloseButton.Icon)
-}
-function SystemInfoGet() {
-   $Environment = @('COMPUTERNAME','USERDOMAIN','LOGONSERVER', 'USERNAME')
-   $EnvironmentValues = @()
+function SystemGetAdapterValues() {
+   $Environment = @('USERNAME','COMPUTERNAME','USERDOMAIN','LOGONSERVER')
+   $SystemAdapterValues = @()
    foreach ($Variable in $Environment) {
-      $EnvironmentValues += [System.Environment]::GetEnvironmentVariable($Variable)
+      $SystemAdapterValues += [System.Environment]::GetEnvironmentVariable($Variable)
    }
    $UserID = [System.Security.Principal.WindowsIdentity]::GetCurrent()
    $UserPrincipal = New-Object System.Security.Principal.WindowsPrincipal($UserID)
    $UserPrincipal = $UserPrincipal.IsInRole([System.Security.Principal.WindowsBuiltInRole]::Administrator)
-   $EnvironmentValues += $UserPrincipal
+   if ($UserPrincipal) {
+      $SystemAdapterValues += "Administrator"
+   }
    $OS = Get-CimInstance Win32_OperatingSystem
-   $EnvironmentValues += $OS.Caption
-   $EnvironmentValues += $OS.OSArchitecture
-   $EnvironmentValues += @{1='Workstation';2='Domain Controller';3='Server'}[[int]$OS.ProductType]
-   $EnvironmentValues += ((Get-Date) - $OS.LastBootUpTime).ToString("d'd 'h'h 'm'm'")
-   $NetworkValues = @()
-   Get-CimInstance Win32_NetworkAdapterConfiguration | Where-Object { $_.IPEnabled } | ForEach-Object {
-   $NetworkValues += $_.Description
-   $NetworkValues += $_.MACAddress
-   $NetworkValues += ($_.IPAddress | Where-Object { $_ -notmatch ':' }) -join ', '
-   }
-   $CPUValues = @()
-   Get-CimInstance Win32_Processor | ForEach-Object {
-   $CPUValues += $_.Name.Trim()
-   $CPUValues += @{0='x86';1='MIPS';2='Alpha';3='PowerPC';5='ARM';6='ia64';9='x64'}[[int]$_.Architecture]
-   $CPUValues += $_.NumberOfCores
-   $CPUValues += $_.NumberOfLogicalProcessors
-   }
-   $GPUValues = @()
-   Get-CimInstance Win32_VideoController | ForEach-Object {
-   $GPUValues += $_.Name
-   $GPUValues += $_.DriverVersion
-   }
-   $RAMValues = @()
-   Get-CimInstance Win32_PhysicalMemory | ForEach-Object {
-   $RAMValues += $_.DeviceLocator
-   $RAMValues += [math]::Round($_.Capacity / 1GB, 1)
-   $RAMValues += $_.Speed
-   }
-   return $EnvironmentValues, $NetworkValues, $CPUValues, $GPUValues, $RAMValues
+   $SystemAdapterValues += $OS.Caption
+   $SystemAdapterValues += $OS.OSArchitecture
+   $SystemAdapterValues += @{1='Workstation';2='Domain Controller';3='Server'}[[int]$OS.ProductType]
+   $SystemAdapterValues += ((Get-Date) - $OS.LastBootUpTime).ToString("d'd 'h'h 'm'm'")
+   return $SystemAdapterValues
 }
-function SystemStartUpdateRun($WingetAppList,$MyInvocation,$WindowsUpdateNeeded,$AppUpdateNeeded,$GPUUpdateNeeded) {
+function System($MyInvocation){
+   #═════════════════════════════════════════════════════════════
+   # Main Window
+   #═════════════════════════════════════════════════════════════
+   $SystemWindowsWindow = New-Object System.Windows.Window
+   $SystemWindowsWindow.Topmost = $false
+   $SystemWindowsWindow.WindowStyle = "None"
+   $SystemWindowsWindow.ResizeMode = "NoResize"
+   $SystemWindowsWindow.AllowsTransparency = $true
+   $SystemWindowsWindow.Width = 1060
+   $SystemWindowsWindow.Height = 800
+   $ScreenParameter = [System.Windows.SystemParameters]
+   $SystemWindowsWindow.Left = ($ScreenParameter::PrimaryScreenWidth - 1060) / 2
+   $SystemWindowsWindow.Top = ($ScreenParameter::PrimaryScreenHeight - 800) / 2
+   $SystemWindowsWindow.Title = "CoreForge"
+   $SystemWindowsWindow.Background = [System.Windows.Media.Brushes]::Transparent
+   $FontPathIBMPlexMono = ((Join-Path $PSScriptRoot "..\font\#IBM Plex Mono"))
+   #═════════════════════════════════════════════════════════════
+   # Main Backdrop Border
+   #═════════════════════════════════════════════════════════════
+   $SystemWindowsControlsBorder = New-Object System.Windows.Controls.Border
+   $SystemWindowsControlsBorder.Width = 1060
+   $SystemWindowsControlsBorder.Height = 800
+   $SystemWindowsControlsBorder.CornerRadius = New-Object System.Windows.CornerRadius(5, 5, 5, 5)
+   $SystemWindowsControlsBorder.Background = [System.Windows.Media.SolidColorBrush][System.Windows.Media.ColorConverter]::ConvertFromString("#1E1E1E")
+   #═════════════════════════════════════════════════════════════
+   # Main Canvas
+   #═════════════════════════════════════════════════════════════
+   $SystemWindowsControlsCanvas = New-Object System.Windows.Controls.Canvas
+   $SystemWindowsControlsCanvas.Width = 1060
+   $SystemWindowsControlsCanvas.Height = 800
+   $SystemWindowsControlsCanvas.Background = [System.Windows.Media.Brushes]::Transparent
+   #═════════════════════════════════════════════════════════════
+   # Main Container Setup
+   #═════════════════════════════════════════════════════════════
+   $SystemWindowsControlsBorder.Child = $SystemWindowsControlsCanvas
+   $SystemWindowsWindow.Content = $SystemWindowsControlsBorder
+   #═════════════════════════════════════════════════════════════
+   # Drag Bar Setup
+   #═════════════════════════════════════════════════════════════
+   $DragBar = New-Object System.Windows.Controls.Border
+   $DragBar.Width = 1060
+   $DragBar.Height = 40
+   $DragBar.CornerRadius = New-Object System.Windows.CornerRadius(5, 5, 0, 0)
+   $DragBar.Background = [System.Windows.Media.SolidColorBrush][System.Windows.Media.ColorConverter]::ConvertFromString("#141414")
+   $DragBar.BorderBrush     = [System.Windows.Media.SolidColorBrush][System.Windows.Media.ColorConverter]::ConvertFromString("#80ffffff")
+   $DragBar.BorderThickness = [System.Windows.Thickness]::new(0, 0, 0, 1)
+   $DragBar.Add_MouseLeftButtonDown({
+      $SystemWindowsWindow.DragMove()
+   })
+   #═════════════════════════════════════════════════════════════
+   # Logo Setup
+   #═════════════════════════════════════════════════════════════
+   $Logo = New-Object System.Windows.Controls.Image
+   $Logo.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\Logo.png")))
+   $Logo.Width = 156
+   $Logo.Height = 40
+   #═════════════════════════════════════════════════════════════
+   # Button Info Setup
+   #═════════════════════════════════════════════════════════════
+   $ButtonInfoPopup = New-Object System.Windows.Controls.Border
+   $ButtonInfoPopup.Width = 110
+   $ButtonInfoPopup.Height = 15
+   $ButtonInfoPopup.Background = [System.Windows.Media.SolidColorBrush][System.Windows.Media.ColorConverter]::ConvertFromString("#323232")
+   $ButtonInfoPopup.CornerRadius = New-Object System.Windows.CornerRadius(5, 5, 5, 5)
+   $ButtonInfoPopup.Visibility = "Collapsed"
+   
+   $SystemWindowsControlsRichTextBoxButtonInfoPopup = New-Object System.Windows.Controls.RichTextBox
+   $SystemWindowsControlsRichTextBoxButtonInfoPopup.FontFamily = New-Object System.Windows.Media.FontFamily('Consolas')
+   $SystemWindowsControlsRichTextBoxButtonInfoPopup.FontSize = 10
+   $SystemWindowsControlsRichTextBoxButtonInfoPopup.Width = 110
+   $SystemWindowsControlsRichTextBoxButtonInfoPopup.Height = 15
+   $SystemWindowsControlsRichTextBoxButtonInfoPopup.BorderThickness = 0
+   $SystemWindowsControlsRichTextBoxButtonInfoPopup.Document.PagePadding = [System.Windows.Thickness]::new(0)
+   $SystemWindowsControlsRichTextBoxButtonInfoPopup.Background = [System.Windows.Media.Brushes]::Transparent
+   $SystemWindowsControlsRichTextBoxButtonInfoPopup.Foreground = [System.Windows.Media.Brushes]::White
+   $SystemWindowsControlsRichTextBoxButtonInfoPopup.SetValue([System.Windows.Controls.RichTextBox]::IsReadOnlyProperty, $true)
+   $SystemWindowsControlsRichTextBoxButtonInfoPopup.SetValue([System.Windows.UIElement]::IsHitTestVisibleProperty, $false)
+   $SystemWindowsControlsRichTextBoxButtonInfoPopup.SetValue([System.Windows.UIElement]::FocusableProperty, $false)
 
-   $TaskName = [System.Collections.Generic.List[string]]::new()
-   if ($WindowsUpdateNeeded -eq $true) {
-      $ThreadList.Add((Thread $ThreadWrapper -ThreadPool $ThreadPool -Function ${Function:WindowsUpdateUpdateRun}))
-      $TaskName.Add("Windows Update Run")
-   }
-   if ($AppUpdateNeeded -eq $true) {
-      $ThreadList.Add((Thread $ThreadWrapper -ThreadPool $ThreadPool -Function ${Function:AppUpdateRun} -Parameter $WingetAppList))
-      $TaskName.Add("Application Update Run")
-   }
-   if ($GPUUpdateNeeded -eq $true) {
-      $ThreadList.Add((Thread $ThreadWrapper -ThreadPool $ThreadPool -Function ${Function:GPUNvidiaUpdateRun} -Parameter $MyInvocation))
-      $TaskName.Add("GPU Update Run")
-   }
+   $ButtonInfoPopup.Child = $SystemWindowsControlsRichTextBoxButtonInfoPopup
 
-   if ($ThreadList.Count -eq 0) {
-      RichTextBoxClear $SystemWindowsControlsRichTextBox0
-      RichTextBox $SystemWindowsControlsRichTextBox0 "SYSTEM v$CurrentVersion" | Out-Null
-      RichTextBox $SystemWindowsControlsRichTextBox0 "" | Out-Null
-      RichTextBox $SystemWindowsControlsRichTextBox0 "Welcome $UserName" | Out-Null
-      RichTextBox $SystemWindowsControlsRichTextBox0 "____________________________________________________________________________________________________________________________________________________________" | Out-Null
-      RichTextBox $SystemWindowsControlsRichTextBox0 "" | Out-Null
-      RichTextBox $SystemWindowsControlsRichTextBox0 "" | Out-Null
-      RichTextBox $SystemWindowsControlsRichTextBox0 "Update Run | No Updates needed" | Out-Null
-      Window  | Out-Null
-      return
+   $ButtonInfo = @{
+      ButtonMain = New-Object System.Windows.Controls.Button
+      Active  = $false
+      ButtonInfoPopup = $ButtonInfoPopup
+      SystemWindowsControlsRichTextBoxButtonInfoPopup = $SystemWindowsControlsRichTextBoxButtonInfoPopup
    }
-
-   $Frames = @("⣷","⣯","⣟","⡿","⢿","⣻","⣽","⣾")
-   $FrameIndex = 0
-   while ($ThreadList | Where-Object { -not $_.Handle.IsCompleted }) {
-      RichTextBoxClear $SystemWindowsControlsRichTextBox0
-      RichTextBox $SystemWindowsControlsRichTextBox0 "SYSTEM v$CurrentVersion" | Out-Null
-      RichTextBox $SystemWindowsControlsRichTextBox0 "" | Out-Null
-      RichTextBox $SystemWindowsControlsRichTextBox0 "Welcome $UserName" | Out-Null
-      RichTextBox $SystemWindowsControlsRichTextBox0 "____________________________________________________________________________________________________________________________________________________________" | Out-Null
-      RichTextBox $SystemWindowsControlsRichTextBox0 "" | Out-Null
-      RichTextBox $SystemWindowsControlsRichTextBox0 "" | Out-Null
-      $Frame = $Frames[$FrameIndex % $Frames.Count]
-      for ($i = 0; $i -lt $ThreadList.Count; $i++) {
-         if (-not $ThreadList[$i].Handle.IsCompleted) {
-            RichTextBox $SystemWindowsControlsRichTextBox0 "$Frame Update Run | $($TaskName[$i])" | Out-Null
-         }
-      }
-      Window  | Out-Null
-      $FrameIndex++
-      Start-Sleep -Seconds 0.05
-   }
-
-   $Results = [System.Collections.Generic.List[object]]::new()
-   foreach ($Thread in $ThreadList) {
-      $Result = $Thread.Instance.EndInvoke($Thread.Handle)
-      if ($Thread.Instance.HadErrors) {
-         $Thread.Instance.Streams.Error | ForEach-Object { Write-Warning "Thread error: $_" }
-      }
-      $Thread.Instance.Dispose()
-      $Results.Add($Result)
-   }
-   $ThreadList.Clear()
-   if ($WindowsUpdateNeeded -eq $true -and $AppUpdateNeeded -ne $true -and $GPUUpdateNeeded -ne $true) {
-      $WindowsUpdateResults = $Results[0]
-   } elseif ($WindowsUpdateNeeded -eq $true -and $AppUpdateNeeded -eq $true -and $GPUUpdateNeeded -ne $true) {
-      $WindowsUpdateResults = $Results[0]
-      $AppUpdateResults = $Results[1]
-   } elseif ($WindowsUpdateNeeded -eq $true -and $AppUpdateNeeded -eq $true -and $GPUUpdateNeeded -eq $true) {
-      $WindowsUpdateResults = $Results[0]
-      $AppUpdateResults = $Results[1]
-      $GPUUpdateResults = $Results[2]
-   } elseif ($WindowsUpdateNeeded -ne $true -and $AppUpdateNeeded -eq $true -and $GPUUpdateNeeded -eq $true) {
-      $AppUpdateResults = $Results[0]
-      $GPUUpdateResults = $Results[1]
-   } elseif ($WindowsUpdateNeeded -ne $true -and $AppUpdateNeeded -ne $true -and $GPUUpdateNeeded -eq $true) {
-      $GPUUpdateResults = $Results[0]
-   } elseif ($WindowsUpdateNeeded -ne $true -and $AppUpdateNeeded -eq $true -and $GPUUpdateNeeded -ne $true) {
-      $AppUpdateResults = $Results[0]
-   } elseif ($WindowsUpdateNeeded -eq $true -and $AppUpdateNeeded -ne $true -and $GPUUpdateNeeded -eq $true) {
-      $WindowsUpdateResults = $Results[0]
-      $GPUUpdateResults = $Results[1]
-   }
-
-   RichTextBoxClear $SystemWindowsControlsRichTextBox0
-   RichTextBox $SystemWindowsControlsRichTextBox0 "SYSTEM v$CurrentVersion" | Out-Null
-   RichTextBox $SystemWindowsControlsRichTextBox0 "" | Out-Null
-   RichTextBox $SystemWindowsControlsRichTextBox0 "Welcome $UserName" | Out-Null
-   RichTextBox $SystemWindowsControlsRichTextBox0 "____________________________________________________________________________________________________________________________________________________________" | Out-Null
-   RichTextBox $SystemWindowsControlsRichTextBox0 "" | Out-Null
-   RichTextBox $SystemWindowsControlsRichTextBox0 "" | Out-Null
-   Window  | Out-Null
-   if ($WindowsUpdateNeeded -eq $true) {
-      RichTextBox $SystemWindowsControlsRichTextBox0 "Windows Updates" | Out-Null
-      RichTextBox $SystemWindowsControlsRichTextBox0 "____________________________________________________________________________________________________________________________________________________________" | Out-Null
-      RichTextBox $SystemWindowsControlsRichTextBox0 "" | Out-Null
-      RichTextBox $SystemWindowsControlsRichTextBox0 "" | Out-Null
-      $Lines = $WindowsUpdateResults -split "`r?`n"
-      foreach ($Line in $Lines) {
-         if (-not [string]::IsNullOrWhiteSpace($Line)) {
-            RichTextBox $SystemWindowsControlsRichTextBox0 "$($Line.Trim())" -Color ([System.Windows.Media.Brushes]::LightGreen) | Out-Null
-            Window | Out-Null
-         }
-      }
-   }
-   if ($AppUpdateNeeded -eq $true) {
-      RichTextBox $SystemWindowsControlsRichTextBox0 "" | Out-Null
-      RichTextBox $SystemWindowsControlsRichTextBox0 "App Updates" | Out-Null
-      RichTextBox $SystemWindowsControlsRichTextBox0 "____________________________________________________________________________________________________________________________________________________________" | Out-Null
-      RichTextBox $SystemWindowsControlsRichTextBox0 "" | Out-Null
-      RichTextBox $SystemWindowsControlsRichTextBox0 "" | Out-Null
-      $Lines = $AppUpdateResults -split "`r?`n"
-      foreach ($Line in $Lines) {
-         if (-not [string]::IsNullOrWhiteSpace($Line)) {
-            RichTextBox $SystemWindowsControlsRichTextBox0 "$($Line.Trim())" -Color ([System.Windows.Media.Brushes]::LightGreen) | Out-Null
-            Window | Out-Null
-         }
-      }
-   }
-   if ($GPUUpdateNeeded -eq $true) {
-      RichTextBox $SystemWindowsControlsRichTextBox0 "" | Out-Null
-      RichTextBox $SystemWindowsControlsRichTextBox0 "GPU Updates" | Out-Null
-      RichTextBox $SystemWindowsControlsRichTextBox0 "____________________________________________________________________________________________________________________________________________________________" | Out-Null
-      RichTextBox $SystemWindowsControlsRichTextBox0 "" | Out-Null
-      RichTextBox $SystemWindowsControlsRichTextBox0 "" | Out-Null
-      $Lines = $GPUUpdateResults -split "`r?`n"
-      foreach ($Line in $Lines) {
-         if (-not [string]::IsNullOrWhiteSpace($Line)) {
-            RichTextBox $SystemWindowsControlsRichTextBox0 "$($Line.Trim())" -Color ([System.Windows.Media.Brushes]::LightGreen) | Out-Null
-            Window | Out-Null
-         }
-      }
-   }
-
-   $ThreadList.Add((Thread $ThreadWrapper -ThreadPool $ThreadPool -Function ${Function:WindowsUpdateGetStatus}))
-   $ThreadList.Add((Thread $ThreadWrapper -ThreadPool $ThreadPool -Function ${Function:AppGetStatus}))
-   $ThreadList.Add((Thread $ThreadWrapper -ThreadPool $ThreadPool -Function ${Function:AppGetApplist}))
-   $ThreadList.Add((Thread $ThreadWrapper -ThreadPool $ThreadPool -Function ${Function:GPUInstalledVersion}))
-   $ThreadList.Add((Thread $ThreadWrapper -ThreadPool $ThreadPool -Function ${Function:GPULatestVersion}))
-
-   RichTextBox $SystemWindowsControlsRichTextBox0 "" | Out-Null
-   RichTextBox $SystemWindowsControlsRichTextBox0 "ReSCAN" | Out-Null
-   RichTextBox $SystemWindowsControlsRichTextBox0 "____________________________________________________________________________________________________________________________________________________________" | Out-Null
-   RichTextBox $SystemWindowsControlsRichTextBox0 "" | Out-Null
-   RichTextBox $SystemWindowsControlsRichTextBox0 "" | Out-Null
-   $Frames = @("⣷","⣯","⣟","⡿","⢿","⣻","⣽","⣾")
-   $FrameIndex = 0
-   $LinestoDelete = 0
-   while ($ThreadList | Where-Object { -not $_.Handle.IsCompleted }) {
-      $Frame = $Frames[$FrameIndex % $Frames.Count]
-      if ($FrameIndex -gt 0 -and $LinestoDelete -gt 0) {
-         for ($d = 0; $d -lt $LinestoDelete; $d++) {
-            RichTextBoxDeleteLine $SystemWindowsControlsRichTextBox0 | Out-Null
-         }
-      }
-      $LinestoDelete = 0
-      $TaskName = @("Windows Update Status", "Application Update Status", "Application Update List", "GPU Latest Version Scan", "GPU Latest Version Scan")
-      for ($i = 0; $i -lt $ThreadList.Count; $i++) {
-         if (-not $ThreadList[$i].Handle.IsCompleted) {
-            RichTextBox $SystemWindowsControlsRichTextBox0 "$Frame SYSTEM START | $($TaskName[$i])" | Out-Null
-            $LinestoDelete++
-         }
-      }
-      Window | Out-Null
-      $FrameIndex++
-      Start-Sleep -Seconds 0.04
-   }
-   RichTextBoxDeleteLine $SystemWindowsControlsRichTextBox0 | Out-Null
-   RichTextBox $SystemWindowsControlsRichTextBox0 "Done" | Out-Null
-   Window  | Out-Null
-
-   $Results = [System.Collections.Generic.List[object]]::new()
-   foreach ($Thread in $ThreadList) {
-      $Result = $Thread.Instance.EndInvoke($Thread.Handle)
-      if ($Thread.Instance.HadErrors) {
-         $Thread.Instance.Streams.Error | ForEach-Object { Write-Warning "Thread error: $_" }
-      }
-      $Thread.Instance.Dispose()
-      $Results.Add($Result)
-   }
-   $ThreadList.Clear()
-   $WindowsUpdateStatus = $Results[0]
-   $WingetStatus = $Results[1]
-   $WingetAppList = $Results[2]
-   $GPUInsalledVersion = $Results[3]
-   $GPULatestVersion = $Results[4]
-   $WindowsUpdateNeeded = $false
-   $AppUpdateNeeded = $false
-   $GPUUpdateNeeded = $false
-
-   if ($WindowsUpdateStatus[0] -eq 0) {
-      RichTextBoxClear $SystemWindowsControlsRichTextBox1
-      RichTextBox $SystemWindowsControlsRichTextBox1 "No Windows Updates available" -Color ([System.Windows.Media.Brushes]::LightGreen) | Out-Null
-      Window | Out-Null
-   } elseif ($WindowsUpdateStatus[0] -eq 1) {
-      $RebootFlag = $true
-      RichTextBoxClear $SystemWindowsControlsRichTextBox1
-      RichTextBox $SystemWindowsControlsRichTextBox1 "No Windows Updates available - Reboot Required" -Color ([System.Windows.Media.Brushes]::LightGreen) | Out-Null
-      Window | Out-Null
-   } else {
-      $WindowsUpdateNeeded = $true
-      RichTextBoxClear $SystemWindowsControlsRichTextBox1
-      RichTextBox $SystemWindowsControlsRichTextBox1 $WindowsUpdateStatus | Out-Null
-      Window | Out-Null
-   }
-
-   if ($null -eq $WingetAppList -or $WingetAppList.Count -eq 0) {
-      RichTextBoxClear $SystemWindowsControlsRichTextBox2
-      RichTextBox $SystemWindowsControlsRichTextBox2 "No Updates for Apps available" -Color ([System.Windows.Media.Brushes]::LightGreen) | Out-Null
-      Window | Out-Null
-   } else {
-      $AppUpdateNeeded = $true
-      RichTextBoxClear $SystemWindowsControlsRichTextBox2
-      RichTextBox $SystemWindowsControlsRichTextBox2 $WingetStatus | Out-Null
-      Window | Out-Null
-   }
-
-   if (-not $GPULatestVersion -eq 0) {
-      if ($GPUInsalledVersion -eq $GPULatestVersion) {
-         RichTextBoxClear $SystemWindowsControlsRichTextBox3
-         RichTextBox $SystemWindowsControlsRichTextBox3 "No Updates for GPU available" -Color ([System.Windows.Media.Brushes]::LightGreen) | Out-Null
-         Window | Out-Null
+   $ButtonInfo.ButtonMain.BorderThickness = New-Object System.Windows.Thickness(0)
+   $ButtonInfo.ButtonMain.Cursor = [System.Windows.Input.Cursors]::Arrow
+   $ButtonInfo.ButtonMain.Width = 15
+   $ButtonInfo.ButtonMain.Height = 15
+   $ButtonInfo.ButtonMain.Content = "i"
+   $ButtonInfo.ButtonMain.FontSize = 10
+   $ButtonInfo.ButtonMain.FontFamily = New-Object System.Windows.Media.FontFamily("Consolas")
+   $ButtonInfo.ButtonMain.Background = [System.Windows.Media.SolidColorBrush][System.Windows.Media.ColorConverter]::ConvertFromString("#1E1E1E")
+   $ButtonInfo.ButtonMain.Foreground = [System.Windows.Media.SolidColorBrush][System.Windows.Media.ColorConverter]::ConvertFromString("#ffffff")
+   $ButtonInfo.ButtonMain.Tag = $ButtonInfo
+   $ButtonInfo.ButtonMain.Add_Click({
+      if ($this.Tag.ButtonInfoPopup.Visibility -eq [System.Windows.Visibility]::Collapsed) {
+         $this.Tag.ButtonInfoPopup.Visibility = [System.Windows.Visibility]::Visible
       } else {
-         $GPUUpdateNeeded = $true
-         RichTextBoxClear $SystemWindowsControlsRichTextBox3
-         RichTextBox $SystemWindowsControlsRichTextBox3 "Update to v$GPULatestVersion available" | Out-Null
-         Window | Out-Null
+         $this.Tag.ButtonInfoPopup.Visibility = [System.Windows.Visibility]::Collapsed
       }
-   } else {
-      RichTextBoxClear $SystemWindowsControlsRichTextBox3
-      RichTextBox $SystemWindowsControlsRichTextBox3 "No Database Match for GPU" -Color ([System.Windows.Media.Brushes]::Yellow) | Out-Null
-      Window | Out-Null
-   }
+   })
+   #═════════════════════════════════════════════════════════════
+   # Button Close Setup
+   #═════════════════════════════════════════════════════════════
+   $ButtonClose = New-Object System.Windows.Controls.Button
+   $ButtonClose.BorderThickness = New-Object System.Windows.Thickness(0)
+   $ButtonClose.Cursor = [System.Windows.Input.Cursors]::Arrow
+   $ButtonClose.Width = 25
+   $ButtonClose.Height = 25
+   $ButtonClose.Content = "✕"
+   $ButtonClose.FontSize = 15
+   $ButtonClose.FontFamily = New-Object System.Windows.Media.FontFamily('Consolas')
+   $ButtonClose.Background = [System.Windows.Media.SolidColorBrush][System.Windows.Media.ColorConverter]::ConvertFromString("#1E1E1E")
+   $ButtonClose.Foreground = [System.Windows.Media.SolidColorBrush][System.Windows.Media.ColorConverter]::ConvertFromString("#ffffff")
+   $ButtonClose.Add_Click({
+      $WindowsUpdateRebootNeeded = Get-WURebootStatus -Silent
+      if ($WindowsUpdateRebootNeeded -eq $true) {
+         $ResultQuestion = [System.Windows.MessageBox]::Show(
+         "Your System will needs a Reboot`nIt will be triggered on application exit.",
+         "Reboot NOW ?",
+         "YesNo",
+         "Question"
+         )
+         if ($ResultQuestion -eq "No") {
+            return
+         }
+         $SystemWindowsWindow.Close()
+         $ThreadPool.Close()
+         $ThreadPool.Dispose()
+         Restart-Computer
+      }
+      $SystemWindowsWindow.Close()
+      $ThreadPool.Close()
+      $ThreadPool.Dispose()
+      exit
+   })
+   #═════════════════════════════════════════════════════════════
+   # Side Bar Setup
+   #═════════════════════════════════════════════════════════════
+   $SideBar = New-Object System.Windows.Shapes.Rectangle
+   $SideBar.Width = 249
+   $SideBar.Height = 740
+   $SideBar.Fill = [System.Windows.Media.SolidColorBrush][System.Windows.Media.ColorConverter]::ConvertFromString("#141414")
+
+   $SideBarDivider = New-Object System.Windows.Controls.Border
+   $SideBarDivider.Width           = 250
+   $SideBarDivider.Height          = 740
+   $SideBarDivider.BorderBrush     = [System.Windows.Media.SolidColorBrush][System.Windows.Media.ColorConverter]::ConvertFromString("#80ffffff")
+   $SideBarDivider.BorderThickness = [System.Windows.Thickness]::new(0, 0, 1, 0)
+   $SideBarDivider.Background      = [System.Windows.Media.Brushes]::Transparent
+   
+   $SystemWindowsControlsRichTextBoxSideBarSystemSection = New-Object System.Windows.Controls.RichTextBox
+   $SystemWindowsControlsRichTextBoxSideBarSystemSection.FontFamily = New-Object System.Windows.Media.FontFamily('Consolas')
+   $SystemWindowsControlsRichTextBoxSideBarSystemSection.FontSize = 14
+   $SystemWindowsControlsRichTextBoxSideBarSystemSection.Width = 249
+   $SystemWindowsControlsRichTextBoxSideBarSystemSection.Height = 30
+   $SystemWindowsControlsRichTextBoxSideBarSystemSection.BorderThickness = 0
+   $SystemWindowsControlsRichTextBoxSideBarSystemSection.Document.PagePadding = [System.Windows.Thickness]::new(0)
+   $SystemWindowsControlsRichTextBoxSideBarSystemSection.Background = [System.Windows.Media.Brushes]::Transparent
+   $SystemWindowsControlsRichTextBoxSideBarSystemSection.Foreground = [System.Windows.Media.Brushes]::White
+   $SystemWindowsControlsRichTextBoxSideBarSystemSection.SetValue([System.Windows.Controls.RichTextBox]::IsReadOnlyProperty, $true)
+   $SystemWindowsControlsRichTextBoxSideBarSystemSection.SetValue([System.Windows.UIElement]::IsHitTestVisibleProperty, $false)
+   $SystemWindowsControlsRichTextBoxSideBarSystemSection.SetValue([System.Windows.UIElement]::FocusableProperty, $false)
+   
+   $ButtonDashboard = New-Object System.Windows.Controls.Button
+   $ButtonDashboard.Content = "Dashboard"
+   $ButtonDashboard.Width = 249
+   $ButtonDashboard.Height = 30
+   $ButtonDashboard.FontSize = 12
+   $ButtonDashboard.FontFamily = New-Object System.Windows.Media.FontFamily("Consolas")
+   $ButtonDashboard.HorizontalContentAlignment = "Center"
+   $ButtonDashboard.Background = [System.Windows.Media.SolidColorBrush][System.Windows.Media.ColorConverter]::ConvertFromString("#323232")
+   $ButtonDashboard.Foreground = [System.Windows.Media.SolidColorBrush][System.Windows.Media.ColorConverter]::ConvertFromString("#ffffff")
+   $ButtonDashboard.BorderBrush = [System.Windows.Media.SolidColorBrush][System.Windows.Media.ColorConverter]::ConvertFromString("#ffffff")
+   $ButtonDashboard.BorderThickness = New-Object System.Windows.Thickness(2, 0, 0, 0)
+   $ButtonDashboard.Cursor = [System.Windows.Input.Cursors]::Arrow
+   
+   $ButtonUpdates = New-Object System.Windows.Controls.Button
+   $ButtonUpdates.Content = "Updates"
+   $ButtonUpdates.Width = 249
+   $ButtonUpdates.Height = 30
+   $ButtonUpdates.FontSize = 12
+   $ButtonUpdates.FontFamily = New-Object System.Windows.Media.FontFamily("Consolas")
+   $ButtonUpdates.HorizontalContentAlignment = "Center"
+   $ButtonUpdates.Background = [System.Windows.Media.SolidColorBrush][System.Windows.Media.ColorConverter]::ConvertFromString("#1E1E1E")
+   $ButtonUpdates.Foreground = [System.Windows.Media.SolidColorBrush][System.Windows.Media.ColorConverter]::ConvertFromString("#ffffff")
+   $ButtonUpdates.BorderBrush = [System.Windows.Media.SolidColorBrush][System.Windows.Media.ColorConverter]::ConvertFromString("#1E1E1E")
+   $ButtonUpdates.BorderThickness = New-Object System.Windows.Thickness(2, 0, 0, 0)
+   $ButtonUpdates.Cursor = [System.Windows.Input.Cursors]::Arrow
+
+   $SystemWindowsControlsRichTextBoxSideBarAutomationSection = New-Object System.Windows.Controls.RichTextBox
+   $SystemWindowsControlsRichTextBoxSideBarAutomationSection.FontFamily = New-Object System.Windows.Media.FontFamily('Consolas')
+   $SystemWindowsControlsRichTextBoxSideBarAutomationSection.FontSize = 14
+   $SystemWindowsControlsRichTextBoxSideBarAutomationSection.Width = 249
+   $SystemWindowsControlsRichTextBoxSideBarAutomationSection.Height = 30
+   $SystemWindowsControlsRichTextBoxSideBarAutomationSection.BorderThickness = 0
+   $SystemWindowsControlsRichTextBoxSideBarAutomationSection.Document.PagePadding = [System.Windows.Thickness]::new(0)
+   $SystemWindowsControlsRichTextBoxSideBarAutomationSection.Background = [System.Windows.Media.Brushes]::Transparent
+   $SystemWindowsControlsRichTextBoxSideBarAutomationSection.Foreground = [System.Windows.Media.Brushes]::White
+   $SystemWindowsControlsRichTextBoxSideBarAutomationSection.SetValue([System.Windows.Controls.RichTextBox]::IsReadOnlyProperty, $true)
+   $SystemWindowsControlsRichTextBoxSideBarAutomationSection.SetValue([System.Windows.UIElement]::IsHitTestVisibleProperty, $false)
+   $SystemWindowsControlsRichTextBoxSideBarAutomationSection.SetValue([System.Windows.UIElement]::FocusableProperty, $false)
+   
+   $ButtonAutomation = New-Object System.Windows.Controls.Button
+   $ButtonAutomation.Content = "Automation"
+   $ButtonAutomation.Width = 249
+   $ButtonAutomation.Height = 30
+   $ButtonAutomation.FontSize = 12
+   $ButtonAutomation.FontFamily = New-Object System.Windows.Media.FontFamily("Consolas")
+   $ButtonAutomation.HorizontalContentAlignment = "Center"
+   $ButtonAutomation.Background = [System.Windows.Media.SolidColorBrush][System.Windows.Media.ColorConverter]::ConvertFromString("#1E1E1E")
+   $ButtonAutomation.Foreground = [System.Windows.Media.SolidColorBrush][System.Windows.Media.ColorConverter]::ConvertFromString("#ffffff")
+   $ButtonAutomation.BorderBrush = [System.Windows.Media.SolidColorBrush][System.Windows.Media.ColorConverter]::ConvertFromString("#1E1E1E")
+   $ButtonAutomation.BorderThickness = New-Object System.Windows.Thickness(2, 0, 0, 0)
+   $ButtonAutomation.Cursor = [System.Windows.Input.Cursors]::Arrow
+
+   
+
+  
+   #═════════════════════════════════════════════════════════════
+   # Page Dashboard Setup
+   #═════════════════════════════════════════════════════════════
+
+   $PageDashboard = New-Object System.Windows.Controls.Canvas
+   $PageDashboard.Width = 810
+   $PageDashboard.Height = 740
+   $PageDashboard.Visibility = "Visible"
+   $PageDashboard.Background = [System.Windows.Media.SolidColorBrush][System.Windows.Media.ColorConverter]::ConvertFromString("#141414")
+
+   $PageDashboardNetworkDivider = New-Object System.Windows.Controls.Border
+   $PageDashboardNetworkDivider.Width           = 190
+   $PageDashboardNetworkDivider.Height          = 125
+   $PageDashboardNetworkDivider.BorderBrush     = [System.Windows.Media.SolidColorBrush][System.Windows.Media.ColorConverter]::ConvertFromString("#80ffffff")
+   $PageDashboardNetworkDivider.BorderThickness = [System.Windows.Thickness]::new(1, 1, 1, 1)
+   $PageDashboardNetworkDivider.Background      = [System.Windows.Media.SolidColorBrush][System.Windows.Media.ColorConverter]::ConvertFromString("#1E1E1E")
+   $PageDashboardNetworkDivider.CornerRadius      = New-Object System.Windows.CornerRadius(5, 5, 5, 5)
+   [System.Windows.Controls.Canvas]::SetLeft($PageDashboardNetworkDivider, 10)
+   [System.Windows.Controls.Canvas]::SetTop($PageDashboardNetworkDivider, 10)
+   $PageDashboard.Children.Add($PageDashboardNetworkDivider) | Out-Null
+
+   $PageDashboardNetworkIcon = New-Object System.Windows.Controls.Image
+   $PageDashboardNetworkIcon.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconNetwork.png")))
+   $PageDashboardNetworkIcon.Width = 30
+   $PageDashboardNetworkIcon.Height = 30
+   [System.Windows.Controls.Canvas]::SetLeft($PageDashboardNetworkIcon, 160)
+   [System.Windows.Controls.Canvas]::SetTop($PageDashboardNetworkIcon, 20)
+   $PageDashboard.Children.Add($PageDashboardNetworkIcon) | Out-Null
+
+   $SystemWindowsControlsRichTextBoxPageDashboardNetwork0 = New-Object System.Windows.Controls.RichTextBox
+   $SystemWindowsControlsRichTextBoxPageDashboardNetwork0.FontFamily = New-Object System.Windows.Media.FontFamily('Consolas')
+   $SystemWindowsControlsRichTextBoxPageDashboardNetwork0.FontSize = 15
+   $SystemWindowsControlsRichTextBoxPageDashboardNetwork0.Width = 170
+   $SystemWindowsControlsRichTextBoxPageDashboardNetwork0.Height = 105
+   $SystemWindowsControlsRichTextBoxPageDashboardNetwork0.BorderThickness = 0
+   $SystemWindowsControlsRichTextBoxPageDashboardNetwork0.Document.PagePadding = [System.Windows.Thickness]::new(0)
+   $SystemWindowsControlsRichTextBoxPageDashboardNetwork0.Background = [System.Windows.Media.Brushes]::Transparent
+   $SystemWindowsControlsRichTextBoxPageDashboardNetwork0.Foreground = [System.Windows.Media.Brushes]::White
+   $SystemWindowsControlsRichTextBoxPageDashboardNetwork0.SetValue([System.Windows.Controls.RichTextBox]::IsReadOnlyProperty, $true)
+   $SystemWindowsControlsRichTextBoxPageDashboardNetwork0.SetValue([System.Windows.UIElement]::IsHitTestVisibleProperty, $false)
+   $SystemWindowsControlsRichTextBoxPageDashboardNetwork0.SetValue([System.Windows.UIElement]::FocusableProperty, $false)
+   [System.Windows.Controls.Canvas]::SetLeft($SystemWindowsControlsRichTextBoxPageDashboardNetwork0, 20)
+   [System.Windows.Controls.Canvas]::SetTop($SystemWindowsControlsRichTextBoxPageDashboardNetwork0, 20)
+   $PageDashboard.Children.Add($SystemWindowsControlsRichTextBoxPageDashboardNetwork0) | Out-Null
+
+   $SystemWindowsControlsRichTextBoxPageDashboardNetwork1 = New-Object System.Windows.Controls.RichTextBox
+   $SystemWindowsControlsRichTextBoxPageDashboardNetwork1.FontFamily = New-Object System.Windows.Media.FontFamily($FontPathIBMPlexMono)
+   [System.Windows.Media.TextOptions]::SetTextFormattingMode($SystemWindowsControlsRichTextBoxPageDashboardNetwork1, [System.Windows.Media.TextFormattingMode]::Display)
+   [System.Windows.Media.TextOptions]::SetTextRenderingMode($SystemWindowsControlsRichTextBoxPageDashboardNetwork1, [System.Windows.Media.TextRenderingMode]::ClearType)
+   $SystemWindowsControlsRichTextBoxPageDashboardNetwork1.FontSize = 12
+   $SystemWindowsControlsRichTextBoxPageDashboardNetwork1.Width = 170
+   $SystemWindowsControlsRichTextBoxPageDashboardNetwork1.Height = 85
+   $SystemWindowsControlsRichTextBoxPageDashboardNetwork1.BorderThickness = 0
+   $SystemWindowsControlsRichTextBoxPageDashboardNetwork1.Document.PagePadding = [System.Windows.Thickness]::new(0)
+   $SystemWindowsControlsRichTextBoxPageDashboardNetwork1.Background = [System.Windows.Media.Brushes]::Transparent
+   $SystemWindowsControlsRichTextBoxPageDashboardNetwork1.Foreground = [System.Windows.Media.Brushes]::White
+   $SystemWindowsControlsRichTextBoxPageDashboardNetwork1.SetValue([System.Windows.Controls.RichTextBox]::IsReadOnlyProperty, $true)
+   $SystemWindowsControlsRichTextBoxPageDashboardNetwork1.SetValue([System.Windows.UIElement]::IsHitTestVisibleProperty, $false)
+   $SystemWindowsControlsRichTextBoxPageDashboardNetwork1.SetValue([System.Windows.UIElement]::FocusableProperty, $false)
+   [System.Windows.Controls.Canvas]::SetLeft($SystemWindowsControlsRichTextBoxPageDashboardNetwork1, 20)
+   [System.Windows.Controls.Canvas]::SetTop($SystemWindowsControlsRichTextBoxPageDashboardNetwork1, 40)
+   $PageDashboard.Children.Add($SystemWindowsControlsRichTextBoxPageDashboardNetwork1) | Out-Null
+
+   $PageDashboardGPUDivider = New-Object System.Windows.Controls.Border
+   $PageDashboardGPUDivider.Width           = 190
+   $PageDashboardGPUDivider.Height          = 125
+   $PageDashboardGPUDivider.BorderBrush     = [System.Windows.Media.SolidColorBrush][System.Windows.Media.ColorConverter]::ConvertFromString("#80ffffff")
+   $PageDashboardGPUDivider.BorderThickness = [System.Windows.Thickness]::new(1, 1, 1, 1)
+   $PageDashboardGPUDivider.Background      = [System.Windows.Media.SolidColorBrush][System.Windows.Media.ColorConverter]::ConvertFromString("#1E1E1E")
+   $PageDashboardGPUDivider.CornerRadius      = New-Object System.Windows.CornerRadius(5, 5, 5, 5)
+   [System.Windows.Controls.Canvas]::SetLeft($PageDashboardGPUDivider, 210)
+   [System.Windows.Controls.Canvas]::SetTop($PageDashboardGPUDivider, 10)
+   $PageDashboard.Children.Add($PageDashboardGPUDivider) | Out-Null
+
+   $PageDashboardGPUIcon = New-Object System.Windows.Controls.Image
+   $PageDashboardGPUIcon.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconGPU.png")))
+   $PageDashboardGPUIcon.Width = 30
+   $PageDashboardGPUIcon.Height = 30
+   [System.Windows.Controls.Canvas]::SetLeft($PageDashboardGPUIcon, 360)
+   [System.Windows.Controls.Canvas]::SetTop($PageDashboardGPUIcon, 20)
+   $PageDashboard.Children.Add($PageDashboardGPUIcon) | Out-Null
+   
+   $SystemWindowsControlsRichTextBoxPageDashboardGPU0 = New-Object System.Windows.Controls.RichTextBox
+   $SystemWindowsControlsRichTextBoxPageDashboardGPU0.FontFamily = New-Object System.Windows.Media.FontFamily('Consolas')
+   $SystemWindowsControlsRichTextBoxPageDashboardGPU0.FontSize = 15
+   $SystemWindowsControlsRichTextBoxPageDashboardGPU0.Width = 170
+   $SystemWindowsControlsRichTextBoxPageDashboardGPU0.Height = 105
+   $SystemWindowsControlsRichTextBoxPageDashboardGPU0.BorderThickness = 0
+   $SystemWindowsControlsRichTextBoxPageDashboardGPU0.Document.PagePadding = [System.Windows.Thickness]::new(0)
+   $SystemWindowsControlsRichTextBoxPageDashboardGPU0.Background = [System.Windows.Media.Brushes]::Transparent
+   $SystemWindowsControlsRichTextBoxPageDashboardGPU0.Foreground = [System.Windows.Media.Brushes]::White
+   $SystemWindowsControlsRichTextBoxPageDashboardGPU0.SetValue([System.Windows.Controls.RichTextBox]::IsReadOnlyProperty, $true)
+   $SystemWindowsControlsRichTextBoxPageDashboardGPU0.SetValue([System.Windows.UIElement]::IsHitTestVisibleProperty, $false)
+   $SystemWindowsControlsRichTextBoxPageDashboardGPU0.SetValue([System.Windows.UIElement]::FocusableProperty, $false)
+   [System.Windows.Controls.Canvas]::SetLeft($SystemWindowsControlsRichTextBoxPageDashboardGPU0, 220)
+   [System.Windows.Controls.Canvas]::SetTop($SystemWindowsControlsRichTextBoxPageDashboardGPU0, 20)
+   $PageDashboard.Children.Add($SystemWindowsControlsRichTextBoxPageDashboardGPU0) | Out-Null
+
+   $SystemWindowsControlsRichTextBoxPageDashboardGPU1 = New-Object System.Windows.Controls.RichTextBox
+   $SystemWindowsControlsRichTextBoxPageDashboardGPU1.FontFamily = New-Object System.Windows.Media.FontFamily($FontPathIBMPlexMono)
+   [System.Windows.Media.TextOptions]::SetTextFormattingMode($SystemWindowsControlsRichTextBoxPageDashboardGPU1, [System.Windows.Media.TextFormattingMode]::Display)
+   [System.Windows.Media.TextOptions]::SetTextRenderingMode($SystemWindowsControlsRichTextBoxPageDashboardGPU1, [System.Windows.Media.TextRenderingMode]::ClearType)
+   $SystemWindowsControlsRichTextBoxPageDashboardGPU1.FontSize = 12
+   $SystemWindowsControlsRichTextBoxPageDashboardGPU1.Width = 170
+   $SystemWindowsControlsRichTextBoxPageDashboardGPU1.Height = 85
+   $SystemWindowsControlsRichTextBoxPageDashboardGPU1.BorderThickness = 0
+   $SystemWindowsControlsRichTextBoxPageDashboardGPU1.Document.PagePadding = [System.Windows.Thickness]::new(0)
+   $SystemWindowsControlsRichTextBoxPageDashboardGPU1.Background = [System.Windows.Media.Brushes]::Transparent
+   $SystemWindowsControlsRichTextBoxPageDashboardGPU1.Foreground = [System.Windows.Media.Brushes]::White
+   $SystemWindowsControlsRichTextBoxPageDashboardGPU1.SetValue([System.Windows.Controls.RichTextBox]::IsReadOnlyProperty, $true)
+   $SystemWindowsControlsRichTextBoxPageDashboardGPU1.SetValue([System.Windows.UIElement]::IsHitTestVisibleProperty, $false)
+   $SystemWindowsControlsRichTextBoxPageDashboardGPU1.SetValue([System.Windows.UIElement]::FocusableProperty, $false)
+   [System.Windows.Controls.Canvas]::SetLeft($SystemWindowsControlsRichTextBoxPageDashboardGPU1, 220)
+   [System.Windows.Controls.Canvas]::SetTop($SystemWindowsControlsRichTextBoxPageDashboardGPU1, 40)
+   $PageDashboard.Children.Add($SystemWindowsControlsRichTextBoxPageDashboardGPU1) | Out-Null
+
+   $PageDashboardCPUDivider = New-Object System.Windows.Controls.Border
+   $PageDashboardCPUDivider.Width           = 190
+   $PageDashboardCPUDivider.Height          = 125
+   $PageDashboardCPUDivider.BorderBrush     = [System.Windows.Media.SolidColorBrush][System.Windows.Media.ColorConverter]::ConvertFromString("#80ffffff")
+   $PageDashboardCPUDivider.BorderThickness = [System.Windows.Thickness]::new(1, 1, 1, 1)
+   $PageDashboardCPUDivider.Background      = [System.Windows.Media.SolidColorBrush][System.Windows.Media.ColorConverter]::ConvertFromString("#1E1E1E")
+   $PageDashboardCPUDivider.CornerRadius      = New-Object System.Windows.CornerRadius(5, 5, 5, 5)
+   [System.Windows.Controls.Canvas]::SetLeft($PageDashboardCPUDivider, 410)
+   [System.Windows.Controls.Canvas]::SetTop($PageDashboardCPUDivider, 10)
+   $PageDashboard.Children.Add($PageDashboardCPUDivider) | Out-Null
+
+   $PageDashboardCPUIcon = New-Object System.Windows.Controls.Image
+   $PageDashboardCPUIcon.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconCPU.png")))
+   $PageDashboardCPUIcon.Width = 30
+   $PageDashboardCPUIcon.Height = 30
+   [System.Windows.Controls.Canvas]::SetLeft($PageDashboardCPUIcon, 560)
+   [System.Windows.Controls.Canvas]::SetTop($PageDashboardCPUIcon, 20)
+   $PageDashboard.Children.Add($PageDashboardCPUIcon) | Out-Null
+
+   $SystemWindowsControlsRichTextBoxPageDashboardCPU0 = New-Object System.Windows.Controls.RichTextBox
+   $SystemWindowsControlsRichTextBoxPageDashboardCPU0.FontFamily = New-Object System.Windows.Media.FontFamily('Consolas')
+   $SystemWindowsControlsRichTextBoxPageDashboardCPU0.FontSize = 15
+   $SystemWindowsControlsRichTextBoxPageDashboardCPU0.Width = 170
+   $SystemWindowsControlsRichTextBoxPageDashboardCPU0.Height = 105
+   $SystemWindowsControlsRichTextBoxPageDashboardCPU0.BorderThickness = 0
+   $SystemWindowsControlsRichTextBoxPageDashboardCPU0.Document.PagePadding = [System.Windows.Thickness]::new(0)
+   $SystemWindowsControlsRichTextBoxPageDashboardCPU0.Background = [System.Windows.Media.Brushes]::Transparent
+   $SystemWindowsControlsRichTextBoxPageDashboardCPU0.Foreground = [System.Windows.Media.Brushes]::White
+   $SystemWindowsControlsRichTextBoxPageDashboardCPU0.SetValue([System.Windows.Controls.RichTextBox]::IsReadOnlyProperty, $true)
+   $SystemWindowsControlsRichTextBoxPageDashboardCPU0.SetValue([System.Windows.UIElement]::IsHitTestVisibleProperty, $false)
+   $SystemWindowsControlsRichTextBoxPageDashboardCPU0.SetValue([System.Windows.UIElement]::FocusableProperty, $false)
+   [System.Windows.Controls.Canvas]::SetLeft($SystemWindowsControlsRichTextBoxPageDashboardCPU0, 420)
+   [System.Windows.Controls.Canvas]::SetTop($SystemWindowsControlsRichTextBoxPageDashboardCPU0, 20)
+   $PageDashboard.Children.Add($SystemWindowsControlsRichTextBoxPageDashboardCPU0) | Out-Null
+
+   $SystemWindowsControlsRichTextBoxPageDashboardCPU1 = New-Object System.Windows.Controls.RichTextBox
+   $SystemWindowsControlsRichTextBoxPageDashboardCPU1.FontFamily = New-Object System.Windows.Media.FontFamily($FontPathIBMPlexMono)
+   [System.Windows.Media.TextOptions]::SetTextFormattingMode($SystemWindowsControlsRichTextBoxPageDashboardCPU1, [System.Windows.Media.TextFormattingMode]::Display)
+   [System.Windows.Media.TextOptions]::SetTextRenderingMode($SystemWindowsControlsRichTextBoxPageDashboardCPU1, [System.Windows.Media.TextRenderingMode]::ClearType)
+   $SystemWindowsControlsRichTextBoxPageDashboardCPU1.FontSize = 12
+   $SystemWindowsControlsRichTextBoxPageDashboardCPU1.Width = 170
+   $SystemWindowsControlsRichTextBoxPageDashboardCPU1.Height = 85
+   $SystemWindowsControlsRichTextBoxPageDashboardCPU1.BorderThickness = 0
+   $SystemWindowsControlsRichTextBoxPageDashboardCPU1.Document.PagePadding = [System.Windows.Thickness]::new(0)
+   $SystemWindowsControlsRichTextBoxPageDashboardCPU1.Background = [System.Windows.Media.Brushes]::Transparent
+   $SystemWindowsControlsRichTextBoxPageDashboardCPU1.Foreground = [System.Windows.Media.Brushes]::White
+   $SystemWindowsControlsRichTextBoxPageDashboardCPU1.SetValue([System.Windows.Controls.RichTextBox]::IsReadOnlyProperty, $true)
+   $SystemWindowsControlsRichTextBoxPageDashboardCPU1.SetValue([System.Windows.UIElement]::IsHitTestVisibleProperty, $false)
+   $SystemWindowsControlsRichTextBoxPageDashboardCPU1.SetValue([System.Windows.UIElement]::FocusableProperty, $false)
+   [System.Windows.Controls.Canvas]::SetLeft($SystemWindowsControlsRichTextBoxPageDashboardCPU1, 420)
+   [System.Windows.Controls.Canvas]::SetTop($SystemWindowsControlsRichTextBoxPageDashboardCPU1, 40)
+   $PageDashboard.Children.Add($SystemWindowsControlsRichTextBoxPageDashboardCPU1) | Out-Null
+
+   $PageDashboardRAMDivider = New-Object System.Windows.Controls.Border
+   $PageDashboardRAMDivider.Width           = 190
+   $PageDashboardRAMDivider.Height          = 125
+   $PageDashboardRAMDivider.BorderBrush     = [System.Windows.Media.SolidColorBrush][System.Windows.Media.ColorConverter]::ConvertFromString("#80ffffff")
+   $PageDashboardRAMDivider.BorderThickness = [System.Windows.Thickness]::new(1, 1, 1, 1)
+   $PageDashboardRAMDivider.Background      = [System.Windows.Media.SolidColorBrush][System.Windows.Media.ColorConverter]::ConvertFromString("#1E1E1E")
+   $PageDashboardRAMDivider.CornerRadius      = New-Object System.Windows.CornerRadius(5, 5, 5, 5)
+   [System.Windows.Controls.Canvas]::SetLeft($PageDashboardRAMDivider, 610)
+   [System.Windows.Controls.Canvas]::SetTop($PageDashboardRAMDivider, 10)
+   $PageDashboard.Children.Add($PageDashboardRAMDivider) | Out-Null
+
+   $PageDashboardRAMIcon = New-Object System.Windows.Controls.Image
+   $PageDashboardRAMIcon.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\IconRAM.png")))
+   $PageDashboardRAMIcon.Width = 30
+   $PageDashboardRAMIcon.Height = 30
+   [System.Windows.Controls.Canvas]::SetLeft($PageDashboardRAMIcon, 760)
+   [System.Windows.Controls.Canvas]::SetTop($PageDashboardRAMIcon, 20)
+   $PageDashboard.Children.Add($PageDashboardRAMIcon) | Out-Null
+
+   $SystemWindowsControlsRichTextBoxPageDashboardRAM0 = New-Object System.Windows.Controls.RichTextBox
+   $SystemWindowsControlsRichTextBoxPageDashboardRAM0.FontFamily = New-Object System.Windows.Media.FontFamily('Consolas')
+   $SystemWindowsControlsRichTextBoxPageDashboardRAM0.FontSize = 15
+   $SystemWindowsControlsRichTextBoxPageDashboardRAM0.Width = 160
+   $SystemWindowsControlsRichTextBoxPageDashboardRAM0.Height = 105
+   $SystemWindowsControlsRichTextBoxPageDashboardRAM0.BorderThickness = 0
+   $SystemWindowsControlsRichTextBoxPageDashboardRAM0.Document.PagePadding = [System.Windows.Thickness]::new(0)
+   $SystemWindowsControlsRichTextBoxPageDashboardRAM0.Background = [System.Windows.Media.Brushes]::Transparent
+   $SystemWindowsControlsRichTextBoxPageDashboardRAM0.Foreground = [System.Windows.Media.Brushes]::White
+   $SystemWindowsControlsRichTextBoxPageDashboardRAM0.SetValue([System.Windows.Controls.RichTextBox]::IsReadOnlyProperty, $true)
+   $SystemWindowsControlsRichTextBoxPageDashboardRAM0.SetValue([System.Windows.UIElement]::IsHitTestVisibleProperty, $false)
+   $SystemWindowsControlsRichTextBoxPageDashboardRAM0.SetValue([System.Windows.UIElement]::FocusableProperty, $false)
+   [System.Windows.Controls.Canvas]::SetLeft($SystemWindowsControlsRichTextBoxPageDashboardRAM0, 620)
+   [System.Windows.Controls.Canvas]::SetTop($SystemWindowsControlsRichTextBoxPageDashboardRAM0, 20)
+   $PageDashboard.Children.Add($SystemWindowsControlsRichTextBoxPageDashboardRAM0) | Out-Null
+
+   $SystemWindowsControlsRichTextBoxPageDashboardRAM1 = New-Object System.Windows.Controls.RichTextBox
+   $SystemWindowsControlsRichTextBoxPageDashboardRAM1.FontFamily = New-Object System.Windows.Media.FontFamily($FontPathIBMPlexMono)
+   [System.Windows.Media.TextOptions]::SetTextFormattingMode($SystemWindowsControlsRichTextBoxPageDashboardRAM1, [System.Windows.Media.TextFormattingMode]::Display)
+   [System.Windows.Media.TextOptions]::SetTextRenderingMode($SystemWindowsControlsRichTextBoxPageDashboardRAM1, [System.Windows.Media.TextRenderingMode]::ClearType)
+   $SystemWindowsControlsRichTextBoxPageDashboardRAM1.FontSize = 12
+   $SystemWindowsControlsRichTextBoxPageDashboardRAM1.Width = 80
+   $SystemWindowsControlsRichTextBoxPageDashboardRAM1.Height = 85
+   $SystemWindowsControlsRichTextBoxPageDashboardRAM1.BorderThickness = 0
+   $SystemWindowsControlsRichTextBoxPageDashboardRAM1.Document.PagePadding = [System.Windows.Thickness]::new(0)
+   $SystemWindowsControlsRichTextBoxPageDashboardRAM1.Background = [System.Windows.Media.Brushes]::Transparent
+   $SystemWindowsControlsRichTextBoxPageDashboardRAM1.Foreground = [System.Windows.Media.Brushes]::White
+   $SystemWindowsControlsRichTextBoxPageDashboardRAM1.SetValue([System.Windows.Controls.RichTextBox]::IsReadOnlyProperty, $true)
+   $SystemWindowsControlsRichTextBoxPageDashboardRAM1.SetValue([System.Windows.UIElement]::IsHitTestVisibleProperty, $false)
+   $SystemWindowsControlsRichTextBoxPageDashboardRAM1.SetValue([System.Windows.UIElement]::FocusableProperty, $false)
+   [System.Windows.Controls.Canvas]::SetLeft($SystemWindowsControlsRichTextBoxPageDashboardRAM1, 620)
+   [System.Windows.Controls.Canvas]::SetTop($SystemWindowsControlsRichTextBoxPageDashboardRAM1, 40)
+   $PageDashboard.Children.Add($SystemWindowsControlsRichTextBoxPageDashboardRAM1) | Out-Null
+
+   $SystemWindowsControlsRichTextBoxPageDashboardRAM2 = New-Object System.Windows.Controls.RichTextBox
+   $SystemWindowsControlsRichTextBoxPageDashboardRAM2.FontFamily = New-Object System.Windows.Media.FontFamily($FontPathIBMPlexMono)
+   [System.Windows.Media.TextOptions]::SetTextFormattingMode($SystemWindowsControlsRichTextBoxPageDashboardRAM2, [System.Windows.Media.TextFormattingMode]::Display)
+   [System.Windows.Media.TextOptions]::SetTextRenderingMode($SystemWindowsControlsRichTextBoxPageDashboardRAM2, [System.Windows.Media.TextRenderingMode]::ClearType)
+   $SystemWindowsControlsRichTextBoxPageDashboardRAM2.FontSize = 12
+   $SystemWindowsControlsRichTextBoxPageDashboardRAM2.Width = 80
+   $SystemWindowsControlsRichTextBoxPageDashboardRAM2.Height = 85
+   $SystemWindowsControlsRichTextBoxPageDashboardRAM2.BorderThickness = 0
+   $SystemWindowsControlsRichTextBoxPageDashboardRAM2.Document.PagePadding = [System.Windows.Thickness]::new(0)
+   $SystemWindowsControlsRichTextBoxPageDashboardRAM2.Background = [System.Windows.Media.Brushes]::Transparent
+   $SystemWindowsControlsRichTextBoxPageDashboardRAM2.Foreground = [System.Windows.Media.Brushes]::White
+   $SystemWindowsControlsRichTextBoxPageDashboardRAM2.SetValue([System.Windows.Controls.RichTextBox]::IsReadOnlyProperty, $true)
+   $SystemWindowsControlsRichTextBoxPageDashboardRAM2.SetValue([System.Windows.UIElement]::IsHitTestVisibleProperty, $false)
+   $SystemWindowsControlsRichTextBoxPageDashboardRAM2.SetValue([System.Windows.UIElement]::FocusableProperty, $false)
+   [System.Windows.Controls.Canvas]::SetLeft($SystemWindowsControlsRichTextBoxPageDashboardRAM2, 700)
+   [System.Windows.Controls.Canvas]::SetTop($SystemWindowsControlsRichTextBoxPageDashboardRAM2, 40)
+   $PageDashboard.Children.Add($SystemWindowsControlsRichTextBoxPageDashboardRAM2) | Out-Null
+
+   $PageDashboardLogBarDivider = New-Object System.Windows.Controls.Border
+   $PageDashboardLogBarDivider.Width           = 390
+   $PageDashboardLogBarDivider.Height          = 35
+   $PageDashboardLogBarDivider.BorderBrush     = [System.Windows.Media.SolidColorBrush][System.Windows.Media.ColorConverter]::ConvertFromString("#80ffffff")
+   $PageDashboardLogBarDivider.BorderThickness = [System.Windows.Thickness]::new(1, 1, 1, 1)
+   $PageDashboardLogBarDivider.Background      = [System.Windows.Media.SolidColorBrush][System.Windows.Media.ColorConverter]::ConvertFromString("#1E1E1E")
+   $PageDashboardLogBarDivider.CornerRadius      = New-Object System.Windows.CornerRadius(5, 5, 5, 5)
+   [System.Windows.Controls.Canvas]::SetLeft($PageDashboardLogBarDivider, 10)
+   [System.Windows.Controls.Canvas]::SetTop($PageDashboardLogBarDivider, 145)
+   $PageDashboard.Children.Add($PageDashboardLogBarDivider) | Out-Null
+
+   $SystemWindowsControlsRichTextBoxPageDashboardLogBar = New-Object System.Windows.Controls.RichTextBox
+   $SystemWindowsControlsRichTextBoxPageDashboardLogBar.FontFamily = New-Object System.Windows.Media.FontFamily('Consolas')
+   $SystemWindowsControlsRichTextBoxPageDashboardLogBar.FontSize = 15
+   $SystemWindowsControlsRichTextBoxPageDashboardLogBar.Width = 190
+   $SystemWindowsControlsRichTextBoxPageDashboardLogBar.Height = 40
+   $SystemWindowsControlsRichTextBoxPageDashboardLogBar.BorderThickness = 0
+   $SystemWindowsControlsRichTextBoxPageDashboardLogBar.Document.PagePadding = [System.Windows.Thickness]::new(0)
+   $SystemWindowsControlsRichTextBoxPageDashboardLogBar.Background = [System.Windows.Media.Brushes]::Transparent
+   $SystemWindowsControlsRichTextBoxPageDashboardLogBar.Foreground = [System.Windows.Media.Brushes]::White
+   $SystemWindowsControlsRichTextBoxPageDashboardLogBar.SetValue([System.Windows.Controls.RichTextBox]::IsReadOnlyProperty, $true)
+   $SystemWindowsControlsRichTextBoxPageDashboardLogBar.SetValue([System.Windows.UIElement]::IsHitTestVisibleProperty, $false)
+   $SystemWindowsControlsRichTextBoxPageDashboardLogBar.SetValue([System.Windows.UIElement]::FocusableProperty, $false)
+   [System.Windows.Controls.Canvas]::SetLeft($SystemWindowsControlsRichTextBoxPageDashboardLogBar, 20)
+   [System.Windows.Controls.Canvas]::SetTop($SystemWindowsControlsRichTextBoxPageDashboardLogBar, 150)
+   $PageDashboard.Children.Add($SystemWindowsControlsRichTextBoxPageDashboardLogBar) | Out-Null
+
+   $PageDashboardLogDivider = New-Object System.Windows.Controls.Border
+   $PageDashboardLogDivider.Width           = 390
+   $PageDashboardLogDivider.Height          = 425
+   $PageDashboardLogDivider.BorderBrush     = [System.Windows.Media.SolidColorBrush][System.Windows.Media.ColorConverter]::ConvertFromString("#80ffffff")
+   $PageDashboardLogDivider.BorderThickness = [System.Windows.Thickness]::new(1, 1, 1, 1)
+   $PageDashboardLogDivider.Background      = [System.Windows.Media.SolidColorBrush][System.Windows.Media.ColorConverter]::ConvertFromString("#1E1E1E")
+   $PageDashboardLogDivider.CornerRadius      = New-Object System.Windows.CornerRadius(5, 5, 5, 5)
+   [System.Windows.Controls.Canvas]::SetLeft($PageDashboardLogDivider, 10)
+   [System.Windows.Controls.Canvas]::SetTop($PageDashboardLogDivider, 190)
+   $PageDashboard.Children.Add($PageDashboardLogDivider) | Out-Null
+
+   $SystemWindowsControlsRichTextBoxPageDashboardLog = New-Object System.Windows.Controls.RichTextBox
+   $SystemWindowsControlsRichTextBoxPageDashboardLog.FontFamily = New-Object System.Windows.Media.FontFamily($FontPathIBMPlexMono)
+   [System.Windows.Media.TextOptions]::SetTextFormattingMode($SystemWindowsControlsRichTextBoxPageDashboardLog, [System.Windows.Media.TextFormattingMode]::Display)
+   [System.Windows.Media.TextOptions]::SetTextRenderingMode($SystemWindowsControlsRichTextBoxPageDashboardLog, [System.Windows.Media.TextRenderingMode]::ClearType)
+   $SystemWindowsControlsRichTextBoxPageDashboardLog.FontSize = 12
+   $SystemWindowsControlsRichTextBoxPageDashboardLog.Width = 370
+   $SystemWindowsControlsRichTextBoxPageDashboardLog.Height = 405
+   $SystemWindowsControlsRichTextBoxPageDashboardLog.BorderThickness = 0
+   $SystemWindowsControlsRichTextBoxPageDashboardLog.Document.PagePadding = [System.Windows.Thickness]::new(0)
+   $SystemWindowsControlsRichTextBoxPageDashboardLog.Background = [System.Windows.Media.Brushes]::Transparent
+   $SystemWindowsControlsRichTextBoxPageDashboardLog.Foreground = [System.Windows.Media.Brushes]::White
+   $SystemWindowsControlsRichTextBoxPageDashboardLog.SetValue([System.Windows.Controls.RichTextBox]::IsReadOnlyProperty, $true)
+   $SystemWindowsControlsRichTextBoxPageDashboardLog.SetValue([System.Windows.UIElement]::IsHitTestVisibleProperty, $false)
+   $SystemWindowsControlsRichTextBoxPageDashboardLog.SetValue([System.Windows.UIElement]::FocusableProperty, $false)
+   $SystemWindowsControlsRichTextBoxPageDashboardLog.LayoutTransform = New-Object System.Windows.Media.ScaleTransform(1, -1)
+   [System.Windows.Controls.Canvas]::SetLeft($SystemWindowsControlsRichTextBoxPageDashboardLog, 20)
+   [System.Windows.Controls.Canvas]::SetTop($SystemWindowsControlsRichTextBoxPageDashboardLog, 200)
+   $PageDashboard.Children.Add($SystemWindowsControlsRichTextBoxPageDashboardLog) | Out-Null
+
+   $PageDashboardTaskBarDivider = New-Object System.Windows.Controls.Border
+   $PageDashboardTaskBarDivider.Width           = 390
+   $PageDashboardTaskBarDivider.Height          = 35
+   $PageDashboardTaskBarDivider.BorderBrush     = [System.Windows.Media.SolidColorBrush][System.Windows.Media.ColorConverter]::ConvertFromString("#80ffffff")
+   $PageDashboardTaskBarDivider.BorderThickness = [System.Windows.Thickness]::new(1, 1, 1, 1)
+   $PageDashboardTaskBarDivider.Background      = [System.Windows.Media.SolidColorBrush][System.Windows.Media.ColorConverter]::ConvertFromString("#1E1E1E")
+   $PageDashboardTaskBarDivider.CornerRadius      = New-Object System.Windows.CornerRadius(5, 5, 5, 5)
+   [System.Windows.Controls.Canvas]::SetLeft($PageDashboardTaskBarDivider, 410)
+   [System.Windows.Controls.Canvas]::SetTop($PageDashboardTaskBarDivider, 145)
+   $PageDashboard.Children.Add($PageDashboardTaskBarDivider) | Out-Null
+
+   $SystemWindowsControlsRichTextBoxPageDashboardTaskBar = New-Object System.Windows.Controls.RichTextBox
+   $SystemWindowsControlsRichTextBoxPageDashboardTaskBar.FontFamily = New-Object System.Windows.Media.FontFamily('Consolas')
+   $SystemWindowsControlsRichTextBoxPageDashboardTaskBar.FontSize = 15
+   $SystemWindowsControlsRichTextBoxPageDashboardTaskBar.Width = 190
+   $SystemWindowsControlsRichTextBoxPageDashboardTaskBar.Height = 35
+   $SystemWindowsControlsRichTextBoxPageDashboardTaskBar.BorderThickness = 0
+   $SystemWindowsControlsRichTextBoxPageDashboardTaskBar.Document.PagePadding = [System.Windows.Thickness]::new(0)
+   $SystemWindowsControlsRichTextBoxPageDashboardTaskBar.Background = [System.Windows.Media.Brushes]::Transparent
+   $SystemWindowsControlsRichTextBoxPageDashboardTaskBar.Foreground = [System.Windows.Media.Brushes]::White
+   $SystemWindowsControlsRichTextBoxPageDashboardTaskBar.SetValue([System.Windows.Controls.RichTextBox]::IsReadOnlyProperty, $true)
+   $SystemWindowsControlsRichTextBoxPageDashboardTaskBar.SetValue([System.Windows.UIElement]::IsHitTestVisibleProperty, $false)
+   $SystemWindowsControlsRichTextBoxPageDashboardTaskBar.SetValue([System.Windows.UIElement]::FocusableProperty, $false)
+   [System.Windows.Controls.Canvas]::SetLeft($SystemWindowsControlsRichTextBoxPageDashboardTaskBar, 420)
+   [System.Windows.Controls.Canvas]::SetTop($SystemWindowsControlsRichTextBoxPageDashboardTaskBar, 150)
+   $PageDashboard.Children.Add($SystemWindowsControlsRichTextBoxPageDashboardTaskBar) | Out-Null
+
+   $PageDashboardTaskDivider = New-Object System.Windows.Controls.Border
+   $PageDashboardTaskDivider.Width           = 390
+   $PageDashboardTaskDivider.Height          = 425
+   $PageDashboardTaskDivider.BorderBrush     = [System.Windows.Media.SolidColorBrush][System.Windows.Media.ColorConverter]::ConvertFromString("#80ffffff")
+   $PageDashboardTaskDivider.BorderThickness = [System.Windows.Thickness]::new(1, 1, 1, 1)
+   $PageDashboardTaskDivider.Background      = [System.Windows.Media.SolidColorBrush][System.Windows.Media.ColorConverter]::ConvertFromString("#1E1E1E")
+   $PageDashboardTaskDivider.CornerRadius      = New-Object System.Windows.CornerRadius(5, 5, 5, 5)
+   [System.Windows.Controls.Canvas]::SetLeft($PageDashboardTaskDivider, 410)
+   [System.Windows.Controls.Canvas]::SetTop($PageDashboardTaskDivider, 190)
+   $PageDashboard.Children.Add($PageDashboardTaskDivider) | Out-Null
+
+   $SystemWindowsControlsRichTextBoxPageDashboardTask = New-Object System.Windows.Controls.RichTextBox
+   $SystemWindowsControlsRichTextBoxPageDashboardTask.FontFamily = New-Object System.Windows.Media.FontFamily($FontPathIBMPlexMono)
+   [System.Windows.Media.TextOptions]::SetTextFormattingMode($SystemWindowsControlsRichTextBoxPageDashboardTask, [System.Windows.Media.TextFormattingMode]::Display)
+   [System.Windows.Media.TextOptions]::SetTextRenderingMode($SystemWindowsControlsRichTextBoxPageDashboardTask, [System.Windows.Media.TextRenderingMode]::ClearType)
+   $SystemWindowsControlsRichTextBoxPageDashboardTask.FontSize = 12
+   $SystemWindowsControlsRichTextBoxPageDashboardTask.Width = 370
+   $SystemWindowsControlsRichTextBoxPageDashboardTask.Height = 405
+   $SystemWindowsControlsRichTextBoxPageDashboardTask.BorderThickness = 0
+   $SystemWindowsControlsRichTextBoxPageDashboardTask.Document.PagePadding = [System.Windows.Thickness]::new(0)
+   $SystemWindowsControlsRichTextBoxPageDashboardTask.Background = [System.Windows.Media.Brushes]::Transparent
+   $SystemWindowsControlsRichTextBoxPageDashboardTask.Foreground = [System.Windows.Media.Brushes]::White
+   $SystemWindowsControlsRichTextBoxPageDashboardTask.SetValue([System.Windows.Controls.RichTextBox]::IsReadOnlyProperty, $true)
+   $SystemWindowsControlsRichTextBoxPageDashboardTask.SetValue([System.Windows.UIElement]::IsHitTestVisibleProperty, $false)
+   $SystemWindowsControlsRichTextBoxPageDashboardTask.SetValue([System.Windows.UIElement]::FocusableProperty, $false)
+   [System.Windows.Controls.Canvas]::SetLeft($SystemWindowsControlsRichTextBoxPageDashboardTask, 420)
+   [System.Windows.Controls.Canvas]::SetTop($SystemWindowsControlsRichTextBoxPageDashboardTask, 200)
+   $PageDashboard.Children.Add($SystemWindowsControlsRichTextBoxPageDashboardTask) | Out-Null
+
+
+
+
+
+
+
+      
+   
+   #═════════════════════════════════════════════════════════════
+   # Page Update Setup
+   #═════════════════════════════════════════════════════════════
+   $PageUpdate = New-Object System.Windows.Controls.Canvas
+   $PageUpdate.Width = 810
+   $PageUpdate.Height = 740
+   $PageUpdate.Visibility = "Collapsed"
+   $PageUpdate.Background = [System.Windows.Media.SolidColorBrush][System.Windows.Media.ColorConverter]::ConvertFromString("#141414")
+
+
+   $PageUpdateIconMainWindows = New-Object System.Windows.Controls.Image
+   $PageUpdateIconMainWindows.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\UpdateIconWindowsMain.png")))
+   $PageUpdateIconMainWindows.Width = 40
+   $PageUpdateIconMainWindows.Height = 40
+   [System.Windows.Controls.Canvas]::SetLeft($PageUpdateIconMainWindows, 20)
+   [System.Windows.Controls.Canvas]::SetTop($PageUpdateIconMainWindows, 10)
+   $PageUpdate.Children.Add($PageUpdateIconMainWindows) | Out-Null
+
+   $SystemWindowsControlsRichTextBoxPageUpdateWindowsUpdate0 = New-Object System.Windows.Controls.RichTextBox
+   $SystemWindowsControlsRichTextBoxPageUpdateWindowsUpdate0.FontFamily = New-Object System.Windows.Media.FontFamily('Consolas')
+   $SystemWindowsControlsRichTextBoxPageUpdateWindowsUpdate0.FontSize = 15
+   $SystemWindowsControlsRichTextBoxPageUpdateWindowsUpdate0.Width = 200
+   $SystemWindowsControlsRichTextBoxPageUpdateWindowsUpdate0.Height = 45
+   $SystemWindowsControlsRichTextBoxPageUpdateWindowsUpdate0.BorderThickness = 0
+   $SystemWindowsControlsRichTextBoxPageUpdateWindowsUpdate0.Document.PagePadding = [System.Windows.Thickness]::new(0)
+   $SystemWindowsControlsRichTextBoxPageUpdateWindowsUpdate0.Background = [System.Windows.Media.Brushes]::Transparent
+   $SystemWindowsControlsRichTextBoxPageUpdateWindowsUpdate0.Foreground = [System.Windows.Media.Brushes]::White
+   $SystemWindowsControlsRichTextBoxPageUpdateWindowsUpdate0.SetValue([System.Windows.Controls.RichTextBox]::IsReadOnlyProperty, $true)
+   $SystemWindowsControlsRichTextBoxPageUpdateWindowsUpdate0.SetValue([System.Windows.UIElement]::IsHitTestVisibleProperty, $false)
+   $SystemWindowsControlsRichTextBoxPageUpdateWindowsUpdate0.SetValue([System.Windows.UIElement]::FocusableProperty, $false)
+   [System.Windows.Controls.Canvas]::SetLeft($SystemWindowsControlsRichTextBoxPageUpdateWindowsUpdate0, 70)
+   [System.Windows.Controls.Canvas]::SetTop($SystemWindowsControlsRichTextBoxPageUpdateWindowsUpdate0, 20)
+   $PageUpdate.Children.Add($SystemWindowsControlsRichTextBoxPageUpdateWindowsUpdate0) | Out-Null
+
+   $PageUpdateWindowsUpdateDivider1and2 = New-Object System.Windows.Controls.Border
+   $PageUpdateWindowsUpdateDivider1and2.Width           = 300
+   $PageUpdateWindowsUpdateDivider1and2.Height          = 40
+   $PageUpdateWindowsUpdateDivider1and2.BorderBrush     = [System.Windows.Media.SolidColorBrush][System.Windows.Media.ColorConverter]::ConvertFromString("#80ffffff")
+   $PageUpdateWindowsUpdateDivider1and2.BorderThickness = [System.Windows.Thickness]::new(1, 1, 1, 1)
+   $PageUpdateWindowsUpdateDivider1and2.Background      = [System.Windows.Media.SolidColorBrush][System.Windows.Media.ColorConverter]::ConvertFromString("#1E1E1E")
+   $PageUpdateWindowsUpdateDivider1and2.CornerRadius      = New-Object System.Windows.CornerRadius(5, 5, 5, 5)
+   [System.Windows.Controls.Canvas]::SetLeft($PageUpdateWindowsUpdateDivider1and2, 500)
+   [System.Windows.Controls.Canvas]::SetTop($PageUpdateWindowsUpdateDivider1and2, 10)
+   $PageUpdate.Children.Add($PageUpdateWindowsUpdateDivider1and2) | Out-Null
+
+   $SystemWindowsControlsRichTextBoxPageUpdateWindowsUpdate1 = New-Object System.Windows.Controls.RichTextBox
+   $SystemWindowsControlsRichTextBoxPageUpdateWindowsUpdate1.FontFamily = New-Object System.Windows.Media.FontFamily('Consolas')
+   $SystemWindowsControlsRichTextBoxPageUpdateWindowsUpdate1.FontSize = 12
+   $SystemWindowsControlsRichTextBoxPageUpdateWindowsUpdate1.Width = 300
+   $SystemWindowsControlsRichTextBoxPageUpdateWindowsUpdate1.Height = 20
+   $SystemWindowsControlsRichTextBoxPageUpdateWindowsUpdate1.BorderThickness = 0
+   $SystemWindowsControlsRichTextBoxPageUpdateWindowsUpdate1.Document.PagePadding = [System.Windows.Thickness]::new(0)
+   $SystemWindowsControlsRichTextBoxPageUpdateWindowsUpdate1.Background = [System.Windows.Media.Brushes]::Transparent
+   $SystemWindowsControlsRichTextBoxPageUpdateWindowsUpdate1.Foreground = [System.Windows.Media.Brushes]::White
+   $SystemWindowsControlsRichTextBoxPageUpdateWindowsUpdate1.SetValue([System.Windows.Controls.RichTextBox]::IsReadOnlyProperty, $true)
+   $SystemWindowsControlsRichTextBoxPageUpdateWindowsUpdate1.SetValue([System.Windows.UIElement]::IsHitTestVisibleProperty, $false)
+   $SystemWindowsControlsRichTextBoxPageUpdateWindowsUpdate1.SetValue([System.Windows.UIElement]::FocusableProperty, $false)
+   [System.Windows.Controls.Canvas]::SetLeft($SystemWindowsControlsRichTextBoxPageUpdateWindowsUpdate1, 500)
+   [System.Windows.Controls.Canvas]::SetTop($SystemWindowsControlsRichTextBoxPageUpdateWindowsUpdate1, 10)
+   $PageUpdate.Children.Add($SystemWindowsControlsRichTextBoxPageUpdateWindowsUpdate1) | Out-Null
+
+   $SystemWindowsControlsRichTextBoxPageUpdateWindowsUpdate2 = New-Object System.Windows.Controls.RichTextBox
+   $SystemWindowsControlsRichTextBoxPageUpdateWindowsUpdate2.FontFamily = New-Object System.Windows.Media.FontFamily('Consolas')
+   $SystemWindowsControlsRichTextBoxPageUpdateWindowsUpdate2.FontSize = 12
+   $SystemWindowsControlsRichTextBoxPageUpdateWindowsUpdate2.Width = 300
+   $SystemWindowsControlsRichTextBoxPageUpdateWindowsUpdate2.Height = 20
+   $SystemWindowsControlsRichTextBoxPageUpdateWindowsUpdate2.BorderThickness = 0
+   $SystemWindowsControlsRichTextBoxPageUpdateWindowsUpdate2.Document.PagePadding = [System.Windows.Thickness]::new(0)
+   $SystemWindowsControlsRichTextBoxPageUpdateWindowsUpdate2.Background = [System.Windows.Media.Brushes]::Transparent
+   $SystemWindowsControlsRichTextBoxPageUpdateWindowsUpdate2.Foreground = [System.Windows.Media.Brushes]::White
+   $SystemWindowsControlsRichTextBoxPageUpdateWindowsUpdate2.SetValue([System.Windows.Controls.RichTextBox]::IsReadOnlyProperty, $true)
+   $SystemWindowsControlsRichTextBoxPageUpdateWindowsUpdate2.SetValue([System.Windows.UIElement]::IsHitTestVisibleProperty, $false)
+   $SystemWindowsControlsRichTextBoxPageUpdateWindowsUpdate2.SetValue([System.Windows.UIElement]::FocusableProperty, $false)
+   [System.Windows.Controls.Canvas]::SetLeft($SystemWindowsControlsRichTextBoxPageUpdateWindowsUpdate2, 500)
+   [System.Windows.Controls.Canvas]::SetTop($SystemWindowsControlsRichTextBoxPageUpdateWindowsUpdate2, 30)
+   $PageUpdate.Children.Add($SystemWindowsControlsRichTextBoxPageUpdateWindowsUpdate2) | Out-Null
+
+   $PageUpdateScrollViewerWindowsUpdate = New-Object System.Windows.Controls.ScrollViewer
+   $PageUpdateScrollViewerWindowsUpdate.Width = 790
+   $PageUpdateScrollViewerWindowsUpdate.Height = 200
+   $PageUpdateScrollViewerWindowsUpdate.VerticalScrollBarVisibility = [System.Windows.Controls.ScrollBarVisibility]::Hidden
+   $PageUpdateScrollViewerWindowsUpdate.HorizontalScrollBarVisibility = [System.Windows.Controls.ScrollBarVisibility]::Hidden
+   $PageUpdateStackPanelWindowsUpdate = New-Object System.Windows.Controls.StackPanel
+   $PageUpdateStackPanelWindowsUpdate.Orientation = [System.Windows.Controls.Orientation]::Vertical
+   $PageUpdateScrollViewerWindowsUpdate.Content = $PageUpdateStackPanelWindowsUpdate
+   [System.Windows.Controls.Canvas]::SetLeft($PageUpdateScrollViewerWindowsUpdate, 10)
+   [System.Windows.Controls.Canvas]::SetTop($PageUpdateScrollViewerWindowsUpdate, 60)
+   $PageUpdate.Children.Add($PageUpdateScrollViewerWindowsUpdate) | Out-Null
+
+
+
+   
+
+
+   $PageUpdateIconMainApp = New-Object System.Windows.Controls.Image
+   $PageUpdateIconMainApp.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\UpdateIconAppMain.png")))
+   $PageUpdateIconMainApp.Width = 40
+   $PageUpdateIconMainApp.Height = 40
+   [System.Windows.Controls.Canvas]::SetLeft($PageUpdateIconMainApp, 20)
+   [System.Windows.Controls.Canvas]::SetTop($PageUpdateIconMainApp, 270)
+   $PageUpdate.Children.Add($PageUpdateIconMainApp) | Out-Null
+
+   $SystemWindowsControlsRichTextBoxPageUpdateAppUpdate0 = New-Object System.Windows.Controls.RichTextBox
+   $SystemWindowsControlsRichTextBoxPageUpdateAppUpdate0.FontFamily = New-Object System.Windows.Media.FontFamily('Consolas')
+   $SystemWindowsControlsRichTextBoxPageUpdateAppUpdate0.FontSize = 15
+   $SystemWindowsControlsRichTextBoxPageUpdateAppUpdate0.Width = 200
+   $SystemWindowsControlsRichTextBoxPageUpdateAppUpdate0.Height = 20
+   $SystemWindowsControlsRichTextBoxPageUpdateAppUpdate0.BorderThickness = 0
+   $SystemWindowsControlsRichTextBoxPageUpdateAppUpdate0.Document.PagePadding = [System.Windows.Thickness]::new(0)
+   $SystemWindowsControlsRichTextBoxPageUpdateAppUpdate0.Background = [System.Windows.Media.Brushes]::Transparent
+   $SystemWindowsControlsRichTextBoxPageUpdateAppUpdate0.Foreground = [System.Windows.Media.Brushes]::White
+   $SystemWindowsControlsRichTextBoxPageUpdateAppUpdate0.SetValue([System.Windows.Controls.RichTextBox]::IsReadOnlyProperty, $true)
+   $SystemWindowsControlsRichTextBoxPageUpdateAppUpdate0.SetValue([System.Windows.UIElement]::IsHitTestVisibleProperty, $false)
+   $SystemWindowsControlsRichTextBoxPageUpdateAppUpdate0.SetValue([System.Windows.UIElement]::FocusableProperty, $false)
+   [System.Windows.Controls.Canvas]::SetLeft($SystemWindowsControlsRichTextBoxPageUpdateAppUpdate0, 70)
+   [System.Windows.Controls.Canvas]::SetTop($SystemWindowsControlsRichTextBoxPageUpdateAppUpdate0, 280)
+   $PageUpdate.Children.Add($SystemWindowsControlsRichTextBoxPageUpdateAppUpdate0) | Out-Null
+
+
+
+   $PageUpdateAppUpdateDivider1and2 = New-Object System.Windows.Controls.Border
+   $PageUpdateAppUpdateDivider1and2.Width           = 300
+   $PageUpdateAppUpdateDivider1and2.Height          = 40
+   $PageUpdateAppUpdateDivider1and2.BorderBrush     = [System.Windows.Media.SolidColorBrush][System.Windows.Media.ColorConverter]::ConvertFromString("#80ffffff")
+   $PageUpdateAppUpdateDivider1and2.BorderThickness = [System.Windows.Thickness]::new(1, 1, 1, 1)
+   $PageUpdateAppUpdateDivider1and2.Background      = [System.Windows.Media.SolidColorBrush][System.Windows.Media.ColorConverter]::ConvertFromString("#1E1E1E")
+   $PageUpdateAppUpdateDivider1and2.CornerRadius      = New-Object System.Windows.CornerRadius(5, 5, 5, 5)
+   [System.Windows.Controls.Canvas]::SetLeft($PageUpdateAppUpdateDivider1and2, 500)
+   [System.Windows.Controls.Canvas]::SetTop($PageUpdateAppUpdateDivider1and2, 270)
+   $PageUpdate.Children.Add($PageUpdateAppUpdateDivider1and2) | Out-Null
+
+   $SystemWindowsControlsRichTextBoxPageUpdateAppUpdate1 = New-Object System.Windows.Controls.RichTextBox
+   $SystemWindowsControlsRichTextBoxPageUpdateAppUpdate1.FontFamily = New-Object System.Windows.Media.FontFamily('Consolas')
+   $SystemWindowsControlsRichTextBoxPageUpdateAppUpdate1.FontSize = 12
+   $SystemWindowsControlsRichTextBoxPageUpdateAppUpdate1.Width = 300
+   $SystemWindowsControlsRichTextBoxPageUpdateAppUpdate1.Height = 20
+   $SystemWindowsControlsRichTextBoxPageUpdateAppUpdate1.BorderThickness = 0
+   $SystemWindowsControlsRichTextBoxPageUpdateAppUpdate1.Document.PagePadding = [System.Windows.Thickness]::new(0)
+   $SystemWindowsControlsRichTextBoxPageUpdateAppUpdate1.Background = [System.Windows.Media.Brushes]::Transparent
+   $SystemWindowsControlsRichTextBoxPageUpdateAppUpdate1.Foreground = [System.Windows.Media.Brushes]::White
+   $SystemWindowsControlsRichTextBoxPageUpdateAppUpdate1.SetValue([System.Windows.Controls.RichTextBox]::IsReadOnlyProperty, $true)
+   $SystemWindowsControlsRichTextBoxPageUpdateAppUpdate1.SetValue([System.Windows.UIElement]::IsHitTestVisibleProperty, $false)
+   $SystemWindowsControlsRichTextBoxPageUpdateAppUpdate1.SetValue([System.Windows.UIElement]::FocusableProperty, $false)
+   [System.Windows.Controls.Canvas]::SetLeft($SystemWindowsControlsRichTextBoxPageUpdateAppUpdate1, 500)
+   [System.Windows.Controls.Canvas]::SetTop($SystemWindowsControlsRichTextBoxPageUpdateAppUpdate1, 270)
+   $PageUpdate.Children.Add($SystemWindowsControlsRichTextBoxPageUpdateAppUpdate1) | Out-Null
+
+   $SystemWindowsControlsRichTextBoxPageUpdateAppUpdate2 = New-Object System.Windows.Controls.RichTextBox
+   $SystemWindowsControlsRichTextBoxPageUpdateAppUpdate2.FontFamily = New-Object System.Windows.Media.FontFamily('Consolas')
+   $SystemWindowsControlsRichTextBoxPageUpdateAppUpdate2.FontSize = 12
+   $SystemWindowsControlsRichTextBoxPageUpdateAppUpdate2.Width = 300
+   $SystemWindowsControlsRichTextBoxPageUpdateAppUpdate2.Height = 20
+   $SystemWindowsControlsRichTextBoxPageUpdateAppUpdate2.BorderThickness = 0
+   $SystemWindowsControlsRichTextBoxPageUpdateAppUpdate2.Document.PagePadding = [System.Windows.Thickness]::new(0)
+   $SystemWindowsControlsRichTextBoxPageUpdateAppUpdate2.Background = [System.Windows.Media.Brushes]::Transparent
+   $SystemWindowsControlsRichTextBoxPageUpdateAppUpdate2.Foreground = [System.Windows.Media.Brushes]::White
+   $SystemWindowsControlsRichTextBoxPageUpdateAppUpdate2.SetValue([System.Windows.Controls.RichTextBox]::IsReadOnlyProperty, $true)
+   $SystemWindowsControlsRichTextBoxPageUpdateAppUpdate2.SetValue([System.Windows.UIElement]::IsHitTestVisibleProperty, $false)
+   $SystemWindowsControlsRichTextBoxPageUpdateAppUpdate2.SetValue([System.Windows.UIElement]::FocusableProperty, $false)
+   [System.Windows.Controls.Canvas]::SetLeft($SystemWindowsControlsRichTextBoxPageUpdateAppUpdate2, 500)
+   [System.Windows.Controls.Canvas]::SetTop($SystemWindowsControlsRichTextBoxPageUpdateAppUpdate2, 290)
+   $PageUpdate.Children.Add($SystemWindowsControlsRichTextBoxPageUpdateAppUpdate2) | Out-Null
+
+
+
+   $PageUpdateScrollViewerAppUpdate = New-Object System.Windows.Controls.ScrollViewer
+   $PageUpdateScrollViewerAppUpdate.Width = 790
+   $PageUpdateScrollViewerAppUpdate.Height = 200
+   $PageUpdateScrollViewerAppUpdate.VerticalScrollBarVisibility = [System.Windows.Controls.ScrollBarVisibility]::Hidden
+   $PageUpdateScrollViewerAppUpdate.HorizontalScrollBarVisibility = [System.Windows.Controls.ScrollBarVisibility]::Hidden
+   $PageUpdateStackPanelAppUpdate = New-Object System.Windows.Controls.StackPanel
+   $PageUpdateStackPanelAppUpdate.Orientation = [System.Windows.Controls.Orientation]::Vertical
+   $PageUpdateScrollViewerAppUpdate.Content = $PageUpdateStackPanelAppUpdate
+   [System.Windows.Controls.Canvas]::SetLeft($PageUpdateScrollViewerAppUpdate, 10)
+   [System.Windows.Controls.Canvas]::SetTop($PageUpdateScrollViewerAppUpdate, 320)
+   $PageUpdate.Children.Add($PageUpdateScrollViewerAppUpdate) | Out-Null
+
+
+
+
+
+
+   $PageUpdateIconMainGPU = New-Object System.Windows.Controls.Image
+   $PageUpdateIconMainGPU.Source = New-Object System.Windows.Media.Imaging.BitmapImage (New-Object System.Uri ((Join-Path $PSScriptRoot "..\assets\UpdateIconGPUMain.png")))
+   $PageUpdateIconMainGPU.Width = 40
+   $PageUpdateIconMainGPU.Height = 40
+   [System.Windows.Controls.Canvas]::SetLeft($PageUpdateIconMainGPU, 20)
+   [System.Windows.Controls.Canvas]::SetTop($PageUpdateIconMainGPU, 530)
+   $PageUpdate.Children.Add($PageUpdateIconMainGPU) | Out-Null
+
+   $SystemWindowsControlsRichTextBoxPageUpdateGPUUpdate0 = New-Object System.Windows.Controls.RichTextBox
+   $SystemWindowsControlsRichTextBoxPageUpdateGPUUpdate0.FontFamily = New-Object System.Windows.Media.FontFamily('Consolas')
+   $SystemWindowsControlsRichTextBoxPageUpdateGPUUpdate0.FontSize = 15
+   $SystemWindowsControlsRichTextBoxPageUpdateGPUUpdate0.Width = 200
+   $SystemWindowsControlsRichTextBoxPageUpdateGPUUpdate0.Height = 20
+   $SystemWindowsControlsRichTextBoxPageUpdateGPUUpdate0.BorderThickness = 0
+   $SystemWindowsControlsRichTextBoxPageUpdateGPUUpdate0.Document.PagePadding = [System.Windows.Thickness]::new(0)
+   $SystemWindowsControlsRichTextBoxPageUpdateGPUUpdate0.Background = [System.Windows.Media.Brushes]::Transparent
+   $SystemWindowsControlsRichTextBoxPageUpdateGPUUpdate0.Foreground = [System.Windows.Media.Brushes]::White
+   $SystemWindowsControlsRichTextBoxPageUpdateGPUUpdate0.SetValue([System.Windows.Controls.RichTextBox]::IsReadOnlyProperty, $true)
+   $SystemWindowsControlsRichTextBoxPageUpdateGPUUpdate0.SetValue([System.Windows.UIElement]::IsHitTestVisibleProperty, $false)
+   $SystemWindowsControlsRichTextBoxPageUpdateGPUUpdate0.SetValue([System.Windows.UIElement]::FocusableProperty, $false)
+   [System.Windows.Controls.Canvas]::SetLeft($SystemWindowsControlsRichTextBoxPageUpdateGPUUpdate0, 70)
+   [System.Windows.Controls.Canvas]::SetTop($SystemWindowsControlsRichTextBoxPageUpdateGPUUpdate0, 540)
+   $PageUpdate.Children.Add($SystemWindowsControlsRichTextBoxPageUpdateGPUUpdate0) | Out-Null
+   
+
+
+
+
+   #═════════════════════════════════════════════════════════════
+   # Page Automation Setup
+   #═════════════════════════════════════════════════════════════
+   
+   $PageAutomation = New-Object System.Windows.Controls.Canvas
+   $PageAutomation.Width = 810
+   $PageAutomation.Height = 740
+   $PageAutomation.Visibility = "Collapsed"
+   $PageAutomation.Background = [System.Windows.Media.SolidColorBrush][System.Windows.Media.ColorConverter]::ConvertFromString("#1E1E1E")
+
+   
+
+
+   
+   
+
+
+
+
+   #═════════════════════════════════════════════════════════════
+   # Status Bar Setup
+   #═════════════════════════════════════════════════════════════
+   $StatusBar = New-Object System.Windows.Controls.Border
+   $StatusBar.Width = 1060
+   $StatusBar.Height = 20
+   $StatusBar.CornerRadius = New-Object System.Windows.CornerRadius(0, 0, 5, 5)
+   $StatusBar.Background = [System.Windows.Media.SolidColorBrush][System.Windows.Media.ColorConverter]::ConvertFromString("#141414")
+   $StatusBar.BorderBrush     = [System.Windows.Media.SolidColorBrush][System.Windows.Media.ColorConverter]::ConvertFromString("#80ffffff")
+   $StatusBar.BorderThickness = [System.Windows.Thickness]::new(0, 1, 0, 0)
+
+   $SystemWindowsControlsCanvasStatusBar = New-Object System.Windows.Controls.Canvas
+   $SystemWindowsControlsCanvasStatusBar.Width = 1060
+   $SystemWindowsControlsCanvasStatusBar.Height = 20
+   $SystemWindowsControlsCanvasStatusBar.Background = [System.Windows.Media.Brushes]::Transparent
+
+   $StatusBar.Child = $SystemWindowsControlsCanvasStatusBar
+
+   $SystemWindowsControlsRichTextBoxStatusBar0 = New-Object System.Windows.Controls.RichTextBox
+   $SystemWindowsControlsRichTextBoxStatusBar0.FontFamily = New-Object System.Windows.Media.FontFamily($FontPathIBMPlexMono)
+   [System.Windows.Media.TextOptions]::SetTextFormattingMode($SystemWindowsControlsRichTextBoxStatusBar0, [System.Windows.Media.TextFormattingMode]::Display)
+   [System.Windows.Media.TextOptions]::SetTextRenderingMode($SystemWindowsControlsRichTextBoxStatusBar0, [System.Windows.Media.TextRenderingMode]::ClearType)
+   $SystemWindowsControlsRichTextBoxStatusBar0.FontSize = 12
+   $SystemWindowsControlsRichTextBoxStatusBar0.Width = 1060
+   $SystemWindowsControlsRichTextBoxStatusBar0.Height = 20
+   $SystemWindowsControlsRichTextBoxStatusBar0.BorderThickness = 0
+   $SystemWindowsControlsRichTextBoxStatusBar0.Document.PagePadding = [System.Windows.Thickness]::new(0)
+   $SystemWindowsControlsRichTextBoxStatusBar0.Background = [System.Windows.Media.Brushes]::Transparent
+   $SystemWindowsControlsRichTextBoxStatusBar0.Foreground = [System.Windows.Media.Brushes]::White
+   $SystemWindowsControlsRichTextBoxStatusBar0.SetValue([System.Windows.Controls.RichTextBox]::IsReadOnlyProperty, $true)
+   $SystemWindowsControlsRichTextBoxStatusBar0.SetValue([System.Windows.UIElement]::IsHitTestVisibleProperty, $false)
+   $SystemWindowsControlsRichTextBoxStatusBar0.SetValue([System.Windows.UIElement]::FocusableProperty, $false)
+   [System.Windows.Controls.Canvas]::SetLeft($SystemWindowsControlsRichTextBoxStatusBar0, 0)
+   [System.Windows.Controls.Canvas]::SetTop($SystemWindowsControlsRichTextBoxStatusBar0, 0)
+   $SystemWindowsControlsCanvasStatusBar.Children.Add($SystemWindowsControlsRichTextBoxStatusBar0) | Out-Null
+
+   $SystemWindowsControlsRichTextBoxStatusBar1 = New-Object System.Windows.Controls.RichTextBox
+   $SystemWindowsControlsRichTextBoxStatusBar1.FontFamily = New-Object System.Windows.Media.FontFamily($FontPathIBMPlexMono)
+   [System.Windows.Media.TextOptions]::SetTextFormattingMode($SystemWindowsControlsRichTextBoxStatusBar1, [System.Windows.Media.TextFormattingMode]::Display)
+   [System.Windows.Media.TextOptions]::SetTextRenderingMode($SystemWindowsControlsRichTextBoxStatusBar1, [System.Windows.Media.TextRenderingMode]::ClearType)
+   $SystemWindowsControlsRichTextBoxStatusBar1.FontSize = 12
+   $SystemWindowsControlsRichTextBoxStatusBar1.Width = 1060
+   $SystemWindowsControlsRichTextBoxStatusBar1.Height = 20
+   $SystemWindowsControlsRichTextBoxStatusBar1.BorderThickness = 0
+   $SystemWindowsControlsRichTextBoxStatusBar1.Document.PagePadding = [System.Windows.Thickness]::new(0)
+   $SystemWindowsControlsRichTextBoxStatusBar1.Background = [System.Windows.Media.Brushes]::Transparent
+   $SystemWindowsControlsRichTextBoxStatusBar1.Foreground = [System.Windows.Media.Brushes]::White
+   $SystemWindowsControlsRichTextBoxStatusBar1.SetValue([System.Windows.Controls.RichTextBox]::IsReadOnlyProperty, $true)
+   $SystemWindowsControlsRichTextBoxStatusBar1.SetValue([System.Windows.UIElement]::IsHitTestVisibleProperty, $false)
+   $SystemWindowsControlsRichTextBoxStatusBar1.SetValue([System.Windows.UIElement]::FocusableProperty, $false)
+   [System.Windows.Controls.Canvas]::SetLeft($SystemWindowsControlsRichTextBoxStatusBar1, 0)
+   [System.Windows.Controls.Canvas]::SetTop($SystemWindowsControlsRichTextBoxStatusBar1, 0)
+   $SystemWindowsControlsCanvasStatusBar.Children.Add($SystemWindowsControlsRichTextBoxStatusBar1) | Out-Null
+
+   
+
+
+
+
+   #═════════════════════════════════════════════════════════════
+   # All Controls Placement
+   #═════════════════════════════════════════════════════════════
+
+   [System.Windows.Controls.Canvas]::SetLeft($SideBar, 0)
+   [System.Windows.Controls.Canvas]::SetTop($SideBar, 40)
+   [System.Windows.Controls.Canvas]::SetLeft($SideBarDivider, 0)
+   [System.Windows.Controls.Canvas]::SetTop($SideBarDivider, 40)
+   [System.Windows.Controls.Canvas]::SetLeft($SystemWindowsControlsRichTextBoxSideBarSystemSection, 20)
+   [System.Windows.Controls.Canvas]::SetTop($SystemWindowsControlsRichTextBoxSideBarSystemSection, 75)
+   [System.Windows.Controls.Canvas]::SetLeft($ButtonDashboard, 0)
+   [System.Windows.Controls.Canvas]::SetTop($ButtonDashboard, 105)
+   [System.Windows.Controls.Canvas]::SetLeft($ButtonUpdates, 0)
+   [System.Windows.Controls.Canvas]::SetTop($ButtonUpdates, 140)
+   [System.Windows.Controls.Canvas]::SetLeft($SystemWindowsControlsRichTextBoxSideBarAutomationSection, 20)
+   [System.Windows.Controls.Canvas]::SetTop($SystemWindowsControlsRichTextBoxSideBarAutomationSection, 190)
+   [System.Windows.Controls.Canvas]::SetLeft($ButtonAutomation, 0)
+   [System.Windows.Controls.Canvas]::SetTop($ButtonAutomation, 220)
+   
+
+
+   
+   [System.Windows.Controls.Canvas]::SetLeft($PageDashboard, 250)
+   [System.Windows.Controls.Canvas]::SetTop($PageDashboard, 40)
+
+   [System.Windows.Controls.Canvas]::SetLeft($PageUpdate, 250)
+   [System.Windows.Controls.Canvas]::SetTop($PageUpdate, 40)
+   [System.Windows.Controls.Canvas]::SetLeft($PageAutomation, 250)
+   [System.Windows.Controls.Canvas]::SetTop($PageAutomation, 40)
+
+
+
+   [System.Windows.Controls.Canvas]::SetLeft($DragBar, 0)
+   [System.Windows.Controls.Canvas]::SetTop($DragBar, 0)
+
+   [System.Windows.Controls.Canvas]::SetLeft($Logo, 5)
+   [System.Windows.Controls.Canvas]::SetTop($Logo, 0)
+
+   [System.Windows.Controls.Canvas]::SetLeft($ButtonInfoPopup, 105)
+   [System.Windows.Controls.Canvas]::SetTop($ButtonInfoPopup, 45)
+   [System.Windows.Controls.Canvas]::SetLeft($ButtonInfo.ButtonMain, 165)
+   [System.Windows.Controls.Canvas]::SetTop($ButtonInfo.ButtonMain, 17.5)
+   
+
+   [System.Windows.Controls.Canvas]::SetLeft($ButtonClose, 1025)
+   [System.Windows.Controls.Canvas]::SetTop($ButtonClose, 7.5)
+
+   [System.Windows.Controls.Canvas]::SetLeft($StatusBar, 0)
+   [System.Windows.Controls.Canvas]::SetTop($StatusBar, 780)
+   
+
+
+
+   #═════════════════════════════════════════════════════════════
+   # All Controls add to Main Canvas
+   #═════════════════════════════════════════════════════════════
+
+   $SystemWindowsControlsCanvas.Children.Add($SideBar) | Out-Null
+   $SystemWindowsControlsCanvas.Children.Add($SideBarDivider) | Out-Null
+   $SystemWindowsControlsCanvas.Children.Add($SystemWindowsControlsRichTextBoxSideBarSystemSection) | Out-Null
+   $SystemWindowsControlsCanvas.Children.Add($ButtonDashboard) | Out-Null
+   $SystemWindowsControlsCanvas.Children.Add($ButtonUpdates) | Out-Null
+   $SystemWindowsControlsCanvas.Children.Add($SystemWindowsControlsRichTextBoxSideBarAutomationSection) | Out-Null
+   $SystemWindowsControlsCanvas.Children.Add($ButtonAutomation) | Out-Null
+   
+
+   $SystemWindowsControlsCanvas.Children.Add($PageDashboard) | Out-Null
+   $SystemWindowsControlsCanvas.Children.Add($PageUpdate) | Out-Null
+   $SystemWindowsControlsCanvas.Children.Add($PageAutomation) | Out-Null
+
+
+   $SystemWindowsControlsCanvas.Children.Add($DragBar) | Out-Null
+
+   $SystemWindowsControlsCanvas.Children.Add($Logo) | Out-Null
+   
+   $SystemWindowsControlsCanvas.Children.Add($ButtonInfoPopup) | Out-Null
+   $SystemWindowsControlsCanvas.Children.Add($ButtonInfo.ButtonMain) | Out-Null
+
+   $SystemWindowsControlsCanvas.Children.Add($ButtonClose) | Out-Null
+
+   $SystemWindowsControlsCanvas.Children.Add($StatusBar) | Out-Null
+
+
+
+   $SystemWindowsWindow.Show()
+   return $SystemWindowsWindow, $SystemWindowsControlsCanvas, $SystemWindowsControlsRichTextBoxButtonInfoPopup, $SystemWindowsControlsRichTextBoxSideBarSystemSection, $ButtonDashboard, $ButtonUpdates, $SystemWindowsControlsRichTextBoxSideBarAutomationSection, $ButtonAutomation, $PageDashboard, $SystemWindowsControlsRichTextBoxPageDashboardNetwork0, $SystemWindowsControlsRichTextBoxPageDashboardNetwork1, $SystemWindowsControlsRichTextBoxPageDashboardGPU0, $SystemWindowsControlsRichTextBoxPageDashboardGPU1, $SystemWindowsControlsRichTextBoxPageDashboardCPU0, $SystemWindowsControlsRichTextBoxPageDashboardCPU1, $SystemWindowsControlsRichTextBoxPageDashboardRAM0, $SystemWindowsControlsRichTextBoxPageDashboardRAM1, $SystemWindowsControlsRichTextBoxPageDashboardRAM2, $SystemWindowsControlsRichTextBoxPageDashboardLogBar, $SystemWindowsControlsRichTextBoxPageDashboardLog, $SystemWindowsControlsRichTextBoxPageDashboardTaskBar, $SystemWindowsControlsRichTextBoxPageDashboardTask, $PageUpdate, $SystemWindowsControlsRichTextBoxPageUpdateWindowsUpdate0, $SystemWindowsControlsRichTextBoxPageUpdateWindowsUpdate1, $SystemWindowsControlsRichTextBoxPageUpdateWindowsUpdate2, $PageUpdateStackPanelWindowsUpdate, $SystemWindowsControlsRichTextBoxPageUpdateAppUpdate0, $SystemWindowsControlsRichTextBoxPageUpdateAppUpdate1, $SystemWindowsControlsRichTextBoxPageUpdateAppUpdate2, $PageUpdateStackPanelAppUpdate, $SystemWindowsControlsRichTextBoxPageUpdateGPUUpdate0, $PageAutomation, $SystemWindowsControlsRichTextBoxStatusBar0, $SystemWindowsControlsRichTextBoxStatusBar1
 }

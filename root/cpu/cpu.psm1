@@ -1,0 +1,1 @@
+. "$PSScriptRoot\cpu.ps1"

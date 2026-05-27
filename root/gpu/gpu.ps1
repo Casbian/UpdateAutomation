@@ -1,4 +1,4 @@
-﻿function GPUInstalledVersion() {
+﻿function GPUGetInstalledVersion() {
     try {
         $InstalledVersion = Get-CimInstance -ClassName Win32_VideoController | Where-Object { $_.Name -match "NVIDIA" }
         $InstalledVersion = ($InstalledVersion.DriverVersion.Replace('.', '')[-5..-1] -join '').insert(3, '.')
@@ -7,7 +7,7 @@
         <#SOON#>
     }
 }
-function GPULatestVersion() {
+function GPUGetLatestVersion() {
     try {        
         $GPUName = (Get-CimInstance Win32_VideoController | Where-Object { $_.AdapterCompatibility -like "*NVIDIA*" }).Name | Select-Object -First 1
         $GPUDatabase = @(
@@ -1029,6 +1029,15 @@ function GPULatestVersion() {
         <#SOON#>
     }
 }
+function GPUGetAdapterValues() {
+$GPUAdapterValues = @()
+Get-CimInstance Win32_VideoController | ForEach-Object {
+$GPUAdapterValues += $_.Name
+$GPUAdapterValues += $_.DriverVersion
+}
+return $GPUAdapterValues
+}
+ 
 function GPUNvidiaUpdateRun($MyInvocation) {
     try {
         $StringBuilder = New-Object System.Text.StringBuilder

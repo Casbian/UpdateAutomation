@@ -1,4 +1,4 @@
-﻿function Network() {
+﻿function NetworkConnect() {
     try {
         $NetAdapter= Get-NetAdapter | Sort-Object LinkSpeed -Descending | Select-Object -First 1 -ExpandProperty Name
         Enable-NetAdapter $NetAdapter
@@ -91,5 +91,13 @@
     catch {
         <#SOON#>
     }
-    
+}
+function NetworkGetAdapterValues() {
+    $NetworkValues = @()
+    Get-CimInstance Win32_NetworkAdapterConfiguration | Where-Object { $_.IPEnabled } | ForEach-Object {
+        $NetworkValues += $_.Description
+        $NetworkValues += $_.MACAddress
+        $NetworkValues += ($_.IPAddress | Where-Object { $_ -notmatch ':' }) -join ', '
+    }
+    return $NetworkValues
 }
